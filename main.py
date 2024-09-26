@@ -72,38 +72,410 @@ for mp in meeting_patterns.values():
 # You can customize this based on actual availability
 
 professors = {
-    'Prof_A': {
-        'qualified_courses': ['COMP110'],
-        'availability': time_slots  # Available for all time slots
+    'Montek Singh': {
+        'qualified_courses': ['COMP541', 'COMP572'],
+        'availability': time_slots  # Adjust availability if needed
     },
-    'Prof_B': {
+    'Kurt M. Potter': {
+        'qualified_courses': ['COMP301', 'COMP426'],
+        'availability': time_slots
+    },
+    'Muhammad Ghani': {
         'qualified_courses': ['COMP210'],
         'availability': time_slots
     },
-    # Add other professors
+    'Praveen Kumar': {
+        'qualified_courses': ['COMP455'],
+        'availability': time_slots
+    },
+    'Jasleen Kaur': {
+        'qualified_courses': ['COMP431'],
+        'availability': time_slots
+    },
+    'Saba Eskandarian': {
+        'qualified_courses': ['COMP537', 'COMP455', 'COMP435', 'COMP590', 'COMP790'],
+        'availability': time_slots
+    },
+    'Ron Alterovitz': {
+        'qualified_courses': ['COMP581', 'COMP781', 'COMP782'],
+        'availability': time_slots
+    },
+    'Cynthia Sturton': {
+        'qualified_courses': ['COMP435'],
+        'availability': time_slots
+    },
+    'Marc Niethammer': {
+        'qualified_courses': ['COMP775'],
+        'availability': time_slots
+    },
+    'Samarjit Chakraborty': {
+        'qualified_courses': ['COMP545', 'COMP790'],
+        'availability': time_slots
+    },
+    'Donald Porter': {
+        'qualified_courses': ['COMP530'],
+        'availability': time_slots
+    },
+    'John Majikes': {
+        'qualified_courses': ['COMP421', 'COMP550', 'COMP116'],
+        'availability': time_slots
+    },
+    'Alyssa Byrnes': {
+        'qualified_courses': ['COMP110', 'COMP116', 'COMP210', 'COMP283'],
+        'availability': time_slots
+    },
+    'Gedas Bertasius': {
+        'qualified_courses': ['COMP590', 'COMP790'],
+        'availability': time_slots
+    },
+    'Roni Sengupta': {
+        'qualified_courses': ['COMP590'],
+        'availability': time_slots
+    },
+    'Kangning Sun': {
+        'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
+        'availability': time_slots
+    },
+    'Jim McMahon': {
+        'qualified_courses': ['COMP311', 'COMP541'],
+        'availability': time_slots
+    },
+    'Shahriar Nirjon': {
+        'qualified_courses': ['COMP433'],
+        'availability': time_slots
+    },
+    'Jack Snoeyink': {
+        'qualified_courses': ['COMP283', 'DATA140'],
+        'availability': time_slots
+    },
+    'Brent Munsell': {
+        'qualified_courses': ['COMP211', 'COMP590', 'COMP530', 'COMP311', 'COMP116'],
+        'availability': time_slots
+    },
+    'James Anderson': {
+        'qualified_courses': ['COMP737', 'COMP750'],
+        'availability': time_slots
+    },
+    'Danielle Szafir': {
+        'qualified_courses': ['COMP790'],
+        'availability': time_slots
+    },
+    'Daniel Szafir': {
+        'qualified_courses': ['COMP581'],
+        'availability': time_slots
+    },
+    'Praneeth Chakravarthula': {
+        'qualified_courses': ['COMP089', 'COMP790'],
+        'availability': time_slots
+    },
+    'Ben Lee': {
+        'qualified_courses': ['COMP790'],
+        'availability': time_slots
+    },
+    'Shubhra Srivastava': {
+        'qualified_courses': ['COMP664'],
+        'availability': time_slots
+    },
+    'Chase P. Kline': {
+        'qualified_courses': ['COMP790'],
+        'availability': time_slots
+    }
 }
 
 # Courses with number of sections, title, and seat capacity
 courses = {
     'COMP110': {
-        'title': 'Introduction to Programming and Data Science',
-        'sections': 3,
-        'seat_capacity': 300
+        'title': 'COMP110 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 300},
+            {'section_number': 2, 'seat_capacity': 300},
+            {'section_number': 3, 'seat_capacity': 150},
+            {'section_number': 4, 'seat_capacity': 150}
+        ]
+    },
+    'COMP116': {
+        'title': 'COMP116 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    },
+    'COMP126': {
+        'title': 'COMP126 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 120}
+        ]
     },
     'COMP210': {
-        'title': 'Data Structures and Analysis',
-        'sections': 2,
-        'seat_capacity': 210
+        'title': 'COMP210 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 210},
+            {'section_number': 2, 'seat_capacity': 210}
+        ]
     },
-    # Add other courses
+    'COMP211': {
+        'title': 'COMP211 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 200},
+            {'section_number': 2, 'seat_capacity': 200}
+        ]
+    },
+    'COMP227': {
+        'title': 'COMP227 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30}
+        ]
+    },
+    'COMP283': {
+        'title': 'COMP283 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 180}
+        ]
+    },
+    'COMP283H': {
+        'title': 'COMP283H Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 24}
+        ]
+    },
+    'COMP301': {
+        'title': 'COMP301 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 200},
+            {'section_number': 2, 'seat_capacity': 200}
+        ]
+    },
+    'COMP311': {
+        'title': 'COMP311 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 225}
+        ]
+    },
+    'COMP380': {
+        'title': 'COMP380 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP380H': {
+        'title': 'COMP380H Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 24}
+        ]
+    },
+    'COMP421': {
+        'title': 'COMP421 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 200}  # Assuming maximum capacity
+        ]
+    },
+    'COMP426': {
+        'title': 'COMP426 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 200}  # Assuming maximum capacity
+        ]
+    },
+    'COMP431': {
+        'title': 'COMP431 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP433': {
+        'title': 'COMP433 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 75}
+        ]
+    },
+    'COMP435': {
+        'title': 'COMP435 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 70}
+        ]
+    },
+    'COMP455': {
+        'title': 'COMP455 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 125},
+            {'section_number': 2, 'seat_capacity': 125}
+        ]
+    },
+    'COMP475': {
+        'title': 'COMP475 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP488': {
+        'title': 'COMP488 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    },
+    'COMP520': {
+        'title': 'COMP520 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    },
+    'COMP523': {
+        'title': 'COMP523 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP524': {
+        'title': 'COMP524 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP530': {
+        'title': 'COMP530 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 75}
+        ]
+    },
+    'COMP533': {
+        'title': 'COMP533 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    },
+    'COMP537': {
+        'title': 'COMP537 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 90}
+        ]
+    },
+    'COMP541': {
+        'title': 'COMP541 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 45},
+            {'section_number': 2, 'seat_capacity': 45}
+        ]
+    },
+    'COMP545': {
+        'title': 'COMP545 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 25}
+        ]
+    },
+    'COMP550': {
+        'title': 'COMP550 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 125},
+            {'section_number': 2, 'seat_capacity': 125}
+        ]
+    },
+    'COMP560': {
+        'title': 'COMP560 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP562': {
+        'title': 'COMP562 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 75}
+        ]
+    },
+    'COMP581': {
+        'title': 'COMP581 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP590': {
+        'title': 'COMP590 Class',
+        'sections': [
+            {'section_number': 59, 'seat_capacity': 90},
+            {'section_number': 139, 'seat_capacity': 10},
+            {'section_number': 140, 'seat_capacity': 280},
+            {'section_number': 158, 'seat_capacity': 4},
+            {'section_number': 170, 'seat_capacity': 30},
+            {'section_number': 172, 'seat_capacity': 30},
+            {'section_number': 177, 'seat_capacity': 60}
+        ]
+    },
+    'COMP730': {
+        'title': 'COMP730 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    },
+    'COMP664': {
+        'title': 'COMP664 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 60}
+        ]
+    },
+    'COMP737': {
+        'title': 'COMP737 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30}
+        ]
+    },
+    'COMP750': {
+        'title': 'COMP750 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30}
+        ]
+    },
+    'COMP755': {
+        'title': 'COMP755 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30}
+        ]
+    },
+    'COMP775': {
+        'title': 'COMP775 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30}
+        ]
+    },
+    'COMP790': {
+        'title': 'COMP790 Class',
+        'sections': [
+            {'section_number': 139, 'seat_capacity': 20},
+            {'section_number': 144, 'seat_capacity': 30},
+            {'section_number': 148, 'seat_capacity': 25},
+            {'section_number': 158, 'seat_capacity': 21},
+            {'section_number': 170, 'seat_capacity': 30},
+            {'section_number': 172, 'seat_capacity': 30},
+            {'section_number': 173, 'seat_capacity': 30},
+            {'section_number': 175, 'seat_capacity': 30},
+            {'section_number': 178, 'seat_capacity': 20},
+            {'section_number': 183, 'seat_capacity': 30},
+            {'section_number': 185, 'seat_capacity': 30}
+        ]
+    },
+    'COMP915': {
+        'title': 'COMP915 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': None}
+        ]
+    }
 }
 
 # Rooms with capacities
 rooms = {
-    'Room_A': {'capacity': 300},
-    'Room_B': {'capacity': 210},
-    # Add other rooms
+    'SN-0014': {'capacity': 128},
+    'FB-F009': {'capacity': 86},
+    'SN-0011': {'capacity': 66},
+    'FB-F007': {'capacity': 50},
+    'FB-F141': {'capacity': 50},
+    'SN-0115': {'capacity': 25},
+    'FB-F008': {'capacity': 20},
+    'SN-0252': {'capacity': 20},
+    'SN-0006': {'capacity': 15},
+    'SN-0325': {'capacity': 15},
+    'SN-0155': {'capacity': 14},
+    'FB-F120': {'capacity': 12},
+    'SN-0277': {'capacity': 10},
+    'FB-F331': {'capacity': 16},
+    'university': {'capacity': 300}  # Special room
 }
+
 
 # Possible meeting patterns for classes
 possible_meeting_patterns = ['MWF', 'TTH', 'MW']
@@ -125,28 +497,20 @@ def is_prof_available_and_qualified(p, c, ts):
 
 # Course Scheduling Program using PuLP
 
+# Course Scheduling Program using PuLP
+
 # Import PuLP library
 import pulp
 from collections import defaultdict
 
 # -----------------------------
-# Data Definitions
+# Data Definitions (abbreviated)
 # -----------------------------
 
-# (Data definitions remain the same as before)
+# Define days, periods, meeting patterns, time slots, professors, courses, rooms, possible meeting patterns
+# (Assuming these are defined as before, with your actual data)
 
-# (Define days, periods, meeting_patterns, time_slots, professors, courses, rooms, possible_meeting_patterns)
-
-# -----------------------------
-# Helper Functions
-# -----------------------------
-
-def is_time_slot_in_meeting_pattern(ts, mp):
-    day, period = ts
-    return day in meeting_patterns[mp]['days'] and period in meeting_patterns[mp]['periods']
-
-def is_prof_available_and_qualified(p, c, ts):
-    return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
+# For brevity, only key code changes are shown here.
 
 # -----------------------------
 # ILP Model Setup
@@ -155,15 +519,37 @@ def is_prof_available_and_qualified(p, c, ts):
 # Create the LP problem
 prob = pulp.LpProblem("Course_Scheduling_Problem", pulp.LpMaximize)
 
-# Decision variables
-x = pulp.LpVariable.dicts(
-    "x", (courses.keys(),
-          [s for c in courses for s in range(courses[c]['sections'])],
-          possible_meeting_patterns,
-          time_slots,
-          rooms.keys()),
-    cat='Binary'
-)
+# Generate all combinations of indices for x
+x_indices = []
+
+for c in courses:
+    for section in courses[c]['sections']:
+        s = section['section_number']
+        seat_capacity = section['seat_capacity']
+        for mp in possible_meeting_patterns:
+            for ts in time_slots:
+                for r in rooms.keys():
+                    idx = (c, s, mp, ts, r)
+                    x_indices.append(idx)
+
+# Define the decision variables with appropriate bounds
+x = {}
+for idx in x_indices:
+    c, s, mp, ts, r = idx
+    var_name = "x_%s_%s_%s_%s_%s" % (c, s, mp, ts, r)
+    section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
+    seat_capacity = section['seat_capacity']
+    # Check if time slot aligns with meeting pattern
+    if is_time_slot_in_meeting_pattern(ts, mp):
+        # Check if room capacity is sufficient
+        if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
+            # Variable must be zero
+            x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
+        else:
+            x[idx] = pulp.LpVariable(var_name, cat='Binary')
+    else:
+        # Variable must be zero
+        x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
 
 # -----------------------------
 # Constraints
@@ -171,69 +557,42 @@ x = pulp.LpVariable.dicts(
 
 # 1. Each section must be assigned to one meeting pattern, time slot, and room
 for c in courses:
-    for s in range(courses[c]['sections']):
+    for section in courses[c]['sections']:
+        s = section['section_number']
         prob += pulp.lpSum([
-            x[c][s][mp][ts][r]
-            for mp in possible_meeting_patterns
-            for ts in time_slots
-            for r in rooms
-            if is_time_slot_in_meeting_pattern(ts, mp)
+            x[idx]
+            for idx in x_indices
+            if idx[0] == c and idx[1] == s
         ]) == 1
 
 # 2. Professors assigned to sections must be qualified and available
-for c in courses:
-    for s in range(courses[c]['sections']):
-        for mp in possible_meeting_patterns:
-            for ts in time_slots:
-                if is_time_slot_in_meeting_pattern(ts, mp):
-                    for r in rooms:
-                        # At least one qualified professor must be available
-                        prob += pulp.lpSum([
-                            is_prof_available_and_qualified(p, c, ts)
-                            for p in professors
-                        ]) >= x[c][s][mp][ts][r]
+for idx in x_indices:
+    c, s, mp, ts, r = idx
+    prob += pulp.lpSum([
+        is_prof_available_and_qualified(p, c, ts)
+        for p in professors
+    ]) >= x[idx]
 
 # 3. A professor cannot teach more than one class at the same time
 for p in professors:
     for ts in time_slots:
         prob += pulp.lpSum([
-            x[c][s][mp][ts][r]
-            for c in professors[p]['qualified_courses']
-            for s in range(courses[c]['sections'])
-            for mp in possible_meeting_patterns
-            for r in rooms
-            if is_time_slot_in_meeting_pattern(ts, mp)
+            x[idx]
+            for idx in x_indices
+            if idx[3] == ts and idx[0] in professors[p]['qualified_courses']
         ]) <= 1
 
-# 4. A room cannot have more than one class at the same time
+# 4. A room cannot have more than one class at the same time, except "university"
 for r in rooms:
-    for ts in time_slots:
-        prob += pulp.lpSum([
-            x[c][s][mp][ts][r]
-            for c in courses
-            for s in range(courses[c]['sections'])
-            for mp in possible_meeting_patterns
-            if is_time_slot_in_meeting_pattern(ts, mp)
-        ]) <= 1
+    if r != 'university':
+        for ts in time_slots:
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if idx[4] == r and idx[3] == ts
+            ]) <= 1
 
-# 5. Room capacity must be sufficient for the course
-for c in courses:
-    for s in range(courses[c]['sections']):
-        for mp in possible_meeting_patterns:
-            for ts in time_slots:
-                if is_time_slot_in_meeting_pattern(ts, mp):
-                    for r in rooms:
-                        if rooms[r]['capacity'] < courses[c]['seat_capacity']:
-                            prob += x[c][s][mp][ts][r] == 0
-
-# 6. Meeting patterns must align with time slots
-for c in courses:
-    for s in range(courses[c]['sections']):
-        for mp in possible_meeting_patterns:
-            for ts in time_slots:
-                if not is_time_slot_in_meeting_pattern(ts, mp):
-                    for r in rooms:
-                        prob += x[c][s][mp][ts][r] == 0
+# Note: Constraint 5 (Room capacity) is already handled in variable bounds
 
 # -----------------------------
 # Objective Function
@@ -241,20 +600,13 @@ for c in courses:
 
 # Maximize the total number of classes scheduled
 prob += pulp.lpSum([
-    x[c][s][mp][ts][r]
-    for c in courses
-    for s in range(courses[c]['sections'])
-    for mp in possible_meeting_patterns
-    for ts in time_slots
-    for r in rooms
-    if is_time_slot_in_meeting_pattern(ts, mp)
+    x[idx] for idx in x_indices
 ])
 
 # -----------------------------
 # Solve the Problem
 # -----------------------------
 
-# Solve the problem
 prob.solve()
 
 # -----------------------------
@@ -263,33 +615,31 @@ prob.solve()
 
 if pulp.LpStatus[prob.status] == 'Optimal':
     schedule = []
-    for c in courses:
-        for s in range(courses[c]['sections']):
-            for mp in possible_meeting_patterns:
-                for ts in time_slots:
-                    if is_time_slot_in_meeting_pattern(ts, mp):
-                        for r in rooms:
-                            if pulp.value(x[c][s][mp][ts][r]) == 1:
-                                # Find an available professor
-                                assigned_professor = None
-                                for p in professors:
-                                    if is_prof_available_and_qualified(p, c, ts):
-                                        assigned_professor = p
-                                        break
-                                day, period = ts
-                                start_time = meeting_patterns[mp]['periods'][period]['start_time']
-                                schedule.append({
-                                    'Course': c,
-                                    'Section': s + 1,
-                                    'Title': courses[c]['title'],
-                                    'Professor': assigned_professor,
-                                    'Meeting Pattern': mp,
-                                    'Day': day,
-                                    'Period': period,
-                                    'Start Time': start_time,
-                                    'Room': r
-                                })
-
+    for idx in x_indices:
+        if pulp.value(x[idx]) == 1:
+            c, s, mp, ts, r = idx
+            section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
+            seat_capacity = section['seat_capacity']
+            # Find an available professor
+            assigned_professor = None
+            for p in professors:
+                if is_prof_available_and_qualified(p, c, ts):
+                    assigned_professor = p
+                    break
+            day, period = ts
+            start_time = meeting_patterns[mp]['periods'][period]['start_time']
+            schedule.append({
+                'Course': c,
+                'Section': s,
+                'Title': courses[c]['title'],
+                'Professor': assigned_professor,
+                'Meeting Pattern': mp,
+                'Day': day,
+                'Period': period,
+                'Start Time': start_time,
+                'Room': r,
+                'Seat Capacity': seat_capacity
+            })
     # Print the schedule
     for entry in schedule:
         print(f"Course: {entry['Course']} Section {entry['Section']}, Title: {entry['Title']}")
@@ -297,6 +647,7 @@ if pulp.LpStatus[prob.status] == 'Optimal':
         print(f"  Meeting Pattern: {entry['Meeting Pattern']}")
         print(f"  Day: {entry['Day']}, Period: {entry['Period']}, Start Time: {entry['Start Time']}")
         print(f"  Room: {entry['Room']}")
+        print(f"  Seat Capacity: {entry['Seat Capacity']}")
         print()
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
