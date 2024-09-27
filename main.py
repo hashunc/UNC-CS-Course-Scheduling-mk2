@@ -484,18 +484,19 @@ possible_meeting_patterns = ['MWF', 'TTH', 'MW']
 # Helper Functions
 # -----------------------------
 
-def is_time_slot_in_meeting_pattern(ts, mp):
-    day, period = ts
-    return day in meeting_patterns[mp]['days'] and period in meeting_patterns[mp]['periods']
-
-def is_prof_available_and_qualified(p, c, ts):
-    return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
-
-# -----------------------------
-# ILP Model Setup
-# -----------------------------
-
 # Course Scheduling Program using PuLP
+
+# Import PuLP library
+import pulp
+from collections import defaultdict
+
+# -----------------------------
+# Data Definitions (abbreviated)
+# -----------------------------
+
+# Assume all previous data definitions (days, periods, meeting_patterns, time_slots, professors, courses, rooms) are defined here.
+
+# For brevity, only key code changes are shown here.
 
 # Course Scheduling Program using PuLP
 
@@ -507,19 +508,32 @@ from collections import defaultdict
 # Data Definitions (abbreviated)
 # -----------------------------
 
-# Define days, periods, meeting patterns, time slots, professors, courses, rooms, possible meeting patterns
-# (Assuming these are defined as before, with your actual data)
+# Assume all previous data definitions (days, periods, meeting_patterns, professors, courses, rooms) are defined here.
 
-# For brevity, only key code changes are shown here.
+# -----------------------------
+# Helper Functions
+# -----------------------------
+
+def is_prof_available_and_qualified(p, c, ts):
+    return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
 
 # -----------------------------
 # ILP Model Setup
 # -----------------------------
 
-# Create the LP problem
+# Create the LP problem (Maximize the number of classes scheduled)
 prob = pulp.LpProblem("Course_Scheduling_Problem", pulp.LpMaximize)
 
-# Generate all combinations of indices for x
+# Create time slots specific to each meeting pattern
+time_slots = {}
+for mp in meeting_patterns:
+    mp_time_slots = []
+    for day in meeting_patterns[mp]['days']:
+        for period in meeting_patterns[mp]['periods'].keys():
+            mp_time_slots.append((day, period))
+    time_slots[mp] = mp_time_slots
+
+# Generate all valid combinations of indices for x
 x_indices = []
 
 for c in courses:
@@ -527,35 +541,30 @@ for c in courses:
         s = section['section_number']
         seat_capacity = section['seat_capacity']
         for mp in possible_meeting_patterns:
-            for ts in time_slots:
+            for ts in time_slots[mp]:  # Use valid time slots for the meeting pattern
                 for r in rooms.keys():
                     idx = (c, s, mp, ts, r)
                     x_indices.append(idx)
 
-# Define the decision variables with appropriate bounds
+# Define the decision variables
 x = {}
 for idx in x_indices:
     c, s, mp, ts, r = idx
     var_name = "x_%s_%s_%s_%s_%s" % (c, s, mp, ts, r)
     section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
     seat_capacity = section['seat_capacity']
-    # Check if time slot aligns with meeting pattern
-    if is_time_slot_in_meeting_pattern(ts, mp):
-        # Check if room capacity is sufficient
-        if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
-            # Variable must be zero
-            x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
-        else:
-            x[idx] = pulp.LpVariable(var_name, cat='Binary')
-    else:
+    # Check if room capacity is sufficient
+    if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
         # Variable must be zero
         x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
+    else:
+        x[idx] = pulp.LpVariable(var_name, cat='Binary')
 
 # -----------------------------
 # Constraints
 # -----------------------------
 
-# 1. Each section must be assigned to one meeting pattern, time slot, and room
+# 1. Each section can be assigned to at most one meeting pattern, time slot, and room
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
@@ -563,7 +572,7 @@ for c in courses:
             x[idx]
             for idx in x_indices
             if idx[0] == c and idx[1] == s
-        ]) == 1
+        ]) <= 1
 
 # 2. Professors assigned to sections must be qualified and available
 for idx in x_indices:
@@ -575,32 +584,32 @@ for idx in x_indices:
 
 # 3. A professor cannot teach more than one class at the same time
 for p in professors:
-    for ts in time_slots:
+    for ts in professors[p]['availability']:
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[3] == ts and idx[0] in professors[p]['qualified_courses']
         ]) <= 1
 
-# 4. A room cannot have more than one class at the same time, except "university"
+# 4. A room cannot have more than one class at the same time
 for r in rooms:
-    if r != 'university':
-        for ts in time_slots:
+    for mp in possible_meeting_patterns:
+        for ts in time_slots[mp]:
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
                 if idx[4] == r and idx[3] == ts
             ]) <= 1
 
-# Note: Constraint 5 (Room capacity) is already handled in variable bounds
-
 # -----------------------------
 # Objective Function
 # -----------------------------
 
-# Maximize the total number of classes scheduled
+# Objective Function: Maximize the number of classes scheduled
 prob += pulp.lpSum([
-    x[idx] for idx in x_indices
+    x[idx]
+    for idx in x_indices
+    if x[idx].upBound != 0  # Only consider variables that can be non-zero
 ])
 
 # -----------------------------
