@@ -1,76 +1,5 @@
-# Course Scheduling Program using PuLP
-
-# Import PuLP library
-import pulp
-from collections import defaultdict
-
-# -----------------------------
-# Data Definitions
-# -----------------------------
-
-# Define days
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-
-# Define periods with start times and durations (in minutes)
-# For simplicity, we'll represent periods as integers
-
-# MWF periods (50 minutes each)
-mwf_periods = {
-    1: {'start_time': '8:00AM', 'duration': 50},
-    2: {'start_time': '9:05AM', 'duration': 50},
-    3: {'start_time': '10:10AM', 'duration': 50},
-    4: {'start_time': '11:15AM', 'duration': 50},
-    5: {'start_time': '12:20PM', 'duration': 50},
-    6: {'start_time': '1:25PM', 'duration': 50},
-    7: {'start_time': '2:30PM', 'duration': 50},
-    8: {'start_time': '3:35PM', 'duration': 50},
-    9: {'start_time': '4:40PM', 'duration': 50},
-    10: {'start_time': '5:45PM', 'duration': 50}
-}
-
-# TTH periods (75 minutes each)
-tth_periods = {
-    1: {'start_time': '8:00AM', 'duration': 75},
-    2: {'start_time': '9:30AM', 'duration': 75},
-    3: {'start_time': '11:00AM', 'duration': 75},
-    4: {'start_time': '12:30PM', 'duration': 75},
-    5: {'start_time': '2:00PM', 'duration': 75},
-    6: {'start_time': '3:30PM', 'duration': 75},
-    7: {'start_time': '5:00PM', 'duration': 75}
-}
-
-# MW periods (75 minutes each)
-mw_periods = {
-    1: {'start_time': '8:00AM', 'duration': 75},
-    2: {'start_time': '9:05AM', 'duration': 75},
-    3: {'start_time': '10:10AM', 'duration': 75},
-    4: {'start_time': '11:15AM', 'duration': 75},
-    5: {'start_time': '12:20PM', 'duration': 75},
-    6: {'start_time': '1:25PM', 'duration': 75},
-    7: {'start_time': '2:30PM', 'duration': 75},
-    8: {'start_time': '3:35PM', 'duration': 75},
-    9: {'start_time': '4:40PM', 'duration': 75},
-    10: {'start_time': '5:45PM', 'duration': 75}
-}
-
-# Define meeting patterns with their corresponding days and periods
-meeting_patterns = {
-    'MWF': {'days': ['Monday', 'Wednesday', 'Friday'], 'periods': mwf_periods},
-    'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
-    'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods}
-}
-
-# Create time slots: (day, period)
-time_slots = []
-for mp in meeting_patterns.values():
-    for day in mp['days']:
-        for period in mp['periods'].keys():
-            time_slots.append((day, period))
-
-# Professors with their qualifications and availability
-# For this example, let's assume professors are available for all time slots
-# You can customize this based on actual availability
-
+from constraint import Problem, AllDifferentConstraint
+import itertools
 professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
@@ -476,220 +405,140 @@ rooms = {
     'university': {'capacity': 300}  # Special room
 }
 
+time_slots = ['TuTh 8:00AM - 9:15AM',
+    'TuTh 9:30AM - 10:45AM',
+    'TuTh 11:00AM - 12:15PM',
+    'TuTh 12:30PM - 1:45PM',
+    'TuTh 2:00PM - 3:15PM',
+    'TuTh 3:30PM - 4:45PM',
+    'TuTh 5:00PM - 6:15PM',
+    'MoWe 3:35PM - 4:50PM',
+    'MoWe 5:05PM - 6:20PM',
+    'MoFr 3:35PM - 4:50PM',
+    'MoFr 5:05PM - 6:20PM',
+    'WeFr 3:35PM - 4:50PM',
+    'WeFr 5:05PM - 6:20PM',
+    'MoWeFr 8:00AM - 8:50AM',
+    'MoWeFr 9:05AM - 9:55AM',
+    'MoWeFr 10:10AM - 11:00AM',
+    'MoWeFr 11:15AM - 12:05PM',
+    'MoWeFr 12:20PM - 1:10PM',
+    'MoWeFr 1:25PM - 2:15PM',
+    'MoWeFr 2:30PM - 3:20PM',
+    'MoWeFr 3:35PM - 4:25PM',
+    'MoWeFr 4:40PM - 5:30PM',
+    'MoWeFr 5:45PM - 6:35PM'
+]
 
-# Possible meeting patterns for classes
-possible_meeting_patterns = ['MWF', 'TTH', 'MW']
+# Assume all professors are available at all time slots for simplicity
+for prof in professors.values():
+    prof['availability'] = time_slots
 
-# -----------------------------
-# Helper Functions
-# -----------------------------
+# Create a list of course sections to schedule
+course_sections = []
+for course_code, course_info in courses.items():
+    for section in course_info['sections']:
+        course_sections.append({
+            'course_code': course_code,
+            'section_number': section['section_number'],
+            'seat_capacity': section['seat_capacity']
+        })
 
-# Course Scheduling Program using PuLP
-# Course Scheduling Program using PuLP
+# Initialize the problem
+problem = Problem()
 
-# Course Scheduling Program using PuLP
+# Variables: Each course section needs to be assigned a (professor, room, time_slot)
+for section in course_sections:
+    variable_name = f"{section['course_code']}_Section_{section['section_number']}"
+    problem.addVariable(variable_name, [])
 
-# Import PuLP library
-import pulp
-from collections import defaultdict
+# Build domains for each variable
+for section in course_sections:
+    variable_name = f"{section['course_code']}_Section_{section['section_number']}"
+    domain = []
+    course_code = section['course_code']
+    seat_capacity = section['seat_capacity']
 
-# -----------------------------
-# Data Definitions (abbreviated)
-# -----------------------------
+    # Determine eligible professors
+    eligible_professors = [
+        prof_name for prof_name, prof_info in professors.items()
+        if course_code in prof_info['qualified_courses']
+    ]
 
-# Assume all previous data definitions (days, periods, meeting_patterns, professors, courses, rooms) are defined here.
+    # If no professors are qualified, skip this section
+    if not eligible_professors:
+        continue
 
-# -----------------------------
-# Helper Functions
-# -----------------------------
+    # Determine eligible rooms
+    if seat_capacity is None:
+        seat_capacity = 30  # Default seat capacity if not specified
 
-def is_prof_available_and_qualified(p, c, ts):
-    return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
+    if seat_capacity > 100:
+        eligible_rooms = ['university']
+    else:
+        eligible_rooms = [
+            room_name for room_name, room_info in rooms.items()
+            if room_info['capacity'] >= seat_capacity and room_name != 'university'
+        ]
 
-# -----------------------------
-# ILP Model Setup
-# -----------------------------
+    # Build the domain (professor, room, time_slot)
+    for prof in eligible_professors:
+        for room in eligible_rooms:
+            for time in time_slots:
+                # Check professor availability
+                if time in professors[prof]['availability']:
+                    # For simplicity, assume all rooms are available at all times
+                    domain.append((prof, room, time))
 
-# Create the LP problem (Maximize the number of classes scheduled)
-prob = pulp.LpProblem("Course_Scheduling_Problem", pulp.LpMaximize)
+    problem.addVariable(variable_name, domain)
 
-# Create time slots specific to each meeting pattern
-time_slots = {}
-for mp in meeting_patterns:
-    mp_time_slots = []
-    for day in meeting_patterns[mp]['days']:
-        for period in meeting_patterns[mp]['periods'].keys():
-            mp_time_slots.append((day, period))
-    time_slots[mp] = mp_time_slots
-
-# Identify small and large classes based on seat capacity
-small_classes = []
-large_classes = []
-for c in courses:
-    for section in courses[c]['sections']:
-        s = section['section_number']
-        seat_capacity = section['seat_capacity']
-        if seat_capacity is not None:
-            if seat_capacity > 100:
-                large_classes.append((c, s))
-            else:
-                small_classes.append((c, s))
-
-# Generate all valid combinations of indices for x
-x_indices = []
-
-for c in courses:
-    for section in courses[c]['sections']:
-        s = section['section_number']
-        seat_capacity = section['seat_capacity']
-        for mp in possible_meeting_patterns:
-            for ts in time_slots[mp]:
-                for r in rooms.keys():
-                    # Enforce large classes to use 'university' room only
-                    if (c, s) in large_classes and r != 'university':
-                        continue  # Skip this combination
-                    # Enforce room capacity constraints
-                    if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
-                        continue  # Skip this combination
-                    idx = (c, s, mp, ts, r)
-                    x_indices.append(idx)
-
-# Define the decision variables
-x = {}
-for idx in x_indices:
-    var_name = "x_%s_%s_%s_%s_%s" % idx
-    x[idx] = pulp.LpVariable(var_name, cat='Binary')
-
-# Define binary variables for class scheduling
-y = {}
-for c in courses:
-    for section in courses[c]['sections']:
-        s = section['section_number']
-        y[(c, s)] = pulp.LpVariable(f"y_{c}_{s}", cat='Binary')
-
-# -----------------------------
 # Constraints
-# -----------------------------
 
-# 1. Link x and y variables: If a class is scheduled (y=1), it must be assigned to one meeting pattern, time slot, and room
-for c in courses:
-    for section in courses[c]['sections']:
-        s = section['section_number']
-        prob += pulp.lpSum([
-            x[idx]
-            for idx in x_indices
-            if idx[0] == c and idx[1] == s
-        ]) == y[(c, s)]
+# 1. Professors cannot teach more than one class at the same time
+for time in time_slots:
+    sections_at_time = []
+    for section in course_sections:
+        variable_name = f"{section['course_code']}_Section_{section['section_number']}"
+        # Filter variables that have time in their domain
+        if any(assignment[2] == time for assignment in problem._variables[variable_name]):
+            sections_at_time.append(variable_name)
+    if sections_at_time:
+        problem.addConstraint(
+            lambda *assignments: len(set(prof for prof, _, _ in assignments if prof != '')) == len(assignments),
+            sections_at_time
+        )
 
-# 2. Professors assigned to sections must be qualified and available
-for idx in x_indices:
-    c, s, mp, ts, r = idx
-    prob += pulp.lpSum([
-        is_prof_available_and_qualified(p, c, ts)
-        for p in professors
-    ]) >= x[idx]
+# 2. Rooms cannot host more than one class at the same time (except 'university' room)
+for time in time_slots:
+    sections_at_time = []
+    for section in course_sections:
+        variable_name = f"{section['course_code']}_Section_{section['section_number']}"
+        # Filter variables that have time in their domain
+        if any(assignment[2] == time for assignment in problem._variables[variable_name]):
+            sections_at_time.append(variable_name)
+    if sections_at_time:
+        problem.addConstraint(
+            lambda *assignments: len(set(
+                room for _, room, _ in assignments if room != 'university'
+            )) == len([
+                room for _, room, _ in assignments if room != 'university'
+            ]),
+            sections_at_time
+        )
 
-# 3. A professor cannot teach more than one class at the same time
-for p in professors:
-    for ts in professors[p]['availability']:
-        prob += pulp.lpSum([
-            x[idx]
-            for idx in x_indices
-            if idx[3] == ts and idx[0] in professors[p]['qualified_courses']
-        ]) <= 1
+# Solve the problem
+solution = problem.getSolution()
 
-# 4. Normal rooms cannot have more than one class at the same time
-for r in rooms:
-    if r != 'university':
-        for mp in possible_meeting_patterns:
-            for ts in time_slots[mp]:
-                prob += pulp.lpSum([
-                    x[idx]
-                    for idx in x_indices
-                    if idx[4] == r and idx[3] == ts
-                ]) <= 1
-# No constraint for 'university' room (allows multiple classes at the same time)
-
-# -----------------------------
-# Objective Function
-# -----------------------------
-
-# Objective Function: Maximize the number of classes scheduled
-prob += pulp.lpSum([
-    y[(c, s)]
-    for c in courses
-    for section in courses[c]['sections']
-    for s in [section['section_number']]
-])
-
-# -----------------------------
-# Solve the Problem
-# -----------------------------
-
-prob.solve()
-
-# -----------------------------
-# Output the Schedule
-# -----------------------------
-
-if pulp.LpStatus[prob.status] == 'Optimal':
-    schedule = []
-    unscheduled_classes = []
-    for c in courses:
-        for section in courses[c]['sections']:
-            s = section['section_number']
-            if pulp.value(y[(c, s)]) == 1:
-                # Class is scheduled
-                # Find the scheduled time slot and room
-                assigned = False
-                for idx in x_indices:
-                    if idx[0] == c and idx[1] == s and pulp.value(x[idx]) == 1:
-                        c, s, mp, ts, r = idx
-                        section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
-                        seat_capacity = section['seat_capacity']
-                        # Find an available professor
-                        assigned_professor = None
-                        for p in professors:
-                            if is_prof_available_and_qualified(p, c, ts):
-                                assigned_professor = p
-                                break
-                        day, period = ts
-                        start_time = meeting_patterns[mp]['periods'][period]['start_time']
-                        schedule.append({
-                            'Course': c,
-                            'Section': s,
-                            'Title': courses[c]['title'],
-                            'Professor': assigned_professor,
-                            'Meeting Pattern': mp,
-                            'Day': day,
-                            'Period': period,
-                            'Start Time': start_time,
-                            'Room': r,
-                            'Seat Capacity': seat_capacity
-                        })
-                        assigned = True
-                        break
-                if not assigned:
-                    unscheduled_classes.append((c, s))
-            else:
-                # Class is not scheduled
-                unscheduled_classes.append((c, s))
-
-    # Print the schedule
-    for entry in schedule:
-        print(f"Course: {entry['Course']} Section {entry['Section']}, Title: {entry['Title']}")
-        print(f"  Professor: {entry['Professor']}")
-        print(f"  Meeting Pattern: {entry['Meeting Pattern']}")
-        print(f"  Day: {entry['Day']}, Period: {entry['Period']}, Start Time: {entry['Start Time']}")
-        print(f"  Room: {entry['Room']}")
-        print(f"  Seat Capacity: {entry['Seat Capacity']}")
+# Display the schedule
+if solution:
+    print("Schedule created successfully!\n")
+    for variable, assignment in solution.items():
+        course_code, section = variable.split('_Section_')
+        professor, room, time = assignment
+        print(f"Course: {course_code}, Section: {section}")
+        print(f"  Professor: {professor}")
+        print(f"  Room: {room}")
+        print(f"  Time: {time}")
         print()
-    
-    # Print unscheduled classes
-    if unscheduled_classes:
-        print("Unscheduled Classes:")
-        for c, s in unscheduled_classes:
-            print(f"Course: {c}, Section: {s}, Title: {courses[c]['title']}")
 else:
-    print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
-
+    print("No valid schedule found.")
