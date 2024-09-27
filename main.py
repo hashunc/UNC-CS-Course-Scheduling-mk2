@@ -514,6 +514,22 @@ from collections import defaultdict
 # Helper Functions
 # -----------------------------
 
+# Course Scheduling Program using PuLP
+
+# Import PuLP library
+import pulp
+from collections import defaultdict
+
+# -----------------------------
+# Data Definitions (abbreviated)
+# -----------------------------
+
+# Assume all previous data definitions (days, periods, meeting_patterns, professors, courses, rooms) are defined here.
+
+# -----------------------------
+# Helper Functions
+# -----------------------------
+
 def is_prof_available_and_qualified(p, c, ts):
     return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
 
@@ -546,6 +562,15 @@ for c in courses:
                     idx = (c, s, mp, ts, r)
                     x_indices.append(idx)
 
+# Identify classes with seat capacity over 100
+large_classes = []
+for c in courses:
+    for section in courses[c]['sections']:
+        s = section['section_number']
+        seat_capacity = section['seat_capacity']
+        if seat_capacity is not None and seat_capacity > 100:
+            large_classes.append((c, s))
+
 # Define the decision variables
 x = {}
 for idx in x_indices:
@@ -553,9 +578,13 @@ for idx in x_indices:
     var_name = "x_%s_%s_%s_%s_%s" % (c, s, mp, ts, r)
     section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
     seat_capacity = section['seat_capacity']
+    
     # Check if room capacity is sufficient
     if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
         # Variable must be zero
+        x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
+    elif (c, s) in large_classes and r != 'university':
+        # Large classes can only be in 'university' room
         x[idx] = pulp.LpVariable(var_name, lowBound=0, upBound=0, cat='Binary')
     else:
         x[idx] = pulp.LpVariable(var_name, cat='Binary')
@@ -591,15 +620,17 @@ for p in professors:
             if idx[3] == ts and idx[0] in professors[p]['qualified_courses']
         ]) <= 1
 
-# 4. A room cannot have more than one class at the same time
+# 4. Normal rooms cannot have more than one class at the same time
 for r in rooms:
-    for mp in possible_meeting_patterns:
-        for ts in time_slots[mp]:
-            prob += pulp.lpSum([
-                x[idx]
-                for idx in x_indices
-                if idx[4] == r and idx[3] == ts
-            ]) <= 1
+    if r != 'university':
+        for mp in possible_meeting_patterns:
+            for ts in time_slots[mp]:
+                prob += pulp.lpSum([
+                    x[idx]
+                    for idx in x_indices
+                    if idx[4] == r and idx[3] == ts
+                ]) <= 1
+# No constraint for 'university' room (allows multiple classes at the same time)
 
 # -----------------------------
 # Objective Function
