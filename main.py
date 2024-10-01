@@ -74,113 +74,142 @@ for mp in meeting_patterns.values():
 professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
-        'availability': time_slots  # Adjust availability if needed
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Kurt M. Potter': {
         'qualified_courses': ['COMP301', 'COMP426'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Muhammad Ghani': {
         'qualified_courses': ['COMP210'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Praveen Kumar': {
         'qualified_courses': ['COMP455'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Jasleen Kaur': {
         'qualified_courses': ['COMP431'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Saba Eskandarian': {
         'qualified_courses': ['COMP537', 'COMP455', 'COMP435', 'COMP590', 'COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Ron Alterovitz': {
         'qualified_courses': ['COMP581', 'COMP781', 'COMP782'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Cynthia Sturton': {
         'qualified_courses': ['COMP435'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Marc Niethammer': {
         'qualified_courses': ['COMP775'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Samarjit Chakraborty': {
         'qualified_courses': ['COMP545', 'COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Donald Porter': {
         'qualified_courses': ['COMP530'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'John Majikes': {
         'qualified_courses': ['COMP421', 'COMP550', 'COMP116'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Alyssa Byrnes': {
         'qualified_courses': ['COMP110', 'COMP116', 'COMP210', 'COMP283'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Gedas Bertasius': {
         'qualified_courses': ['COMP590', 'COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Roni Sengupta': {
         'qualified_courses': ['COMP590'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Kangning Sun': {
         'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
-    'Jim McMahon': {
+    'Cece McMahon': {
         'qualified_courses': ['COMP311', 'COMP541'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Shahriar Nirjon': {
         'qualified_courses': ['COMP433'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Jack Snoeyink': {
         'qualified_courses': ['COMP283', 'DATA140'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Brent Munsell': {
         'qualified_courses': ['COMP211', 'COMP590', 'COMP530', 'COMP311', 'COMP116'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'James Anderson': {
         'qualified_courses': ['COMP737', 'COMP750'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Danielle Szafir': {
         'qualified_courses': ['COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Daniel Szafir': {
         'qualified_courses': ['COMP581'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Praneeth Chakravarthula': {
         'qualified_courses': ['COMP089', 'COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Ben Lee': {
         'qualified_courses': ['COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Shubhra Srivastava': {
         'qualified_courses': ['COMP664'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Chase P. Kline': {
         'qualified_courses': ['COMP790'],
-        'availability': time_slots
+        'availability': time_slots,
+        'max_classes': 2
     }
 }
+
+
 
 # Courses with number of sections, title, and seat capacity
 courses = {
@@ -484,24 +513,11 @@ possible_meeting_patterns = ['MWF', 'TTH', 'MW']
 # Helper Functions
 # -----------------------------
 
-# Course Scheduling Program using PuLP
-# Course Scheduling Program using PuLP
-
-# Course Scheduling Program using PuLP
 
 # Import PuLP library
 import pulp
 from collections import defaultdict
 
-# -----------------------------
-# Data Definitions (abbreviated)
-# -----------------------------
-
-# Assume all previous data definitions (days, periods, meeting_patterns, professors, courses, rooms) are defined here.
-
-# -----------------------------
-# Helper Functions
-# -----------------------------
 
 def is_prof_available_and_qualified(p, c, ts):
     return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
@@ -567,6 +583,15 @@ for c in courses:
         s = section['section_number']
         y[(c, s)] = pulp.LpVariable(f"y_{c}_{s}", cat='Binary')
 
+# Define binary variables for professor assignments
+z = {}
+for c in courses:
+    for section in courses[c]['sections']:
+        s = section['section_number']
+        for p in professors:
+            if c in professors[p]['qualified_courses']:
+                z[(c, s, p)] = pulp.LpVariable(f"z_{c}_{s}_{p}", cat='Binary')
+
 # -----------------------------
 # Constraints
 # -----------------------------
@@ -582,23 +607,55 @@ for c in courses:
         ]) == y[(c, s)]
 
 # 2. Professors assigned to sections must be qualified and available
-for idx in x_indices:
-    c, s, mp, ts, r = idx
-    prob += pulp.lpSum([
-        is_prof_available_and_qualified(p, c, ts)
-        for p in professors
-    ]) >= x[idx]
+for c in courses:
+    for section in courses[c]['sections']:
+        s = section['section_number']
+        qualified_professors = [p for p in professors if c in professors[p]['qualified_courses']]
+        prob += pulp.lpSum([
+            z[(c, s, p)]
+            for p in qualified_professors
+        ]) == y[(c, s)]
 
-# 3. A professor cannot teach more than one class at the same time
+# 3. Limit professors to maximum number of classes
+for p in professors:
+    prob += pulp.lpSum([
+        z[(c, s, p)]
+        for c in courses
+        for section in courses[c]['sections']
+        for s in [section['section_number']]
+        if (c, s, p) in z
+    ]) <= professors[p]['max_classes']
+
+# Constraint 4: A professor cannot teach more than one class at the same time
 for p in professors:
     for ts in professors[p]['availability']:
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
-            if idx[3] == ts and idx[0] in professors[p]['qualified_courses']
+            if idx[3] == ts and (idx[0], idx[1], p) in z
         ]) <= 1
 
-# 4. Normal rooms cannot have more than one class at the same time
+# Constraint 5: Link x and z variables
+# a) If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
+for c in courses:
+    for section in courses[c]['sections']:
+        s = section['section_number']
+        for p in professors:
+            if (c, s, p) in z:
+                prob += pulp.lpSum([
+                    x[idx]
+                    for idx in x_indices
+                    if idx[0] == c and idx[1] == s and idx[3] in professors[p]['availability']
+                ]) >= z[(c, s, p)]
+# b) If x[idx] == 1, then z[(c, s, p)] == 1 for some p
+for idx in x_indices:
+    c, s, mp, ts, r = idx
+    prob += x[idx] <= pulp.lpSum([
+        z[(c, s, p)]
+        for p in professors
+        if (c, s, p) in z and ts in professors[p]['availability']
+    ])
+
 for r in rooms:
     if r != 'university':
         for mp in possible_meeting_patterns:
@@ -608,8 +665,6 @@ for r in rooms:
                     for idx in x_indices
                     if idx[4] == r and idx[3] == ts
                 ]) <= 1
-# No constraint for 'university' room (allows multiple classes at the same time)
-
 # -----------------------------
 # Objective Function
 # -----------------------------
@@ -692,4 +747,3 @@ if pulp.LpStatus[prob.status] == 'Optimal':
             print(f"Course: {c}, Section: {s}, Title: {courses[c]['title']}")
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
-
