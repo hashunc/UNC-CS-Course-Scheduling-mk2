@@ -367,7 +367,7 @@ courses = {
     'COMP533': {
         'title': 'COMP533 Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': None}
+            {'section_number': 1, 'seat_capacity': 60}
         ]
     },
     'COMP537': {
@@ -539,6 +539,10 @@ for mp in meeting_patterns:
     time_slots[mp] = mp_time_slots
 
 # Identify small and large classes based on seat capacity
+# Define the threshold for small classes
+small_class_threshold = 100
+
+# Identify small and large classes based on seat capacity
 small_classes = []
 large_classes = []
 for c in courses:
@@ -546,7 +550,7 @@ for c in courses:
         s = section['section_number']
         seat_capacity = section['seat_capacity']
         if seat_capacity is not None:
-            if seat_capacity > 100:
+            if seat_capacity >= small_class_threshold:
                 large_classes.append((c, s))
             else:
                 small_classes.append((c, s))
@@ -564,17 +568,22 @@ for c in courses:
                     # Enforce large classes to use 'university' room only
                     if (c, s) in large_classes and r != 'university':
                         continue  # Skip this combination
+                    # Enforce small classes not to use 'university' room
+                    if (c, s) in small_classes and r == 'university':
+                        continue  # Skip this combination
                     # Enforce room capacity constraints
                     if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
                         continue  # Skip this combination
                     idx = (c, s, mp, ts, r)
                     x_indices.append(idx)
 
+
 # Define the decision variables
 x = {}
 for idx in x_indices:
     var_name = "x_%s_%s_%s_%s_%s" % idx
     x[idx] = pulp.LpVariable(var_name, cat='Binary')
+
 
 # Define binary variables for class scheduling
 y = {}
@@ -669,12 +678,25 @@ for r in rooms:
 # Objective Function
 # -----------------------------
 
+# Define cost for using the 'university' room for small classes
+room_cost = {}
+for idx in x_indices:
+    c, s, mp, ts, r = idx
+    if r == 'university' and (c, s) in small_classes:
+        room_cost[idx] = 1  # Assign a penalty cost
+    else:
+        room_cost[idx] = 0
+
 # Objective Function: Maximize the number of classes scheduled
+# Objective Function: Maximize the number of classes scheduled minus penalties
 prob += pulp.lpSum([
     y[(c, s)]
     for c in courses
     for section in courses[c]['sections']
     for s in [section['section_number']]
+]) - pulp.lpSum([
+    room_cost[idx] * x[idx]
+    for idx in x_indices
 ])
 
 # -----------------------------
