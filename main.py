@@ -508,6 +508,38 @@ possible_meeting_patterns = ['MWF', 'TTH', 'MW']
 import pulp
 from collections import defaultdict
 
+# -----------------------------
+# Manually Scheduled Classes (Constraints)
+# -----------------------------
+
+# Manually scheduled classes (constraints)
+# Each entry can have partial or full specifications
+manually_scheduled_classes = [
+    # Example of a fully specified manual schedule
+    {
+        'course': 'COMP110',
+        'section': 3,
+        'professor': 'Alyssa Byrnes',
+        'meeting_pattern': 'MWF',
+        'time_slot': ('Monday', 1),
+        'room': 'university'
+    },
+    # Example of a partial specification (only professor assigned)
+    {
+        'course': 'COMP530',
+        'section': 1,
+        'professor': 'Donald Porter',
+        # 'meeting_pattern', 'time_slot', and 'room' are unspecified
+    },
+    # You can add more manually scheduled classes here
+]
+
+# Extract the set of manually scheduled classes for easy reference
+manual_classes_set = set((entry['course'], entry['section']) for entry in manually_scheduled_classes)
+
+# -----------------------------
+# Helper Functions
+# -----------------------------
 
 def is_prof_available_and_qualified(p, c, ts):
     return int(ts in professors[p]['availability'] and c in professors[p]['qualified_courses'])
@@ -520,15 +552,14 @@ def is_prof_available_and_qualified(p, c, ts):
 prob = pulp.LpProblem("Course_Scheduling_Problem", pulp.LpMaximize)
 
 # Create time slots specific to each meeting pattern
-time_slots = {}
+time_slots_mp = {}
 for mp in meeting_patterns:
     mp_time_slots = []
     for day in meeting_patterns[mp]['days']:
         for period in meeting_patterns[mp]['periods'].keys():
             mp_time_slots.append((day, period))
-    time_slots[mp] = mp_time_slots
+    time_slots_mp[mp] = mp_time_slots
 
-# Identify small and large classes based on seat capacity
 # Define the threshold for small classes
 small_class_threshold = 100
 
@@ -553,7 +584,7 @@ for c in courses:
         s = section['section_number']
         seat_capacity = section['seat_capacity']
         for mp in possible_meeting_patterns:
-            for ts in time_slots[mp]:
+            for ts in time_slots_mp[mp]:
                 for r in rooms.keys():
                     # Enforce large classes to use 'university' room only
                     if (c, s) in large_classes and r != 'university':
@@ -567,22 +598,22 @@ for c in courses:
                     idx = (c, s, mp, ts, r)
                     x_indices.append(idx)
 
-
 # Define the decision variables
+
+# Decision variables for scheduling classes in time slots and rooms
 x = {}
 for idx in x_indices:
     var_name = "x_%s_%s_%s_%s_%s" % idx
     x[idx] = pulp.LpVariable(var_name, cat='Binary')
 
-
-# Define binary variables for class scheduling
+# Binary variables for class scheduling
 y = {}
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
         y[(c, s)] = pulp.LpVariable(f"y_{c}_{s}", cat='Binary')
 
-# Define binary variables for professor assignments
+# Binary variables for professor assignments
 z = {}
 for c in courses:
     for section in courses[c]['sections']:
@@ -590,6 +621,92 @@ for c in courses:
         for p in professors:
             if c in professors[p]['qualified_courses']:
                 z[(c, s, p)] = pulp.LpVariable(f"z_{c}_{s}_{p}", cat='Binary')
+
+# -----------------------------
+# Constraints for Manually Scheduled Classes
+# -----------------------------
+
+# Fix variables based on manual schedules
+# -----------------------------
+# Constraints for Manually Scheduled Classes
+# -----------------------------
+
+# Fix variables based on manual schedules
+# Constraints for Manually Scheduled Classes
+
+# Fix variables based on manual schedules
+for entry in manually_scheduled_classes:
+    c = entry['course']
+    s = entry['section']
+    # Ensure the class is scheduled
+    prob += y[(c, s)] == 1, f"Manual_Class_Scheduled_{c}_{s}"
+
+    # Fix professor assignment if specified
+    if 'professor' in entry:
+        p = entry['professor']
+        # Ensure the professor is assigned to the class
+        prob += z[(c, s, p)] == 1, f"Manual_Professor_Assigned_{c}_{s}_{p}"
+        # Ensure the professor is not assigned to other classes at the same time
+        if 'time_slot' in entry:
+            ts = entry['time_slot']
+            day, period = ts
+            # Professors can't teach other classes at the same time
+            for other_c in courses:
+                for section in courses[other_c]['sections']:
+                    other_s = section['section_number']
+                    if (other_c, other_s, p) in z and (other_c != c or other_s != s):
+                        # Ensure uniqueness of constraint names
+                        # In the manual constraints section
+                        constraint_name = f"Manual_Prof_Time_Conflict_{p}_{day}_{period}_{other_c}_{other_s}"
+                        prob += pulp.lpSum([
+                            x[idx]
+                            for idx in x_indices
+                            if idx[0] == other_c and idx[1] == other_s and idx[3] == ts
+                        ]) == 0, constraint_name
+
+
+    # Fix meeting pattern, time slot, and room if specified
+    if 'meeting_pattern' in entry and 'time_slot' in entry and 'room' in entry:
+        mp = entry['meeting_pattern']
+        ts = entry['time_slot']
+        r = entry['room']
+        # Set x variable corresponding to these values to 1
+        idx = (c, s, mp, ts, r)
+        if idx in x:
+            prob += x[idx] == 1, f"Manual_Schedule_{c}_{s}_{mp}_{ts}_{r}"
+        else:
+            print(f"Warning: Invalid manual schedule for class {c} section {s}.")
+    else:
+        # If only partial information is provided, adjust accordingly
+        # Fix meeting pattern if specified
+        if 'meeting_pattern' in entry:
+            mp = entry['meeting_pattern']
+            # The class must be scheduled in the specified meeting pattern
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if idx[0] == c and idx[1] == s and idx[2] == mp
+            ]) == 1, f"Manual_Meeting_Pattern_{c}_{s}_{mp}"
+
+        # Fix time slot if specified
+        if 'time_slot' in entry:
+            ts = entry['time_slot']
+            # The class must be scheduled at the specified time slot
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if idx[0] == c and idx[1] == s and idx[3] == ts
+            ]) == 1, f"Manual_Time_Slot_{c}_{s}_{ts}"
+
+        # Fix room if specified
+        if 'room' in entry:
+            r = entry['room']
+            # The class must be scheduled in the specified room
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if idx[0] == c and idx[1] == s and idx[4] == r
+            ]) == 1, f"Manual_Room_{c}_{s}_{r}"
 
 # -----------------------------
 # Constraints
@@ -603,7 +720,7 @@ for c in courses:
             x[idx]
             for idx in x_indices
             if idx[0] == c and idx[1] == s
-        ]) == y[(c, s)]
+        ]) == y[(c, s)], f"Link_x_y_{c}_{s}"
 
 # 2. Professors assigned to sections must be qualified and available
 for c in courses:
@@ -613,7 +730,7 @@ for c in courses:
         prob += pulp.lpSum([
             z[(c, s, p)]
             for p in qualified_professors
-        ]) == y[(c, s)]
+        ]) == y[(c, s)], f"Prof_Assignment_{c}_{s}"
 
 # 3. Limit professors to maximum number of classes
 for p in professors:
@@ -623,48 +740,73 @@ for p in professors:
         for section in courses[c]['sections']
         for s in [section['section_number']]
         if (c, s, p) in z
-    ]) <= professors[p]['max_classes']
+    ]) <= professors[p]['max_classes'], f"Max_Classes_{p}"
 
-# Constraint 4: A professor cannot teach more than one class at the same time
+# 4. A professor cannot teach more than one class at the same time
 for p in professors:
-    for ts in professors[p]['availability']:
+    for ts in set(professors[p]['availability']):
+        day, period = ts
+        ts_str = f"{day}_{period}"
+        constraint_name = f"Prof_Time_Conflict_{p}_{ts_str}"
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[3] == ts and (idx[0], idx[1], p) in z
-        ]) <= 1
+        ]) <= 1, constraint_name
 
-# Constraint 5: Link x and z variables
-# a) If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
+
+# 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
+# 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
         for p in professors:
             if (c, s, p) in z:
+                constraint_name = f"Link_z_x_{c}_{s}_{p}"
                 prob += pulp.lpSum([
                     x[idx]
                     for idx in x_indices
                     if idx[0] == c and idx[1] == s and idx[3] in professors[p]['availability']
-                ]) >= z[(c, s, p)]
-# b) If x[idx] == 1, then z[(c, s, p)] == 1 for some p
+                ]) >= z[(c, s, p)], constraint_name
+
+## 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
 for idx in x_indices:
     c, s, mp, ts, r = idx
+    day, period = ts
+    ts_str = f"{day}_{period}"
+    constraint_name = f"Link_x_z_{c}_{s}_{mp}_{ts_str}_{r}"
     prob += x[idx] <= pulp.lpSum([
         z[(c, s, p)]
         for p in professors
         if (c, s, p) in z and ts in professors[p]['availability']
-    ])
+    ]), constraint_name
 
+
+# Collect all unique time slots across all meeting patterns
+all_time_slots = set()
+for mp in time_slots_mp:
+    all_time_slots.update(time_slots_mp[mp])
+
+# 6. Room capacity constraints (no double booking)
 for r in rooms:
     if r != 'university':
-        for mp in possible_meeting_patterns:
-            for ts in time_slots[mp]:
-                prob += pulp.lpSum([
-                    x[idx]
-                    for idx in x_indices
-                    if idx[4] == r and idx[3] == ts
-                ]) <= 1
-# -----------------------------
+        for ts in all_time_slots:
+            day, period = ts
+            ts_str = f"{day}_{period}"
+            constraint_name = f"Room_Capacity_{r}_{ts_str}"
+            # Check if the constraint name is unique
+            if constraint_name in prob.constraints:
+                # Append an index or additional identifier to make it unique
+                index = 1
+                while f"{constraint_name}_{index}" in prob.constraints:
+                    index += 1
+                constraint_name = f"{constraint_name}_{index}"
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if idx[4] == r and idx[3] == ts
+            ]) <= 1, constraint_name
+
 # Objective Function
 # -----------------------------
 
@@ -677,24 +819,6 @@ for idx in x_indices:
     else:
         room_cost[idx] = 0
 
-# Introduce slack variables for over-assignment penalties
-over_assignment = {}
-for p in professors:
-    over_assignment[p] = pulp.LpVariable(f"over_assignment_{p}", lowBound=0, cat='Integer')
-
-# Modify the constraint limiting professors to max classes
-for p in professors:
-    prob += pulp.lpSum([
-        z[(c, s, p)]
-        for c in courses
-        for section in courses[c]['sections']
-        for s in [section['section_number']]
-        if (c, s, p) in z
-    ]) <= professors[p]['max_classes'] + over_assignment[p]
-
-# Define a high penalty cost for over-assignment
-over_assignment_penalty = 1000  # Adjust this value as needed
-
 # Modify the objective function
 prob += pulp.lpSum([
     y[(c, s)]
@@ -704,21 +828,13 @@ prob += pulp.lpSum([
 ]) - pulp.lpSum([
     room_cost[idx] * x[idx]
     for idx in x_indices
-]) - pulp.lpSum([
-    over_assignment_penalty * over_assignment[p]
-    for p in professors
 ])
-
 
 # -----------------------------
 # Solve the Problem
 # -----------------------------
 
 prob.solve()
-
-# -----------------------------
-# Output the Schedule
-# -----------------------------
 
 # -----------------------------
 # Output the Schedule
@@ -776,7 +892,7 @@ if pulp.LpStatus[prob.status] == 'Optimal':
         print(f"  Room: {entry['Room']}")
         print(f"  Seat Capacity: {entry['Seat Capacity']}")
         print()
-    
+
     # Print unscheduled classes
     if unscheduled_classes:
         print("Unscheduled Classes:")
