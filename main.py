@@ -465,23 +465,13 @@ courses = {
     'COMP790': {
         'title': 'COMP790 Class',
         'sections': [
-            {'section_number': 139, 'seat_capacity': 20},
-            {'section_number': 144, 'seat_capacity': 30},
-            {'section_number': 148, 'seat_capacity': 25},
-            {'section_number': 158, 'seat_capacity': 21},
-            {'section_number': 170, 'seat_capacity': 30},
-            {'section_number': 172, 'seat_capacity': 30},
-            {'section_number': 173, 'seat_capacity': 30},
-            {'section_number': 175, 'seat_capacity': 30},
-            {'section_number': 178, 'seat_capacity': 20},
-            {'section_number': 183, 'seat_capacity': 30},
-            {'section_number': 185, 'seat_capacity': 30}
+            {'section_number': 1, 'seat_capacity': 20},
         ]
     },
     'COMP915': {
         'title': 'COMP915 Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': None}
+            {'section_number': 1, 'seat_capacity': 20}
         ]
     }
 }
@@ -687,8 +677,25 @@ for idx in x_indices:
     else:
         room_cost[idx] = 0
 
-# Objective Function: Maximize the number of classes scheduled
-# Objective Function: Maximize the number of classes scheduled minus penalties
+# Introduce slack variables for over-assignment penalties
+over_assignment = {}
+for p in professors:
+    over_assignment[p] = pulp.LpVariable(f"over_assignment_{p}", lowBound=0, cat='Integer')
+
+# Modify the constraint limiting professors to max classes
+for p in professors:
+    prob += pulp.lpSum([
+        z[(c, s, p)]
+        for c in courses
+        for section in courses[c]['sections']
+        for s in [section['section_number']]
+        if (c, s, p) in z
+    ]) <= professors[p]['max_classes'] + over_assignment[p]
+
+# Define a high penalty cost for over-assignment
+over_assignment_penalty = 1000  # Adjust this value as needed
+
+# Modify the objective function
 prob += pulp.lpSum([
     y[(c, s)]
     for c in courses
@@ -697,13 +704,21 @@ prob += pulp.lpSum([
 ]) - pulp.lpSum([
     room_cost[idx] * x[idx]
     for idx in x_indices
+]) - pulp.lpSum([
+    over_assignment_penalty * over_assignment[p]
+    for p in professors
 ])
+
 
 # -----------------------------
 # Solve the Problem
 # -----------------------------
 
 prob.solve()
+
+# -----------------------------
+# Output the Schedule
+# -----------------------------
 
 # -----------------------------
 # Output the Schedule
@@ -724,10 +739,10 @@ if pulp.LpStatus[prob.status] == 'Optimal':
                         c, s, mp, ts, r = idx
                         section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
                         seat_capacity = section['seat_capacity']
-                        # Find an available professor
+                        # Find the assigned professor
                         assigned_professor = None
                         for p in professors:
-                            if is_prof_available_and_qualified(p, c, ts):
+                            if (c, s, p) in z and pulp.value(z[(c, s, p)]) == 1:
                                 assigned_professor = p
                                 break
                         day, period = ts
@@ -767,5 +782,29 @@ if pulp.LpStatus[prob.status] == 'Optimal':
         print("Unscheduled Classes:")
         for c, s in unscheduled_classes:
             print(f"Course: {c}, Section: {s}, Title: {courses[c]['title']}")
+
+    # -----------------------------
+    # New Code to Print Professors with No Classes Scheduled
+    # -----------------------------
+
+    # Initialize a dictionary to count classes assigned to each professor
+    professor_class_counts = {p: 0 for p in professors}
+
+    # Iterate over the assignment variables z to count classes
+    for (c, s, p) in z:
+        if pulp.value(z[(c, s, p)]) == 1:
+            professor_class_counts[p] += 1
+
+    # List of professors with no classes assigned
+    professors_with_no_classes = [p for p, count in professor_class_counts.items() if count == 0]
+
+    # Print professors with no classes scheduled
+    if professors_with_no_classes:
+        print("\nProfessors with no classes scheduled:")
+        for p in professors_with_no_classes:
+            print(f"Professor: {p}")
+    else:
+        print("\nAll professors have at least one class scheduled.")
+
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
