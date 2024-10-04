@@ -41,23 +41,28 @@ tth_periods = {
 
 # MW periods (75 minutes each)
 mw_periods = {
-    1: {'start_time': '8:00AM', 'duration': 75},
-    2: {'start_time': '9:05AM', 'duration': 75},
-    3: {'start_time': '10:10AM', 'duration': 75},
-    4: {'start_time': '11:15AM', 'duration': 75},
-    5: {'start_time': '12:20PM', 'duration': 75},
-    6: {'start_time': '1:25PM', 'duration': 75},
-    7: {'start_time': '2:30PM', 'duration': 75},
-    8: {'start_time': '3:35PM', 'duration': 75},
-    9: {'start_time': '4:40PM', 'duration': 75},
-    10: {'start_time': '5:45PM', 'duration': 75}
+    1: {'start_time': '3:35PM', 'duration': 75},
+    2: {'start_time': '5:05PM', 'duration': 75}
+}
+
+# MF periods (75 minutes each)
+mf_periods = {
+    1: {'start_time': '3:35PM', 'duration': 75},
+    2: {'start_time': '5:05PM', 'duration': 75}
+}
+
+wf_periods = {
+    1: {'start_time': '3:35PM', 'duration': 75},
+    2: {'start_time': '5:05PM', 'duration': 75}
 }
 
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
     'MWF': {'days': ['Monday', 'Wednesday', 'Friday'], 'periods': mwf_periods},
     'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
-    'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods}
+    'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods},
+    'MF': {'days': ['Monday', 'Friday'], 'periods': mf_periods},
+    'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
 
 # Create time slots: (day, period)
@@ -75,19 +80,19 @@ professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Kurt M. Potter': {
+    'Ketan Mayer-Patel': {
         'qualified_courses': ['COMP301', 'COMP426'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Muhammad Ghani': {
+    'Sayeed Ghani': {
         'qualified_courses': ['COMP210'],
         'availability': time_slots,
         'max_classes': 2
     },
-    'Praveen Kumar': {
+    'P.S. Thiagarajan': {
         'qualified_courses': ['COMP455'],
         'availability': time_slots,
         'max_classes': 2
@@ -95,59 +100,62 @@ professors = {
     'Jasleen Kaur': {
         'qualified_courses': ['COMP431'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 0
     },
     'Saba Eskandarian': {
         'qualified_courses': ['COMP537', 'COMP455', 'COMP435', 'COMP590', 'COMP790'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Ron Alterovitz': {
         'qualified_courses': ['COMP581', 'COMP781', 'COMP782'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Cynthia Sturton': {
         'qualified_courses': ['COMP435'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Marc Niethammer': {
         'qualified_courses': ['COMP775'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Samarjit Chakraborty': {
-        'qualified_courses': ['COMP545', 'COMP790'],
+        'qualified_courses': ['COMP545', 'COMP790-148'],
         'availability': time_slots,
         'max_classes': 2
     },
     'Donald Porter': {
         'qualified_courses': ['COMP530'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
+    # Note: No longer at UNC
     'John Majikes': {
         'qualified_courses': ['COMP421', 'COMP550', 'COMP116'],
         'availability': time_slots,
         'max_classes': 2
     },
+    # Note: Alyssa not on the given spreadsheet
     'Alyssa Byrnes': {
         'qualified_courses': ['COMP110', 'COMP116', 'COMP210', 'COMP283'],
         'availability': time_slots,
         'max_classes': 2
     },
     'Gedas Bertasius': {
-        'qualified_courses': ['COMP590', 'COMP790'],
+        # Note, cross listed 590 and 790. Should get rid of 790 version
+        'qualified_courses': ['COMP590-170', 'COMP790-170'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Roni Sengupta': {
-        'qualified_courses': ['COMP590'],
+        'qualified_courses': ['COMP590-177'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Kangning Sun': {
+    'Kevin Sun': {
         'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
         'availability': time_slots,
         'max_classes': 2
@@ -160,12 +168,12 @@ professors = {
     'Shahriar Nirjon': {
         'qualified_courses': ['COMP433'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Jack Snoeyink': {
         'qualified_courses': ['COMP283', 'DATA140'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Brent Munsell': {
         'qualified_courses': ['COMP211', 'COMP590', 'COMP530', 'COMP311', 'COMP116'],
@@ -178,34 +186,52 @@ professors = {
         'max_classes': 2
     },
     'Danielle Szafir': {
-        'qualified_courses': ['COMP790'],
+        # Note, he says he prefers visualization design, but is happy to teach something else
+        # How do we specify what his qualified courses are?
+        'qualified_courses': ['COMP790-172'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Daniel Szafir': {
         'qualified_courses': ['COMP581'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
+    },
+    # Note: The course he specified was Safe Autonomy, but the course he teaches is Formal Methods
+    'Parasara Sridhar Duggirala': {
+        'qualified_courses': ['COMP089','COMP790-144'],
+        'availability': time_slots,
+        'max_classes': 1
     },
     'Praneeth Chakravarthula': {
-        'qualified_courses': ['COMP089', 'COMP790'],
+        'qualified_courses': [ 'COMP790-175'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Ben Lee': {
-        'qualified_courses': ['COMP790'],
+    'Ben Berg': {
+        'qualified_courses': ['COMP790-178'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Shubhra Srivastava': {
+    'Shashank Srivastava': {
         'qualified_courses': ['COMP664'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Chase P. Kline': {
-        'qualified_courses': ['COMP790'],
+    'Snigdha Chaturvedi': {
+        'qualified_courses': ['COMP790-158'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
+    },
+    'Huaxiu Yao': {
+        'qualified_courses': ['COMP790-183'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Andrew Kwong': {
+        'qualified_courses': ['COMP790-185'],
+        'availability': time_slots,
+        'max_classes': 1
     }
 }
 
@@ -255,15 +281,10 @@ courses = {
         ]
     },
     'COMP283': {
-        'title': 'COMP283 Class',
+        'title': 'COMP283/283H Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': 180}
-        ]
-    },
-    'COMP283H': {
-        'title': 'COMP283H Class',
-        'sections': [
-            {'section_number': 1, 'seat_capacity': 24}
+            {'section_number': 1, 'seat_capacity': 204}
+            # Combined 283H section and increased the seat capacity by 24 from 180 to 204
         ]
     },
     'COMP301': {
@@ -414,15 +435,57 @@ courses = {
             {'section_number': 1, 'seat_capacity': 60}
         ]
     },
-    'COMP590': {
-        'title': 'COMP590 Class',
+    # 'COMP590': {
+    #     'title': 'COMP590 Class',
+    #     'sections': [
+    #         {'section_number': 59, 'seat_capacity': 90},
+    #         {'section_number': 139, 'seat_capacity': 10},
+    #         {'section_number': 140, 'seat_capacity': 280},
+    #         {'section_number': 158, 'seat_capacity': 4},
+    #         {'section_number': 170, 'seat_capacity': 30},
+    #         {'section_number': 172, 'seat_capacity': 30},
+    #         {'section_number': 177, 'seat_capacity': 60}
+    #     ]
+    # },
+    'COMP590-59': {
+        'title': 'COMP590-59 Class',
         'sections': [
-            {'section_number': 59, 'seat_capacity': 90},
-            {'section_number': 139, 'seat_capacity': 10},
-            {'section_number': 140, 'seat_capacity': 280},
-            {'section_number': 158, 'seat_capacity': 4},
-            {'section_number': 170, 'seat_capacity': 30},
-            {'section_number': 172, 'seat_capacity': 30},
+            {'section_number': 59, 'seat_capacity': 90}
+        ]
+    },
+    'COMP590-139': {
+        'title': 'COMP590-139 Class',
+        'sections': [
+            {'section_number': 139, 'seat_capacity': 10}
+        ]
+    },
+    'COMP590-140': {
+        'title': 'COMP590-140 Class',
+        'sections': [
+            {'section_number': 140, 'seat_capacity': 280}
+        ]
+    },
+    'COMP590-158': {
+        'title': 'COMP590-158 Class',
+        'sections': [
+            {'section_number': 158, 'seat_capacity': 4}
+        ]
+    },
+    'COMP590-170': {
+        'title': 'COMP590-170 Class',
+        'sections': [
+            {'section_number': 170, 'seat_capacity': 30}
+        ]
+    },
+    'COMP590-172': {
+        'title': 'COMP590-172 Class',
+        'sections': [
+            {'section_number': 172, 'seat_capacity': 30}
+        ]
+    },
+    'COMP590-177': {
+        'title': 'COMP590-177 Class',
+        'sections': [
             {'section_number': 177, 'seat_capacity': 60}
         ]
     },
@@ -462,10 +525,70 @@ courses = {
             {'section_number': 1, 'seat_capacity': 30}
         ]
     },
-    'COMP790': {
-        'title': 'COMP790 Class',
+    'COMP790-139': {
+        'title': 'COMP790-139 Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': 20},
+            {'section_number': 139, 'seat_capacity': 20},
+        ]
+    },
+    'COMP790-144': {
+        'title': 'COMP790-144 Class',
+        'sections': [
+            {'section_number': 144, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-148': {
+        'title': 'COMP790-148 Class',
+        'sections': [
+            {'section_number': 148, 'seat_capacity': 25},
+        ]
+    },
+    'COMP790-158': {
+        'title': 'COMP790-158 Class',
+        'sections': [
+            {'section_number': 158, 'seat_capacity': 21},
+        ]
+    },
+    'COMP790-170': {
+        'title': 'COMP790-170 Class',
+        'sections': [
+            {'section_number': 170, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-172': {
+        'title': 'COMP790-172 Class',
+        'sections': [
+            {'section_number': 172, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-173': {
+        'title': 'COMP790-173 Class',
+        'sections': [
+            {'section_number': 173, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-175': {
+        'title': 'COMP790-175 Class',
+        'sections': [
+            {'section_number': 175, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-178': {
+        'title': 'COMP790-178 Class',
+        'sections': [
+            {'section_number': 178, 'seat_capacity': 20},
+        ]
+    },
+    'COMP790-183': {
+        'title': 'COMP790-183 Class',
+        'sections': [
+            {'section_number': 183, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-185': {
+        'title': 'COMP790-185 Class',
+        'sections': [
+            {'section_number': 185, 'seat_capacity': 30},
         ]
     },
     'COMP915': {
@@ -497,7 +620,7 @@ rooms = {
 
 
 # Possible meeting patterns for classes
-possible_meeting_patterns = ['MWF', 'TTH', 'MW']
+possible_meeting_patterns = ['MWF', 'TTH', 'MW', 'MF', 'WF']
 
 # -----------------------------
 # Helper Functions
