@@ -24,8 +24,6 @@ mwf_periods = {
     6: {'start_time': '1:25PM', 'duration': 50},
     7: {'start_time': '2:30PM', 'duration': 50},
     8: {'start_time': '3:35PM', 'duration': 50},
-    9: {'start_time': '4:40PM', 'duration': 50},
-    10: {'start_time': '5:45PM', 'duration': 50}
 }
 
 # TTH periods (75 minutes each)
@@ -45,11 +43,6 @@ mw_periods = {
     2: {'start_time': '5:05PM', 'duration': 75}
 }
 
-# MF periods (75 minutes each)
-mf_periods = {
-    1: {'start_time': '3:35PM', 'duration': 75},
-    2: {'start_time': '5:05PM', 'duration': 75}
-}
 
 wf_periods = {
     1: {'start_time': '3:35PM', 'duration': 75},
@@ -61,7 +54,6 @@ meeting_patterns = {
     'MWF': {'days': ['Monday', 'Wednesday', 'Friday'], 'periods': mwf_periods},
     'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
     'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods},
-    'MF': {'days': ['Monday', 'Friday'], 'periods': mf_periods},
     'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
 
@@ -82,10 +74,20 @@ professors = {
         'availability': time_slots,
         'max_classes': 1
     },
+    'Tessa Joseph-Nicholas': {
+        'qualified_courses': ['COMP126', "COMP380", "COMP380H"],
+        'availability': time_slots,
+        'max_classes': 3
+    },
     'Ketan Mayer-Patel': {
         'qualified_courses': ['COMP301', 'COMP426'],
         'availability': time_slots,
         'max_classes': 1
+    },
+    'Prairie Goodwin': {
+        'qualified_courses': ['COMP301'],
+        'availability': time_slots,
+        'max_classes': 2
     },
     'Sayeed Ghani': {
         'qualified_courses': ['COMP210'],
@@ -122,6 +124,11 @@ professors = {
         'availability': time_slots,
         'max_classes': 1
     },
+    'Izzi Hinks': {
+        'qualified_courses': ['COMP110'],
+        'availability': time_slots,
+        'max_classes': 2
+    },
     'Samarjit Chakraborty': {
         'qualified_courses': ['COMP545', 'COMP790-148'],
         'availability': time_slots,
@@ -146,7 +153,7 @@ professors = {
     },
     'Gedas Bertasius': {
         # Note, cross listed 590 and 790. Should get rid of 790 version
-        'qualified_courses': ['COMP590-170', 'COMP790-170'],
+        'qualified_courses': ['COMP790-170'],
         'availability': time_slots,
         'max_classes': 1
     },
@@ -230,6 +237,36 @@ professors = {
     },
     'Andrew Kwong': {
         'qualified_courses': ['COMP790-185'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Mike Reed': {
+        'qualified_courses': ['COMP475'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Paul Stotts': {
+        'qualified_courses': ['COMP590-59', 'COMP523'],
+        'availability': time_slots,
+        'max_classes': 3
+    },
+    'Prasun Dewan': {
+        'qualified_courses': ['COMP524'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Jorge Silva': {
+        'qualified_courses': ['COMP562'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Kris Jordan': {
+        'qualified_courses': ['COMP590-140'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Junier Oliva': {
+        'qualified_courses': ['COMP755'],
         'availability': time_slots,
         'max_classes': 1
     }
@@ -552,7 +589,7 @@ courses = {
     'COMP790-170': {
         'title': 'COMP790-170 Class',
         'sections': [
-            {'section_number': 170, 'seat_capacity': 30},
+            {'section_number': 1, 'seat_capacity': 30},
         ]
     },
     'COMP790-172': {
@@ -620,7 +657,7 @@ rooms = {
 
 
 # Possible meeting patterns for classes
-possible_meeting_patterns = ['MWF', 'TTH', 'MW', 'MF', 'WF']
+possible_meeting_patterns = ['MWF', 'TTH', 'MW', 'WF']
 
 # -----------------------------
 # Helper Functions
@@ -878,7 +915,6 @@ for p in professors:
         ]) <= 1, constraint_name
 
 
-# 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
 # 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
 for c in courses:
     for section in courses[c]['sections']:
