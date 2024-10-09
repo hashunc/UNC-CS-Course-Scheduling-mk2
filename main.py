@@ -9,7 +9,7 @@ from collections import defaultdict
 # -----------------------------
 
 # Define days
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+days = ['Monday', 'Tuesday', 'Wednesday']
 
 # Define periods with start times and durations (in minutes)
 # For simplicity, we'll represent periods as integers
@@ -44,17 +44,17 @@ mw_periods = {
 }
 
 
-wf_periods = {
-    1: {'start_time': '3:35PM', 'duration': 75},
-    2: {'start_time': '5:05PM', 'duration': 75}
-}
+# wf_periods = {
+#     1: {'start_time': '3:35PM', 'duration': 75},
+#     2: {'start_time': '5:05PM', 'duration': 75}
+# }
 
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
-    'MWF': {'days': ['Monday', 'Wednesday', 'Friday'], 'periods': mwf_periods},
-    'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
-    'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods},
-    'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
+    'MWF': {'days': ['Monday'], 'periods': mwf_periods},
+    'TTH': {'days': ['Tuesday'], 'periods': tth_periods},
+    'MW': {'days': ['Monday'], 'periods': mw_periods},
+    #'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
 
 # Create time slots: (day, period)
@@ -63,7 +63,7 @@ for mp in meeting_patterns.values():
     for day in mp['days']:
         for period in mp['periods'].keys():
             time_slots.append((day, period))
-
+print(time_slots)
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
 # You can customize this based on actual availability
@@ -657,7 +657,7 @@ rooms = {
 
 
 # Possible meeting patterns for classes
-possible_meeting_patterns = ['MWF', 'TTH', 'MW', 'WF']
+possible_meeting_patterns = ['MWF', 'TTH', 'MW']
 
 # -----------------------------
 # Helper Functions
@@ -782,19 +782,7 @@ for c in courses:
             if c in professors[p]['qualified_courses']:
                 z[(c, s, p)] = pulp.LpVariable(f"z_{c}_{s}_{p}", cat='Binary')
 
-# -----------------------------
-# Constraints for Manually Scheduled Classes
-# -----------------------------
 
-# Fix variables based on manual schedules
-# -----------------------------
-# Constraints for Manually Scheduled Classes
-# -----------------------------
-
-# Fix variables based on manual schedules
-# Constraints for Manually Scheduled Classes
-
-# Fix variables based on manual schedules
 for entry in manually_scheduled_classes:
     c = entry['course']
     s = entry['section']
