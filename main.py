@@ -765,7 +765,6 @@ x = {}
 for idx in x_indices:
     var_name = "x_%s_%s_%s_%s_%s" % idx
     x[idx] = pulp.LpVariable(var_name, cat='Binary')
-
 # Binary variables for class scheduling
 y = {}
 for c in courses:
@@ -864,24 +863,36 @@ for entry in manually_scheduled_classes:
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
+        print(y[(c,s)])
+        
+        # Ensure that if a class is scheduled (y[c,s] = 1), exactly one scheduling combination (x[idx] = 1) is chosen
+        # If y[c,s] = 0, then all corresponding x[idx] must be 0, meaning the class is not scheduled
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[0] == c and idx[1] == s
         ]) == y[(c, s)], f"Link_x_y_{c}_{s}"
+        # Equation: Σ x[c,s,mp,ts,r] = y[c,s]
 
 # 2. Professors assigned to sections must be qualified and available
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
         qualified_professors = [p for p in professors if c in professors[p]['qualified_courses']]
+        
+        # Ensure that if a class is scheduled (y[c,s] = 1), exactly one qualified professor is assigned to it
+        # If y[c,s] = 0, no professor should be assigned
         prob += pulp.lpSum([
             z[(c, s, p)]
             for p in qualified_professors
         ]) == y[(c, s)], f"Prof_Assignment_{c}_{s}"
+        # Equation: Σ z[c,s,p] = y[c,s]
+
 
 # 3. Limit professors to maximum number of classes
 for p in professors:
+    
+    # Ensure that no professor is assigned to more classes than their maximum allowed
     prob += pulp.lpSum([
         z[(c, s, p)]
         for c in courses
@@ -889,6 +900,8 @@ for p in professors:
         for s in [section['section_number']]
         if (c, s, p) in z
     ]) <= professors[p]['max_classes'], f"Max_Classes_{p}"
+    # Equation: Σ z[c,s,p] ≤ max_classes_p
+
 
 # 4. A professor cannot teach more than one class at the same time
 for p in professors:
@@ -896,11 +909,15 @@ for p in professors:
         day, period = ts
         ts_str = f"{day}_{period}"
         constraint_name = f"Prof_Time_Conflict_{p}_{ts_str}"
+        
+        # Ensure that a professor is not assigned to more than one class in the same time slot
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[3] == ts and (idx[0], idx[1], p) in z
         ]) <= 1, constraint_name
+        # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each professor p and time slot ts
+
 
 
 # 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
@@ -910,23 +927,33 @@ for c in courses:
         for p in professors:
             if (c, s, p) in z:
                 constraint_name = f"Link_z_x_{c}_{s}_{p}"
+                
+                # Ensure that if a professor is assigned to a class (z[c,s,p] = 1),
+                # then the class must be scheduled in at least one available time slot for that professor
                 prob += pulp.lpSum([
                     x[idx]
                     for idx in x_indices
                     if idx[0] == c and idx[1] == s and idx[3] in professors[p]['availability']
                 ]) >= z[(c, s, p)], constraint_name
+                # Equation: Σ x[c,s,mp,ts,r] ≥ z[c,s,p]
 
-## 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
+
+# 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
 for idx in x_indices:
     c, s, mp, ts, r = idx
     day, period = ts
     ts_str = f"{day}_{period}"
     constraint_name = f"Link_x_z_{c}_{s}_{mp}_{ts_str}_{r}"
+    
+    # Ensure that if a class is scheduled in a specific meeting pattern, time slot, and room (x[idx] = 1),
+    # then at least one qualified and available professor is assigned to it
     prob += x[idx] <= pulp.lpSum([
         z[(c, s, p)]
         for p in professors
         if (c, s, p) in z and ts in professors[p]['availability']
     ]), constraint_name
+    # Equation: x[c,s,mp,ts,r] ≤ Σ z[c,s,p] for all p qualified and available at ts
+
 
 
 # Collect all unique time slots across all meeting patterns
@@ -941,7 +968,9 @@ for r in rooms:
             day, period = ts
             ts_str = f"{day}_{period}"
             constraint_name = f"Room_Capacity_{r}_{ts_str}"
-            # Check if the constraint name is unique
+            
+            # Ensure that no room (except 'university') is double-booked in any time slot
+            # If the room is already booked for a class at a specific time, it cannot be assigned to another class at that time
             if constraint_name in prob.constraints:
                 # Append an index or additional identifier to make it unique
                 index = 1
@@ -953,6 +982,8 @@ for r in rooms:
                 for idx in x_indices
                 if idx[4] == r and idx[3] == ts
             ]) <= 1, constraint_name
+            # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each room r and time slot ts
+
 
 # Objective Function
 # -----------------------------
