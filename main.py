@@ -9,7 +9,7 @@ from collections import defaultdict
 # -----------------------------
 
 # Define days
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+days = ['Monday', 'Tuesday', 'Wednesday']
 
 # Define periods with start times and durations (in minutes)
 # For simplicity, we'll represent periods as integers
@@ -24,8 +24,6 @@ mwf_periods = {
     6: {'start_time': '1:25PM', 'duration': 50},
     7: {'start_time': '2:30PM', 'duration': 50},
     8: {'start_time': '3:35PM', 'duration': 50},
-    9: {'start_time': '4:40PM', 'duration': 50},
-    10: {'start_time': '5:45PM', 'duration': 50}
 }
 
 # TTH periods (75 minutes each)
@@ -41,23 +39,22 @@ tth_periods = {
 
 # MW periods (75 minutes each)
 mw_periods = {
-    1: {'start_time': '8:00AM', 'duration': 75},
-    2: {'start_time': '9:05AM', 'duration': 75},
-    3: {'start_time': '10:10AM', 'duration': 75},
-    4: {'start_time': '11:15AM', 'duration': 75},
-    5: {'start_time': '12:20PM', 'duration': 75},
-    6: {'start_time': '1:25PM', 'duration': 75},
-    7: {'start_time': '2:30PM', 'duration': 75},
-    8: {'start_time': '3:35PM', 'duration': 75},
-    9: {'start_time': '4:40PM', 'duration': 75},
-    10: {'start_time': '5:45PM', 'duration': 75}
+    1: {'start_time': '3:35PM', 'duration': 75},
+    2: {'start_time': '5:05PM', 'duration': 75}
 }
+
+
+# wf_periods = {
+#     1: {'start_time': '3:35PM', 'duration': 75},
+#     2: {'start_time': '5:05PM', 'duration': 75}
+# }
 
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
-    'MWF': {'days': ['Monday', 'Wednesday', 'Friday'], 'periods': mwf_periods},
-    'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
-    'MW': {'days': ['Monday', 'Wednesday'], 'periods': mw_periods}
+    'MWF': {'days': ['Monday'], 'periods': mwf_periods},
+    'TTH': {'days': ['Tuesday'], 'periods': tth_periods},
+    'MW': {'days': ['Monday'], 'periods': mw_periods},
+    #'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
 
 # Create time slots: (day, period)
@@ -66,7 +63,7 @@ for mp in meeting_patterns.values():
     for day in mp['days']:
         for period in mp['periods'].keys():
             time_slots.append((day, period))
-
+print(time_slots)
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
 # You can customize this based on actual availability
@@ -75,19 +72,29 @@ professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Kurt M. Potter': {
+    'Tessa Joseph-Nicholas': {
+        'qualified_courses': ['COMP126', "COMP380", "COMP380H"],
+        'availability': time_slots,
+        'max_classes': 3
+    },
+    'Ketan Mayer-Patel': {
         'qualified_courses': ['COMP301', 'COMP426'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Prairie Goodwin': {
+        'qualified_courses': ['COMP301'],
         'availability': time_slots,
         'max_classes': 2
     },
-    'Muhammad Ghani': {
+    'Sayeed Ghani': {
         'qualified_courses': ['COMP210'],
         'availability': time_slots,
         'max_classes': 2
     },
-    'Praveen Kumar': {
+    'P.S. Thiagarajan': {
         'qualified_courses': ['COMP455'],
         'availability': time_slots,
         'max_classes': 2
@@ -95,59 +102,67 @@ professors = {
     'Jasleen Kaur': {
         'qualified_courses': ['COMP431'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 0
     },
     'Saba Eskandarian': {
         'qualified_courses': ['COMP537', 'COMP455', 'COMP435', 'COMP590', 'COMP790'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Ron Alterovitz': {
         'qualified_courses': ['COMP581', 'COMP781', 'COMP782'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Cynthia Sturton': {
         'qualified_courses': ['COMP435'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Marc Niethammer': {
         'qualified_courses': ['COMP775'],
         'availability': time_slots,
+        'max_classes': 1
+    },
+    'Izzi Hinks': {
+        'qualified_courses': ['COMP110'],
+        'availability': time_slots,
         'max_classes': 2
     },
     'Samarjit Chakraborty': {
-        'qualified_courses': ['COMP545', 'COMP790'],
+        'qualified_courses': ['COMP545', 'COMP790-148'],
         'availability': time_slots,
         'max_classes': 2
     },
     'Donald Porter': {
         'qualified_courses': ['COMP530'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
+    # Note: No longer at UNC
     'John Majikes': {
         'qualified_courses': ['COMP421', 'COMP550', 'COMP116'],
         'availability': time_slots,
         'max_classes': 2
     },
+    # Note: Alyssa not on the given spreadsheet
     'Alyssa Byrnes': {
         'qualified_courses': ['COMP110', 'COMP116', 'COMP210', 'COMP283'],
         'availability': time_slots,
         'max_classes': 2
     },
     'Gedas Bertasius': {
-        'qualified_courses': ['COMP590', 'COMP790'],
+        # Note, cross listed 590 and 790. Should get rid of 790 version
+        'qualified_courses': ['COMP790-170'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Roni Sengupta': {
-        'qualified_courses': ['COMP590'],
+        'qualified_courses': ['COMP590-177'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Kangning Sun': {
+    'Kevin Sun': {
         'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
         'availability': time_slots,
         'max_classes': 2
@@ -160,12 +175,12 @@ professors = {
     'Shahriar Nirjon': {
         'qualified_courses': ['COMP433'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Jack Snoeyink': {
         'qualified_courses': ['COMP283', 'DATA140'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Brent Munsell': {
         'qualified_courses': ['COMP211', 'COMP590', 'COMP530', 'COMP311', 'COMP116'],
@@ -178,34 +193,82 @@ professors = {
         'max_classes': 2
     },
     'Danielle Szafir': {
-        'qualified_courses': ['COMP790'],
+        # Note, he says he prefers visualization design, but is happy to teach something else
+        # How do we specify what his qualified courses are?
+        'qualified_courses': ['COMP790-172'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
     'Daniel Szafir': {
         'qualified_courses': ['COMP581'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
+    },
+    # Note: The course he specified was Safe Autonomy, but the course he teaches is Formal Methods
+    'Parasara Sridhar Duggirala': {
+        'qualified_courses': ['COMP089','COMP790-144'],
+        'availability': time_slots,
+        'max_classes': 1
     },
     'Praneeth Chakravarthula': {
-        'qualified_courses': ['COMP089', 'COMP790'],
+        'qualified_courses': [ 'COMP790-175'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Ben Lee': {
-        'qualified_courses': ['COMP790'],
+    'Ben Berg': {
+        'qualified_courses': ['COMP790-178'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Shubhra Srivastava': {
+    'Shashank Srivastava': {
         'qualified_courses': ['COMP664'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
     },
-    'Chase P. Kline': {
-        'qualified_courses': ['COMP790'],
+    'Snigdha Chaturvedi': {
+        'qualified_courses': ['COMP790-158'],
         'availability': time_slots,
-        'max_classes': 2
+        'max_classes': 1
+    },
+    'Huaxiu Yao': {
+        'qualified_courses': ['COMP790-183'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Andrew Kwong': {
+        'qualified_courses': ['COMP790-185'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Mike Reed': {
+        'qualified_courses': ['COMP475'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Paul Stotts': {
+        'qualified_courses': ['COMP590-59', 'COMP523'],
+        'availability': time_slots,
+        'max_classes': 3
+    },
+    'Prasun Dewan': {
+        'qualified_courses': ['COMP524'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Jorge Silva': {
+        'qualified_courses': ['COMP562'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Kris Jordan': {
+        'qualified_courses': ['COMP590-140'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'Junier Oliva': {
+        'qualified_courses': ['COMP755'],
+        'availability': time_slots,
+        'max_classes': 1
     }
 }
 
@@ -255,15 +318,10 @@ courses = {
         ]
     },
     'COMP283': {
-        'title': 'COMP283 Class',
+        'title': 'COMP283/283H Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': 180}
-        ]
-    },
-    'COMP283H': {
-        'title': 'COMP283H Class',
-        'sections': [
-            {'section_number': 1, 'seat_capacity': 24}
+            {'section_number': 1, 'seat_capacity': 204}
+            # Combined 283H section and increased the seat capacity by 24 from 180 to 204
         ]
     },
     'COMP301': {
@@ -414,15 +472,57 @@ courses = {
             {'section_number': 1, 'seat_capacity': 60}
         ]
     },
-    'COMP590': {
-        'title': 'COMP590 Class',
+    # 'COMP590': {
+    #     'title': 'COMP590 Class',
+    #     'sections': [
+    #         {'section_number': 59, 'seat_capacity': 90},
+    #         {'section_number': 139, 'seat_capacity': 10},
+    #         {'section_number': 140, 'seat_capacity': 280},
+    #         {'section_number': 158, 'seat_capacity': 4},
+    #         {'section_number': 170, 'seat_capacity': 30},
+    #         {'section_number': 172, 'seat_capacity': 30},
+    #         {'section_number': 177, 'seat_capacity': 60}
+    #     ]
+    # },
+    'COMP590-59': {
+        'title': 'COMP590-59 Class',
         'sections': [
-            {'section_number': 59, 'seat_capacity': 90},
-            {'section_number': 139, 'seat_capacity': 10},
-            {'section_number': 140, 'seat_capacity': 280},
-            {'section_number': 158, 'seat_capacity': 4},
-            {'section_number': 170, 'seat_capacity': 30},
-            {'section_number': 172, 'seat_capacity': 30},
+            {'section_number': 59, 'seat_capacity': 90}
+        ]
+    },
+    'COMP590-139': {
+        'title': 'COMP590-139 Class',
+        'sections': [
+            {'section_number': 139, 'seat_capacity': 10}
+        ]
+    },
+    'COMP590-140': {
+        'title': 'COMP590-140 Class',
+        'sections': [
+            {'section_number': 140, 'seat_capacity': 280}
+        ]
+    },
+    'COMP590-158': {
+        'title': 'COMP590-158 Class',
+        'sections': [
+            {'section_number': 158, 'seat_capacity': 4}
+        ]
+    },
+    'COMP590-170': {
+        'title': 'COMP590-170 Class',
+        'sections': [
+            {'section_number': 170, 'seat_capacity': 30}
+        ]
+    },
+    'COMP590-172': {
+        'title': 'COMP590-172 Class',
+        'sections': [
+            {'section_number': 172, 'seat_capacity': 30}
+        ]
+    },
+    'COMP590-177': {
+        'title': 'COMP590-177 Class',
+        'sections': [
             {'section_number': 177, 'seat_capacity': 60}
         ]
     },
@@ -462,10 +562,70 @@ courses = {
             {'section_number': 1, 'seat_capacity': 30}
         ]
     },
-    'COMP790': {
-        'title': 'COMP790 Class',
+    'COMP790-139': {
+        'title': 'COMP790-139 Class',
         'sections': [
-            {'section_number': 1, 'seat_capacity': 20},
+            {'section_number': 139, 'seat_capacity': 20},
+        ]
+    },
+    'COMP790-144': {
+        'title': 'COMP790-144 Class',
+        'sections': [
+            {'section_number': 144, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-148': {
+        'title': 'COMP790-148 Class',
+        'sections': [
+            {'section_number': 148, 'seat_capacity': 25},
+        ]
+    },
+    'COMP790-158': {
+        'title': 'COMP790-158 Class',
+        'sections': [
+            {'section_number': 158, 'seat_capacity': 21},
+        ]
+    },
+    'COMP790-170': {
+        'title': 'COMP790-170 Class',
+        'sections': [
+            {'section_number': 1, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-172': {
+        'title': 'COMP790-172 Class',
+        'sections': [
+            {'section_number': 172, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-173': {
+        'title': 'COMP790-173 Class',
+        'sections': [
+            {'section_number': 173, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-175': {
+        'title': 'COMP790-175 Class',
+        'sections': [
+            {'section_number': 175, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-178': {
+        'title': 'COMP790-178 Class',
+        'sections': [
+            {'section_number': 178, 'seat_capacity': 20},
+        ]
+    },
+    'COMP790-183': {
+        'title': 'COMP790-183 Class',
+        'sections': [
+            {'section_number': 183, 'seat_capacity': 30},
+        ]
+    },
+    'COMP790-185': {
+        'title': 'COMP790-185 Class',
+        'sections': [
+            {'section_number': 185, 'seat_capacity': 30},
         ]
     },
     'COMP915': {
@@ -605,7 +765,6 @@ x = {}
 for idx in x_indices:
     var_name = "x_%s_%s_%s_%s_%s" % idx
     x[idx] = pulp.LpVariable(var_name, cat='Binary')
-
 # Binary variables for class scheduling
 y = {}
 for c in courses:
@@ -622,19 +781,7 @@ for c in courses:
             if c in professors[p]['qualified_courses']:
                 z[(c, s, p)] = pulp.LpVariable(f"z_{c}_{s}_{p}", cat='Binary')
 
-# -----------------------------
-# Constraints for Manually Scheduled Classes
-# -----------------------------
 
-# Fix variables based on manual schedules
-# -----------------------------
-# Constraints for Manually Scheduled Classes
-# -----------------------------
-
-# Fix variables based on manual schedules
-# Constraints for Manually Scheduled Classes
-
-# Fix variables based on manual schedules
 for entry in manually_scheduled_classes:
     c = entry['course']
     s = entry['section']
@@ -716,24 +863,36 @@ for entry in manually_scheduled_classes:
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
+        print(y[(c,s)])
+        
+        # Ensure that if a class is scheduled (y[c,s] = 1), exactly one scheduling combination (x[idx] = 1) is chosen
+        # If y[c,s] = 0, then all corresponding x[idx] must be 0, meaning the class is not scheduled
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[0] == c and idx[1] == s
         ]) == y[(c, s)], f"Link_x_y_{c}_{s}"
+        # Equation: Σ x[c,s,mp,ts,r] = y[c,s]
 
 # 2. Professors assigned to sections must be qualified and available
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
         qualified_professors = [p for p in professors if c in professors[p]['qualified_courses']]
+        
+        # Ensure that if a class is scheduled (y[c,s] = 1), exactly one qualified professor is assigned to it
+        # If y[c,s] = 0, no professor should be assigned
         prob += pulp.lpSum([
             z[(c, s, p)]
             for p in qualified_professors
         ]) == y[(c, s)], f"Prof_Assignment_{c}_{s}"
+        # Equation: Σ z[c,s,p] = y[c,s]
+
 
 # 3. Limit professors to maximum number of classes
 for p in professors:
+    
+    # Ensure that no professor is assigned to more classes than their maximum allowed
     prob += pulp.lpSum([
         z[(c, s, p)]
         for c in courses
@@ -741,6 +900,8 @@ for p in professors:
         for s in [section['section_number']]
         if (c, s, p) in z
     ]) <= professors[p]['max_classes'], f"Max_Classes_{p}"
+    # Equation: Σ z[c,s,p] ≤ max_classes_p
+
 
 # 4. A professor cannot teach more than one class at the same time
 for p in professors:
@@ -748,14 +909,17 @@ for p in professors:
         day, period = ts
         ts_str = f"{day}_{period}"
         constraint_name = f"Prof_Time_Conflict_{p}_{ts_str}"
+        
+        # Ensure that a professor is not assigned to more than one class in the same time slot
         prob += pulp.lpSum([
             x[idx]
             for idx in x_indices
             if idx[3] == ts and (idx[0], idx[1], p) in z
         ]) <= 1, constraint_name
+        # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each professor p and time slot ts
 
 
-# 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
+
 # 5a. If z[(c, s, p)] == 1, then x[idx] == 1 for some idx
 for c in courses:
     for section in courses[c]['sections']:
@@ -763,23 +927,33 @@ for c in courses:
         for p in professors:
             if (c, s, p) in z:
                 constraint_name = f"Link_z_x_{c}_{s}_{p}"
+                
+                # Ensure that if a professor is assigned to a class (z[c,s,p] = 1),
+                # then the class must be scheduled in at least one available time slot for that professor
                 prob += pulp.lpSum([
                     x[idx]
                     for idx in x_indices
                     if idx[0] == c and idx[1] == s and idx[3] in professors[p]['availability']
                 ]) >= z[(c, s, p)], constraint_name
+                # Equation: Σ x[c,s,mp,ts,r] ≥ z[c,s,p]
 
-## 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
+
+# 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
 for idx in x_indices:
     c, s, mp, ts, r = idx
     day, period = ts
     ts_str = f"{day}_{period}"
     constraint_name = f"Link_x_z_{c}_{s}_{mp}_{ts_str}_{r}"
+    
+    # Ensure that if a class is scheduled in a specific meeting pattern, time slot, and room (x[idx] = 1),
+    # then at least one qualified and available professor is assigned to it
     prob += x[idx] <= pulp.lpSum([
         z[(c, s, p)]
         for p in professors
         if (c, s, p) in z and ts in professors[p]['availability']
     ]), constraint_name
+    # Equation: x[c,s,mp,ts,r] ≤ Σ z[c,s,p] for all p qualified and available at ts
+
 
 
 # Collect all unique time slots across all meeting patterns
@@ -794,7 +968,9 @@ for r in rooms:
             day, period = ts
             ts_str = f"{day}_{period}"
             constraint_name = f"Room_Capacity_{r}_{ts_str}"
-            # Check if the constraint name is unique
+            
+            # Ensure that no room (except 'university') is double-booked in any time slot
+            # If the room is already booked for a class at a specific time, it cannot be assigned to another class at that time
             if constraint_name in prob.constraints:
                 # Append an index or additional identifier to make it unique
                 index = 1
@@ -806,6 +982,8 @@ for r in rooms:
                 for idx in x_indices
                 if idx[4] == r and idx[3] == ts
             ]) <= 1, constraint_name
+            # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each room r and time slot ts
+
 
 # Objective Function
 # -----------------------------
