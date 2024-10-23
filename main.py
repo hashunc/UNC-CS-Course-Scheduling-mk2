@@ -39,15 +39,17 @@ tth_periods = {
 
 # MW periods (75 minutes each)
 mw_periods = {
-    1: {'start_time': '3:35PM', 'duration': 75},
-    2: {'start_time': '5:05PM', 'duration': 75}
+    1: {'start_time': '8:00AM', 'duration': 75},
+    2: {'start_time': '9:05AM', 'duration': 75},
+    3: {'start_time': '10:10AM', 'duration': 75},
+    4: {'start_time': '11:15AM', 'duration': 75},
+    5: {'start_time': '12:20PM', 'duration': 75},
+    6: {'start_time': '1:25PM', 'duration': 75},
+    7: {'start_time': '2:30PM', 'duration': 75},
+    8: {'start_time': '3:35PM', 'duration': 75},
 }
 
 
-# wf_periods = {
-#     1: {'start_time': '3:35PM', 'duration': 75},
-#     2: {'start_time': '5:05PM', 'duration': 75}
-# }
 
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
@@ -67,7 +69,8 @@ print(time_slots)
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
 # You can customize this based on actual availability
-
+mwf = time_slots[:8]
+th = time_slots[8:15]
 professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
@@ -269,7 +272,8 @@ professors = {
         'qualified_courses': ['COMP755'],
         'availability': time_slots,
         'max_classes': 1
-    }
+    },
+    
 }
 
 
@@ -686,11 +690,13 @@ manually_scheduled_classes = [
     },
     # Example of a partial specification (only professor assigned)
     {
-        'course': 'COMP530',
+        'course': 'COMP541',
         'section': 1,
-        'professor': 'Donald Porter',
+        'professor': 'Montek Singh',
+        'room': 'FB-F009'
         # 'meeting_pattern', 'time_slot', and 'room' are unspecified
     },
+    
     # You can add more manually scheduled classes here
 ]
 
@@ -985,10 +991,74 @@ for r in rooms:
             # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each room r and time slot ts
 
 
-# Objective Function
-# -----------------------------
 
-# Define cost for using the 'university' room for small classes
+for r in rooms:
+    for d in days:
+        # Get sorted list of periods for the day based on 'MW' meeting patterns
+        periods = sorted(meeting_patterns['MW']['periods'].keys())
+        for p in periods:
+            next_p = p + 1
+            if next_p in meeting_patterns['MW']['periods'].keys():
+                # Define the current and next time slots
+                current_ts = (d, p)
+                next_ts = (d, next_p)
+                
+                # Sum of 'MW' classes in current time slot in room r
+                mw_current = pulp.lpSum([
+                    x[idx] for idx in x_indices
+                    if idx[2] == 'MW' and idx[3] == current_ts and idx[4] == r
+                ])
+                
+                # Sum of 'MWF' classes in next time slot in room r
+                mwf_next = pulp.lpSum([
+                    x[idx] for idx in x_indices
+                    if idx[2] == 'MWF' and idx[3] == next_ts and idx[4] == r
+                ])
+                
+                # Sum of 'MW' classes in next time slot in room r
+                mw_next = pulp.lpSum([
+                    x[idx] for idx in x_indices
+                    if idx[2] == 'MW' and idx[3] == next_ts and idx[4] == r
+                ])
+                
+                # Add the constraint: MW at p + MWF/MW at p+1 <= 1
+                prob += mw_current + mwf_next + mw_next <= 1, f"Room_Overlap_{r}_{d}_{p}"
+                # This ensures that if a MW class is scheduled at p, no MWF or MW class can be scheduled at p+1 in the same room
+
+rush_hour_time_slots = set()
+
+for mp in meeting_patterns:
+    for day in meeting_patterns[mp]['days']:
+        for period, info in meeting_patterns[mp]['periods'].items():
+            start_time = info['start_time']
+            
+            # Convert start_time to minutes since midnight for easy comparison
+            time_parts = start_time[:-2].split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1])
+            am_pm = start_time[-2:]
+            
+            if am_pm == 'PM' and hour != 12:
+                hour += 12
+            elif am_pm == 'AM' and hour == 12:
+                hour = 0
+            
+            start_minutes = hour * 60 + minute
+            
+            # Define rush-hour as 11:00 AM (600 minutes) to 2:00 PM (900 minutes)
+            if 600 <= start_minutes < 900:
+                rush_hour_time_slots.add((day, period))
+                # Example: ('Monday', 3) represents Monday, Period 3
+
+# Identify x indices in rush-hour
+rush_hour_x_indices = [
+    idx for idx in x_indices
+    if idx[3] in rush_hour_time_slots  # idx[3] is the time_slot tuple (day, period)
+]
+
+# Define a penalty coefficient for rush-hour classes
+# Adjust this value to control the severity of the penalty
+rush_hour_penalty = .1
 room_cost = {}
 for idx in x_indices:
     c, s, mp, ts, r = idx
@@ -998,15 +1068,36 @@ for idx in x_indices:
         room_cost[idx] = 0
 
 # Modify the objective function
-prob += pulp.lpSum([
-    y[(c, s)]
-    for c in courses
-    for section in courses[c]['sections']
-    for s in [section['section_number']]
-]) - pulp.lpSum([
-    room_cost[idx] * x[idx]
-    for idx in x_indices
-])
+# -----------------------------
+# 9. Modifying the Objective Function
+# -----------------------------
+
+# Define a penalty coefficient for rush-hour classes
+# Adjust this value to control the severity of the penalty
+rush_hour_penalty = 0  # You can experiment with different values like 0.5, 1, or 2
+
+# Modify the objective function to include rush-hour penalties
+prob += (
+    pulp.lpSum([
+        y[(c, s)]
+        for c in courses
+        for section in courses[c]['sections']
+        for s in [section['section_number']]
+    ]) 
+    - pulp.lpSum([
+        room_cost[idx] * x[idx]
+        for idx in x_indices
+    ]) 
+    - rush_hour_penalty * pulp.lpSum([
+        x[idx]
+        for idx in rush_hour_x_indices
+    ])
+), "Objective_Function"
+
+# Explanation:
+# Maximize the number of classes scheduled (Σ y[c,s])
+# Minimize the room costs (Σ room_cost[idx] * x[idx])
+# Minimize the number of rush-hour classes (rush_hour_penalty * Σ x[rush_hour_x_indices])
 
 # -----------------------------
 # Solve the Problem
@@ -1102,3 +1193,4 @@ if pulp.LpStatus[prob.status] == 'Optimal':
 
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
+print(time_slots)
