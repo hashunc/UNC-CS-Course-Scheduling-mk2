@@ -15,23 +15,26 @@
             <ul class="home-button" style="display: inline-block;">
                 <li style="list-style-type: none;">
                     <a href="index.html" id="login-button">
-                        Home
+                        Log-Out
                     </a>
                 </li>
             </ul>
         </div>
-        <div id="main-text">
-            Log-In
+        <div id="main-text" style="font-weight: bold;">
+            Welcome, Montek Singh!
         </div>
-        <div id="login-form">
-            <label for="password-insert" id="pass-label">Password:</label>
-            <ul class="password-input">
-                <li><input type="password" id="password-insert"></li>
+        <div id="sub-main-text">
+            What would you like to do?
+        </div>
+        <div class="two-options">
+            <ul class="options">
+                <li><button onclick="location.href = 'view.html';">
+                    View Schedule
+                </button></li>
+                <li><button>
+                    Update Schedule
+                </button></li>
             </ul>
-            <button id="password-submit-button" style="font-family: 'Monaco', monospace;">
-                Submit
-            </button>
         </div>
-        <script src="js/login.js"></script>
     </body>
 </html>
