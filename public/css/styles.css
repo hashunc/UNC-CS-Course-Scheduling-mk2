@@ -3,7 +3,6 @@
     border-radius: 6px;
     font-family: 'Monaco', monospace;
     display: flex;
-    justify-content: flex-end;
     height: 50px;
     padding-right: 2em;
     display: flex;
@@ -33,5 +32,140 @@
     justify-content: center;
     padding-top: 25px;
     font-size: x-large;
+    font-family: 'Monaco', monospace;
+}
+
+#sub-main-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 25px;
+    font-size: medium;
+    font-family: 'Monaco', monospace;
+    margin-top: 20px;
+}
+
+.title > li {
+    display: flexbox;
+    justify-items: left;
+    display: flex;
+}
+
+.home-button {
+    margin-left: auto;
+}
+
+#login-form {
+    background-color: rgb(224, 215, 195);
+    height: 120px;
+    border-radius: 10px;
+    margin-top: 30px;
+    width: 470px;
+    font-family: 'Monaco', monospace;
+    display: flex;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#pass-label {
+    margin-left: 30px;
+    margin-top: 1em;
+}
+
+.password-input {
+    position: absolute;
+    list-style: none;
+    margin-left: 240px;
+}
+
+#password-submit-button {
+    position: absolute;
+    background-color: rgb(199, 199, 199);
+    border-radius: 6px;
+    height: 35px;
+    width: 80px;
+    text-decoration: none;
+    color: black;
+    margin-top: 70px;
+    text-align: center;
+    justify-content: center;
+    margin-left: 195px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+#password-submit-button:hover {
+    background-color: rgb(159, 159, 159);
+    cursor: pointer;
+}
+
+.two-options {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+
+.options > li > button {
+    font-family: 'Monaco', monospace;
+    background-color: rgb(199, 199, 199);
+    border-radius: 6px;
+    height: 55px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    text-align: center;
+    margin-right: 110px;
+    margin-left: 70px;
+}
+
+.options > li > button {
+    display: absolute;
+    text-decoration: none;
+    color: black;
+}
+
+.options > li > button:hover {
+    background-color: rgb(159, 159, 159);
+    cursor: pointer;
+}
+
+.right-menu {
+    margin-left: auto;
+}
+
+.navigation-tab li {
+    display: inline-block;
+}
+
+.nav-button {
+    color: black;
+    text-decoration: none;
+    font-family: 'Monaco', monospace;;
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    border-color: black;
+    border-width: 40px;
+}
+
+#list-view {
     font-family: 'Monaco', monospace;
 }
