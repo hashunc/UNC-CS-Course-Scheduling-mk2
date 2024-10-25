@@ -71,6 +71,7 @@ print(time_slots)
 # You can customize this based on actual availability
 mwf = time_slots[:8]
 th = time_slots[8:15]
+mw = time_slots[15:]
 professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
@@ -270,6 +271,11 @@ professors = {
     },
     'Junier Oliva': {
         'qualified_courses': ['COMP755'],
+        'availability': time_slots,
+        'max_classes': 1
+    },
+    'TBD': {
+        'qualified_courses': ['COMP421'],
         'availability': time_slots,
         'max_classes': 1
     },
@@ -657,6 +663,7 @@ rooms = {
     'SN-0277': {'capacity': 10},
     'FB-F331': {'capacity': 16},
     'university': {'capacity': 300}  # Special room
+    
 }
 
 
@@ -696,6 +703,10 @@ manually_scheduled_classes = [
         'room': 'FB-F009'
         # 'meeting_pattern', 'time_slot', and 'room' are unspecified
     },
+    {'course': 'COMP421',
+     'section': 1,
+     'professor:': "TBD",
+     }
     
     # You can add more manually scheduled classes here
 ]
@@ -1194,3 +1205,4 @@ if pulp.LpStatus[prob.status] == 'Optimal':
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
 print(time_slots)
+print(mwf,mwf,th)
