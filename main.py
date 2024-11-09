@@ -736,7 +736,6 @@ for mp in meeting_patterns:
         for period in meeting_patterns[mp]['periods'].keys():
             mp_time_slots.append((day, period))
     time_slots_mp[mp] = mp_time_slots
-
 # Define the threshold for small classes
 small_class_threshold = 100
 
@@ -1069,7 +1068,7 @@ rush_hour_x_indices = [
 
 # Define a penalty coefficient for rush-hour classes
 # Adjust this value to control the severity of the penalty
-rush_hour_penalty = .1
+rush_hour_penalty = 0
 room_cost = {}
 for idx in x_indices:
     c, s, mp, ts, r = idx
@@ -1117,12 +1116,13 @@ prob += (
 prob.solve()
 
 # -----------------------------
-# Output the Schedule
+# Output the Schedule and Store Assignments
 # -----------------------------
 
 if pulp.LpStatus[prob.status] == 'Optimal':
     schedule = []
     unscheduled_classes = []
+    assignment = {}  # Dictionary to store current assignments
     for c in courses:
         for section in courses[c]['sections']:
             s = section['section_number']
@@ -1155,6 +1155,7 @@ if pulp.LpStatus[prob.status] == 'Optimal':
                             'Room': r,
                             'Seat Capacity': seat_capacity
                         })
+                        assignment[(c, s)] = idx  # Store the current assignment
                         assigned = True
                         break
                 if not assigned:
@@ -1162,38 +1163,37 @@ if pulp.LpStatus[prob.status] == 'Optimal':
             else:
                 # Class is not scheduled
                 unscheduled_classes.append((c, s))
-
-    # Print the schedule
+    
+    # Print the initial schedule
     for entry in schedule:
         print(f"Course: {entry['Course']} Section {entry['Section']}, Title: {entry['Title']}")
         print(f"  Professor: {entry['Professor']}")
         print(f"  Meeting Pattern: {entry['Meeting Pattern']}")
         print(f"  Day: {entry['Day']}, Period: {entry['Period']}, Start Time: {entry['Start Time']}")
         print(f"  Room: {entry['Room']}")
-        print(f"  Seat Capacity: {entry['Seat Capacity']}")
-        print()
-
+        print(f"  Seat Capacity: {entry['Seat Capacity']}\n")
+    
     # Print unscheduled classes
     if unscheduled_classes:
         print("Unscheduled Classes:")
         for c, s in unscheduled_classes:
             print(f"Course: {c}, Section: {s}, Title: {courses[c]['title']}")
-
+    
     # -----------------------------
     # New Code to Print Professors with No Classes Scheduled
     # -----------------------------
-
+    
     # Initialize a dictionary to count classes assigned to each professor
     professor_class_counts = {p: 0 for p in professors}
-
+    
     # Iterate over the assignment variables z to count classes
     for (c, s, p) in z:
         if pulp.value(z[(c, s, p)]) == 1:
             professor_class_counts[p] += 1
-
+    
     # List of professors with no classes assigned
     professors_with_no_classes = [p for p, count in professor_class_counts.items() if count == 0]
-
+    
     # Print professors with no classes scheduled
     if professors_with_no_classes:
         print("\nProfessors with no classes scheduled:")
@@ -1201,8 +1201,129 @@ if pulp.LpStatus[prob.status] == 'Optimal':
             print(f"Professor: {p}")
     else:
         print("\nAll professors have at least one class scheduled.")
-
+    
 else:
     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
-print(time_slots)
-print(mwf,mwf,th)
+print("All Time Slots:", time_slots)
+print("MWF Segments:", mwf, "MW Segments:", mwf, "TTH Segments:", th)
+print("Time Slots per Meeting Pattern:", time_slots_mp)
+
+
+def remove_and_reassign(prob, x, y, z, x_indices, assignment, c_remove, s_remove, new_mp, new_ts, new_r):
+    """
+    Removes a course section from its current assignment and attempts to reassign it to a new meeting pattern, time slot, and room.
+
+    :param prob: The PuLP problem instance.
+    :param x: Dictionary of x variables.
+    :param y: Dictionary of y variables.
+    :param z: Dictionary of z variables.
+    :param x_indices: List of all x indices.
+    :param assignment: Dictionary storing current assignments.
+    :param c_remove: Course code to remove.
+    :param s_remove: Section number to remove.
+    :param new_mp: New meeting pattern (e.g., 'MWF', 'TTH', 'MW').
+    :param new_ts: New time slot tuple (day, period).
+    :param new_r: New room code.
+    :return: True if reassignment is possible, False otherwise.
+    """
+    key = (c_remove, s_remove)
+    if key not in assignment:
+        print(f"Course {c_remove} Section {s_remove} is not scheduled. No action taken.")
+        return False
+    
+    # Get the current assignment index
+    current_idx = assignment[key]
+    
+    # Remove the current assignment by setting x[current_idx] == 0
+    prob += x[current_idx] == 0, f"Remove_Assignment_{c_remove}_{s_remove}"
+    
+    # Remove the current professor assignment if any
+    assigned_professor = None
+    for p in professors:
+        if (c_remove, s_remove, p) in z and pulp.value(z[(c_remove, s_remove, p)]) == 1:
+            assigned_professor = p
+            # Set z[c,s,p] == 0
+            prob += z[(c_remove, s_remove, p)] == 0, f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{p}"
+            break
+    
+    # Allow the class to be rescheduled elsewhere by keeping y[c,s] ==1
+    prob += y[key] == 1, f"Ensure_Class_Scheduled_{c_remove}_{s_remove}"
+    
+    # Attempt to assign to the new meeting pattern, time slot, and room
+    # Find the index corresponding to the new assignment
+    new_idx = (c_remove, s_remove, new_mp, new_ts, new_r)
+    if new_idx not in x:
+        print(f"Warning: The new assignment ({new_mp}, {new_ts}, {new_r}) for Course {c_remove} Section {s_remove} is invalid.")
+        return False
+    
+    # Add constraint to set x[new_idx] ==1
+    prob += x[new_idx] == 1, f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}"
+    
+    # Find a qualified and available professor for the new assignment
+    qualified_professors = [p for p in professors if c_remove in professors[p]['qualified_courses']]
+    
+    # Attempt to assign a professor
+    professor_assigned = False
+    for p in qualified_professors:
+        if new_ts in professors[p]['availability']:
+            # Check if the professor is available at the new time slot
+            conflict = False
+            for idx in x_indices:
+                if idx[3] == new_ts and (idx[0], idx[1], p) in z and pulp.value(z[(idx[0], idx[1], p)]) == 1:
+                    conflict = True
+                    break
+            if not conflict:
+                # Assign this professor
+                prob += z[(c_remove, s_remove, p)] == 1, f"Assign_New_Professor_{c_remove}_{s_remove}_{p}"
+                professor_assigned = True
+                break
+    
+    if not professor_assigned:
+        print(f"No available and qualified professor found for Course {c_remove} Section {s_remove} at the new time slot.")
+        # Remove the constraint we just added since no professor can be assigned
+        prob.constraints.pop(f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}", None)
+        # Revert removal of current assignment
+        prob.constraints.pop(f"Remove_Assignment_{c_remove}_{s_remove}", None)
+        if assigned_professor:
+            prob.constraints.pop(f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{assigned_professor}", None)
+        return False
+    
+    # Re-solve the problem
+    prob.solve()
+    
+    if pulp.LpStatus[prob.status] == 'Optimal':
+        # Verify the new assignment
+        if pulp.value(x[new_idx]) == 1:
+            # Update the assignment dictionary
+            assignment[key] = new_idx
+            print(f"Course {c_remove} Section {s_remove} has been successfully reassigned to:")
+            print(f"  Meeting Pattern: {new_mp}")
+            print(f"  Time Slot: {new_ts}")
+            print(f"  Room: {new_r}")
+            print(f"  Professor: {p}\n")
+            return True
+        else:
+            print(f"Failed to assign Course {c_remove} Section {s_remove} to the new schedule.")
+            return False
+    else:
+        print(f"Unable to reassign Course {c_remove} Section {s_remove} due to constraints.")
+        return False
+# Example Usage of remove_and_reassign Function
+
+# Suppose you want to remove and reassign COMP110 Section 3 to ('Tuesday', 2) in room 'FB-F009' with meeting pattern 'TTH'
+c_to_remove = 'COMP110'
+s_to_remove = 3
+new_meeting_pattern = 'TTH'
+new_time_slot = ('Tuesday', 3)
+new_room = 'FB-F009'
+
+print(f"\nAttempting to remove and reassign Course {c_to_remove} Section {s_to_remove}...\n")
+result = remove_and_reassign(prob, x, y, z, x_indices, assignment, 
+                             c_to_remove, s_to_remove, 
+                             new_meeting_pattern, new_time_slot, new_room)
+
+if result:
+    print(f"\nSuccessfully reassigned Course {c_to_remove} Section {s_to_remove}.\n")
+else:
+    print(f"\nFailed to reassign Course {c_to_remove} Section {s_to_remove}.\n")
+
