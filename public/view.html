@@ -12,26 +12,31 @@
                     UNC COMP Course Scheduler
                 </li>
             </ul>
-            <ul class="home-button" style="display: inline-block;">
-                <li style="list-style-type: none;">
+            <ul class="right-menu" style="display: inline-block;">
+                <li class="nav-button" style="list-style-type: none;">
                     <a href="index.html" id="login-button">
+                        Log-Out
+                    </a>
+                </li>
+                <li class="nav-button" style="list-style-type: none;">
+                    <a href="home.html" id="login-button">
                         Home
                     </a>
                 </li>
             </ul>
         </div>
-        <div id="main-text">
-            Log-In
+        <div id="sub-main-text">
+            Which view?
         </div>
-        <div id="login-form">
-            <label for="password-insert" id="pass-label">Password:</label>
-            <ul class="password-input">
-                <li><input type="password" id="password-insert"></li>
+        <div class="two-options">
+            <ul class="options">
+                <li><button onclick="location.href = 'list_view.html';">
+                    List View
+                </button></li>
+                <li><button>
+                    Calendar View
+                </button></li>
             </ul>
-            <button id="password-submit-button" style="font-family: 'Monaco', monospace;">
-                Submit
-            </button>
         </div>
-        <script src="js/login.js"></script>
     </body>
 </html>
