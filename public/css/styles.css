@@ -169,3 +169,11 @@
 #list-view {
     font-family: 'Monaco', monospace;
 }
+
+.update-small-div {
+    background-color: rgb(110, 151, 228);
+    border-radius: 40px;
+    margin-top: 25px;
+    margin-left: 3em;
+    margin-right: 3em;
+}

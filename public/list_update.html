@@ -5,6 +5,11 @@
         <title>UNC Computer Science Course Scheduler Log-In</title>
         <link rel="stylesheet" href="css/styles.css">
     </head>
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+    </style>
     <body style="background-color: #7BAFD4;">
         <div class="navigation-tab">
             <ul class="title" style="float: left;">
@@ -13,28 +18,22 @@
                 </li>
             </ul>
             <ul class="home-button" style="display: inline-block;">
-                <li style="list-style-type: none;">
+                <li class="nav-button" style="list-style-type: none;">
                     <a href="index.html" id="login-button">
                         Log-Out
+                    </a>
+                </li>
+                <li class="nav-button" style="list-style-type: none;">
+                    <a href="home.html" id="login-button">
+                        Home
                     </a>
                 </li>
             </ul>
         </div>
         <div id="main-text" style="font-weight: bold;">
-            Welcome, Montek Singh!
+            Update By List
         </div>
-        <div id="sub-main-text">
-            What would you like to do?
-        </div>
-        <div class="two-options">
-            <ul class="options">
-                <li><button onclick="location.href = 'view.html';">
-                    View Schedule
-                </button></li>
-                <li><button onclick="location.href = 'update_view.html';">
-                    Update Schedule
-                </button></li>
-            </ul>
-        </div>
+        <div id="update-course-board"></div>
+        <script src="js/list_update.js" type="module"></script>
     </body>
 </html>
