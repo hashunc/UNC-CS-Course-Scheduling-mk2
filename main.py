@@ -50,7 +50,7 @@ mw_periods = {
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
     'MWF': {'days': ['Monday', 'Wednesday', "Friday"], 'periods': mwf_periods},
-    'TTH': {'days': ['Tuesday'], 'periods': tth_periods},
+    'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
     'MW': {'days': ['Monday', "Wednesday"], 'periods': mw_periods},
     #'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
@@ -63,36 +63,33 @@ for mp in meeting_patterns.values():
             time_slots.append((day, period))
 print(time_slots)
 
-def get_day_periods(mp):
-    day_periods = set()
-    days = meeting_patterns[mp]['days']
-    periods = meeting_patterns[mp]['periods'].keys()
-    for day in days:
-        for period in periods:
-            day_periods.add((day, period))
-    return day_periods
+# Create time slots specific to each meeting pattern
+def get_time_slots(mp):
+    periods = sorted(meeting_patterns[mp]['periods'].keys())
+    time_slots = [(mp, period) for period in periods]
+    return time_slots
+
+# Generate time slots for each meeting pattern
+mwf= get_time_slots('MWF')
+th = get_time_slots('TTH')
+mw = get_time_slots('MW')
+
+
 def is_prof_available_for_time_slot(p, mp, period):
-    for day in meeting_patterns[mp]['days']:
-        if (day, period) not in professors[p]['availability']:
-            return False
-    return True
+    return (mp, period) in professors[p]['availability']
 
 
-# Availability sets for different meeting patterns
-mwf_availability = get_day_periods('MWF')
-tth_availability = get_day_periods('TTH')
-mw_availability = get_day_periods('MW')
+
+
 
 
 # Union of all availability
-all_availability = mwf_availability.union(tth_availability).union(mw_availability)
+all_availability = mwf = th + mw
 
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
 # You can customize this based on actual availability
-mwf = get_day_periods('MWF')
-th = get_day_periods('TTH')
-mw = get_day_periods('MW')
+
 print(mwf)
 print(th)
 print(mw)
@@ -190,7 +187,7 @@ professors = {
     },
     'Kevin Sun': {
         'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
-        'availability': mwf,  # Changed from time_slots to mwf
+        'availability': [('MW', 3)],  # Changed from time_slots to mwf
         'max_classes': 2
     },
     'Cece McMahon': {
@@ -774,6 +771,9 @@ for c in courses:
 # Generate all valid combinations of indices for x
 x_indices = []
 
+# Generate all valid combinations of indices for x
+x_indices = []
+
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
@@ -942,19 +942,18 @@ for p in professors:
 
 # 4. A professor cannot teach more than one class at the same time
 for p in professors:
-    for day in days:
-        for period in set(period for mp in meeting_patterns for period in meeting_patterns[mp]['periods']):
-            if (day, period) in professors[p]['availability']:
-                constraint_name = f"Prof_Time_Conflict_{p}_{day}_{period}"
-                
-                # Sum over all classes assigned to professor p that meet on day at period
-                prob += pulp.lpSum([
-                    x[idx]
-                    for idx in x_indices
-                    if (idx[0], idx[1], p) in z
-                    and idx[3] == period
-                    and day in meeting_patterns[idx[2]]['days']
-                ]) <= 1, constraint_name
+    for mp in meeting_patterns:
+        for period in meeting_patterns[mp]['periods']:
+            constraint_name = f"Prof_Time_Conflict_{p}_{mp}_{period}"
+            # Sum over all classes assigned to professor p at (mp, period)
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if (idx[0], idx[1], p) in z
+                and idx[2] == mp
+                and idx[3] == period
+            ]) <= 1, constraint_name
+
 
 
 
@@ -998,18 +997,17 @@ for mp in meeting_patterns:
 # 6. Room capacity constraints (no double booking)
 for r in rooms:
     if r != 'university':
-        for day, period in all_day_periods:
-            constraint_name = f"Room_Capacity_{r}_{day}_{period}"
-            
-            # Ensure that no room is double-booked on the same day and period
-            prob += pulp.lpSum([
-                x[idx]
-                for idx in x_indices
-                if idx[4] == r  # Room matches
-                and idx[3] == period  # Period matches
-                and day in meeting_patterns[idx[2]]['days']  # Day matches the class's meeting pattern days
-            ]) <= 1, constraint_name
-            # Equation: Σ x[c,s,mp,period,r] ≤ 1 for each room r, day, and period
+        for mp in meeting_patterns:
+            for period in meeting_patterns[mp]['periods']:
+                constraint_name = f"Room_Capacity_{r}_{mp}_{period}"
+                prob += pulp.lpSum([
+                    x[idx]
+                    for idx in x_indices
+                    if idx[4] == r
+                    and idx[2] == mp
+                    and idx[3] == period
+                ]) <= 1, constraint_name
+
 
 
 
