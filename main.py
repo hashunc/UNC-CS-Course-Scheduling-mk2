@@ -84,7 +84,7 @@ def is_prof_available_for_time_slot(p, mp, period):
 
 
 # Union of all availability
-all_availability = mwf = th + mw
+all_availability = mwf + th + mw
 
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
@@ -102,7 +102,7 @@ professors = {
     },
     'Tessa Joseph-Nicholas': {
         'qualified_courses': ['COMP126', "COMP380", "COMP380H"],
-        'availability': mwf,  # Changed from time_slots to mwf
+        'availability': mwf[0],  # Changed from time_slots to mwf
         'max_classes': 3
     },
     'Ketan Mayer-Patel': {
@@ -127,7 +127,7 @@ professors = {
     },
     'Jasleen Kaur': {
         'qualified_courses': ['COMP431'],
-        'availability': mwf,  # Changed from time_slots to mwf
+        'availability': mwf[0],  # Changed from time_slots to mwf
         'max_classes': 0
     },
     'Saba Eskandarian': {
@@ -162,7 +162,7 @@ professors = {
     },
     'Donald Porter': {
         'qualified_courses': ['COMP530'],
-        'availability': all_availability,  # No change
+        'availability': mwf,  # No change
         'max_classes': 1
     },
     'John Majikes': {
@@ -197,7 +197,7 @@ professors = {
     },
     'Shahriar Nirjon': {
         'qualified_courses': ['COMP433'],
-        'availability': th,  # Changed from time_slots to th
+        'availability': th[4:5],  # Changed from time_slots to th
         'max_classes': 1
     },
     'Jack Snoeyink': {
@@ -247,7 +247,7 @@ professors = {
     },
     'Snigdha Chaturvedi': {
         'qualified_courses': ['COMP790-158'],
-        'availability': all_availability,  # No change
+        'availability': mwf[:3],  # No change
         'max_classes': 1
     },
     'Huaxiu Yao': {
@@ -707,7 +707,7 @@ manually_scheduled_classes = [
         'section': 3,
         'professor': 'Alyssa Byrnes',
         'meeting_pattern': 'MWF',
-        'time_slot': ('Monday', 1),
+        'period': 1,  # Period within the 'MWF' meeting pattern
         'room': 'university'
     },
     # Example of a partial specification (only professor assigned)
@@ -830,67 +830,44 @@ for entry in manually_scheduled_classes:
         p = entry['professor']
         # Ensure the professor is assigned to the class
         prob += z[(c, s, p)] == 1, f"Manual_Professor_Assigned_{c}_{s}_{p}"
-        # Ensure the professor is not assigned to other classes at the same time
-        if 'time_slot' in entry:
-            ts = entry['time_slot']
-            day, period = ts
-            # Professors can't teach other classes at the same time
-            for other_c in courses:
-                for section in courses[other_c]['sections']:
-                    other_s = section['section_number']
-                    if (other_c, other_s, p) in z and (other_c != c or other_s != s):
-                        # Ensure uniqueness of constraint names
-                        # In the manual constraints section
-                        constraint_name = f"Manual_Prof_Time_Conflict_{p}_{day}_{period}_{other_c}_{other_s}"
-                        prob += pulp.lpSum([
-                            x[idx]
-                            for idx in x_indices
-                            if idx[0] == other_c and idx[1] == other_s and idx[3] == ts
-                        ]) == 0, constraint_name
 
-
-    # Fix meeting pattern, time slot, and room if specified
-    if 'meeting_pattern' in entry and 'time_slot' in entry and 'room' in entry:
+    # Fix meeting pattern, period, and room if specified
+    if 'meeting_pattern' in entry and 'period' in entry and 'room' in entry:
         mp = entry['meeting_pattern']
-        ts = entry['time_slot']
+        period = entry['period']
         r = entry['room']
-        # Set x variable corresponding to these values to 1
-        idx = (c, s, mp, ts, r)
+        idx = (c, s, mp, period, r)
         if idx in x:
-            prob += x[idx] == 1, f"Manual_Schedule_{c}_{s}_{mp}_{ts}_{r}"
+            prob += x[idx] == 1, f"Manual_Schedule_{c}_{s}_{mp}_{period}_{r}"
         else:
             print(f"Warning: Invalid manual schedule for class {c} section {s}.")
     else:
-        # If only partial information is provided, adjust accordingly
         # Fix meeting pattern if specified
         if 'meeting_pattern' in entry:
             mp = entry['meeting_pattern']
-            # The class must be scheduled in the specified meeting pattern
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
                 if idx[0] == c and idx[1] == s and idx[2] == mp
-            ]) == 1, f"Manual_Meeting_Pattern_{c}_{s}_{mp}"
+            ]) == y[(c, s)], f"Manual_Meeting_Pattern_{c}_{s}_{mp}"
 
-        # Fix time slot if specified
-        if 'time_slot' in entry:
-            ts = entry['time_slot']
-            # The class must be scheduled at the specified time slot
+        # Fix period if specified
+        if 'period' in entry:
+            period = entry['period']
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
-                if idx[0] == c and idx[1] == s and idx[3] == ts
-            ]) == 1, f"Manual_Time_Slot_{c}_{s}_{ts}"
+                if idx[0] == c and idx[1] == s and idx[3] == period
+            ]) == y[(c, s)], f"Manual_Period_{c}_{s}_{period}"
 
         # Fix room if specified
         if 'room' in entry:
             r = entry['room']
-            # The class must be scheduled in the specified room
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
                 if idx[0] == c and idx[1] == s and idx[4] == r
-            ]) == 1, f"Manual_Room_{c}_{s}_{r}"
+            ]) == y[(c, s)], f"Manual_Room_{c}_{s}_{r}"
 
 # -----------------------------
 # Constraints
