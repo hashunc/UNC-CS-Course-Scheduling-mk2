@@ -1,6 +1,8 @@
+import shutil
+from fastapi import HTTPException
 import pulp
 from collections import defaultdict
-
+import json
 
 def load_days():
     return ['Monday', 'Tuesday', 'Wednesday']
@@ -50,6 +52,225 @@ def load_meeting_patterns(mwf_periods, tth_periods, mw_periods):
         }  
     return meeting_patterns
 
+
+def backup_data():
+    FILE_PATH = "professors.json"
+    BACKUP_PATH = "professors_backup.json"
+    try:
+        shutil.copy(FILE_PATH, BACKUP_PATH)
+    except FileNotFoundError:
+        with open(BACKUP_PATH, "w") as backup_file:
+            json.dump({}, backup_file, indent=4)
+
+def restore_backup():
+    FILE_PATH = "professors.json"
+    BACKUP_PATH = "professors_backup.json"
+    try:
+        shutil.copy(BACKUP_PATH, FILE_PATH)
+        print("Rollback successful. Changes have been undone.")
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="Backup file not found. Cannot restore.")
+
+def get_professordata():
+    file_path = "professors.json"
+
+    with open(file_path) as file:
+        data = json.load(file)
+    return data
+
+def add_professor(name, qualified_courses, availability, max_classes):
+    backup_data()
+    file_path = "professors.json"
+
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+
+    if name in data:
+        print(f"Professor {name} already exists in the dataset.")
+        return data
+    data[name] = {
+        "qualified_courses": qualified_courses,
+        "availability": availability,
+        "max_classes": max_classes
+    }
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data
+
+def update_professor(name, qualified_courses = None, availability = None, max_classes = None):
+    backup_data()
+    file_path = "professors.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot update.")
+    if name not in data:
+        raise HTTPException(status_code=404, detail=f"Professor {name} not found.")
+    professor = data[name]
+    if qualified_courses is not None:
+        professor["qualified_courses"] = qualified_courses
+    if availability is not None:
+        professor["availability"] = availability
+    if max_classes is not None:
+        professor["max_classes"] = max_classes
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data
+
+def delete_professor(name):
+    backup_data()
+    file_path = "professors.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot delete.")
+    if name not in data:
+        raise HTTPException(status_code=404, detail=f"Professor {name} not found.")  
+    del data[name]
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)    
+    return data 
+
+def backup_courses():
+    FILE_PATH = "course.json"
+    BACKUP_PATH = "courses_backup.json"
+    try:
+        shutil.copy(FILE_PATH, BACKUP_PATH)
+    except FileNotFoundError:
+        with open(BACKUP_PATH, "w") as backup_file:
+            json.dump({}, backup_file, indent=4)
+
+def restore_courses():
+    FILE_PATH = "courses.json"
+    BACKUP_PATH = "courses_backup.json"
+    try:
+        shutil.copy(BACKUP_PATH, FILE_PATH)
+        print("Rollback successful. Changes have been undone.")
+    except FileNotFoundError:
+        raise HTTPException(status_code=500, detail="Backup file not found. Cannot restore.")
+
+def get_coursedata():
+    file_path = "courses.json"
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)    
+    except FileNotFoundError: 
+        raise HTTPException(status_code=404, detail = "No data file found.") 
+    return data
+
+def add_courses(title, sections):
+    #backup_courses()
+    file_path = "courses.json"
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+
+    if title in data:
+        print(f"Course {title} already exists in the dataset.")
+        return data
+    data[title] = {
+        "sections": sections
+    }
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data
+
+def update_course(title, sections):
+    #backup_courses()
+    file_path = "courses.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot update.")
+    if title not in data:
+        raise HTTPException(status_code=404, detail=f"Professor {name} not found.")
+    course = data[title]
+    if sections is not None:
+        course["sections"] = sections
+
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data
+
+def delete_course(title):
+    #backup_courses()
+    file_path = "courses.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot delete.")
+    if title not in data:
+        raise HTTPException(status_code=404, detail=f"Course {title} not found.")  
+    del data[title]
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)    
+    return data 
+
+def get_roomdata():
+    file_path = "rooms.json"
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)    
+    except FileNotFoundError: 
+        raise HTTPException(status_code=404, detail = "No data file found.") 
+    return data
+
+def add_room(name, capacity):
+    file_path = "rooms.json"
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        data = {}
+
+    if name in data:
+        print(f"Room {name} already exists in the dataset.")
+        return data
+    data[name] = {
+        "capacity": capacity
+    }
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data    
+
+def update_room(name, capacity):
+    file_path = "rooms.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot update.")
+    if name not in data:
+        raise HTTPException(status_code=404, detail=f"Professor {name} not found.")
+    room = data[name]
+    room["capacity"] = capacity
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+    return data
+
+def delete_room(name):
+    #backup_courses()
+    file_path = "rooms.json"
+    try: 
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="No data file found. Cannot delete.")
+    if name not in data:
+        raise HTTPException(status_code=404, detail=f"Course {name} not found.")  
+    del data[name]
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)    
+    return data 
 
 def load_professors():
     time_slots = []
@@ -632,6 +853,7 @@ def load_courses():
     }
 }
     return courses
+restore_courses()
 
 def load_rooms():
     rooms = {
@@ -1102,3 +1324,22 @@ def run_scheduling_algorithm (
             'message': f"No feasible solution found. Solver Status: {pulp.LpStatus[prob.status]}"
         }
         return result
+'''
+manually_scheduled_classes = None
+days = load_days()
+mwf_periods, tth_periods, mw_periods = load_periods()
+meeting_patterns =  load_meeting_patterns(mwf_periods, tth_periods, mw_periods)
+professors =  load_professors()
+courses =  load_courses()
+rooms =  load_rooms()
+
+results = run_scheduling_algorithm(
+    days=days,
+    meeting_patterns=meeting_patterns,
+    professors=professors,
+    courses=courses,
+    rooms=rooms,
+    manually_scheduled_classes=manually_scheduled_classes
+)
+print(results)
+'''
