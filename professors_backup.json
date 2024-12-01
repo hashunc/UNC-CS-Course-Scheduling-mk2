@@ -1,0 +1,322 @@
+{
+    "Montek Singh": {
+        "qualified_courses": [
+            "COMP541",
+            "COMP572"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Tessa Joseph-Nicholas": {
+        "qualified_courses": [
+            "COMP126",
+            "COMP380",
+            "COMP380H"
+        ],
+        "availability": "time_slots",
+        "max_classes": 3
+    },
+    "Ketan Mayer-Patel": {
+        "qualified_courses": [
+            "COMP301",
+            "COMP426"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Prairie Goodwin": {
+        "qualified_courses": [
+            "COMP301"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Sayeed Ghani": {
+        "qualified_courses": [
+            "COMP210"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "P.S. Thiagarajan": {
+        "qualified_courses": [
+            "COMP455"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Jasleen Kaur": {
+        "qualified_courses": [
+            "COMP431"
+        ],
+        "availability": "time_slots",
+        "max_classes": 0
+    },
+    "Saba Eskandarian": {
+        "qualified_courses": [
+            "COMP537",
+            "COMP455",
+            "COMP435",
+            "COMP590",
+            "COMP790"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Ron Alterovitz": {
+        "qualified_courses": [
+            "COMP581",
+            "COMP781",
+            "COMP782"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Cynthia Sturton": {
+        "qualified_courses": [
+            "COMP435"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Marc Niethammer": {
+        "qualified_courses": [
+            "COMP775"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Izzi Hinks": {
+        "qualified_courses": [
+            "COMP110"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Samarjit Chakraborty": {
+        "qualified_courses": [
+            "COMP545",
+            "COMP790-148"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Donald Porter": {
+        "qualified_courses": [
+            "COMP530"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "John Majikes": {
+        "qualified_courses": [
+            "COMP421",
+            "COMP550",
+            "COMP116"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Alyssa Byrnes": {
+        "qualified_courses": [
+            "COMP110",
+            "COMP116",
+            "COMP210",
+            "COMP283"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Gedas Bertasius": {
+        "qualified_courses": [
+            "COMP790-170"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Roni Sengupta": {
+        "qualified_courses": [
+            "COMP590-177"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Kevin Sun": {
+        "qualified_courses": [
+            "COMP283",
+            "COMP455",
+            "COMP550"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Cece McMahon": {
+        "qualified_courses": [
+            "COMP311",
+            "COMP541"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Shahriar Nirjon": {
+        "qualified_courses": [
+            "COMP433"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Jack Snoeyink": {
+        "qualified_courses": [
+            "COMP283",
+            "DATA140"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Brent Munsell": {
+        "qualified_courses": [
+            "COMP211",
+            "COMP590",
+            "COMP530",
+            "COMP311",
+            "COMP116"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "James Anderson": {
+        "qualified_courses": [
+            "COMP737",
+            "COMP750"
+        ],
+        "availability": "time_slots",
+        "max_classes": 2
+    },
+    "Danielle Szafir": {
+        "qualified_courses": [
+            "COMP790-172"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Daniel Szafir": {
+        "qualified_courses": [
+            "COMP581"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Parasara Sridhar Duggirala": {
+        "qualified_courses": [
+            "COMP089",
+            "COMP790-144"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Praneeth Chakravarthula": {
+        "qualified_courses": [
+            "COMP790-175"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Ben Berg": {
+        "qualified_courses": [
+            "COMP790-178"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Shashank Srivastava": {
+        "qualified_courses": [
+            "COMP664"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Snigdha Chaturvedi": {
+        "qualified_courses": [
+            "COMP790-158"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Huaxiu Yao": {
+        "qualified_courses": [
+            "COMP790-183"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Andrew Kwong": {
+        "qualified_courses": [
+            "COMP790-185"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Mike Reed": {
+        "qualified_courses": [
+            "COMP475"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Paul Stotts": {
+        "qualified_courses": [
+            "COMP590-59",
+            "COMP523"
+        ],
+        "availability": "time_slots",
+        "max_classes": 3
+    },
+    "Prasun Dewan": {
+        "qualified_courses": [
+            "COMP524"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Jorge Silva": {
+        "qualified_courses": [
+            "COMP562"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Kris Jordan": {
+        "qualified_courses": [
+            "COMP590-140"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Junier Oliva": {
+        "qualified_courses": [
+            "COMP755"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "TBD": {
+        "qualified_courses": [
+            "COMP421"
+        ],
+        "availability": "time_slots",
+        "max_classes": 1
+    },
+    "Justin Indla": {
+        "qualified_courses": [
+            "COMP 523"
+        ],
+        "availability": [
+            [
+                "string"
+            ]
+        ],
+        "max_classes": [
+            "COMP 523"
+        ]
+    }
+}
