@@ -37,17 +37,42 @@ fetch('http://127.0.0.1:8000')
         checker.dataset.start = element['Start Time']
 
         checker.addEventListener('click', () => {
+            let course_data = {
+                'Course': checker.dataset.course,
+                'Section': checker.dataset.section,
+                'Title': checker.dataset.title,
+                'Prof': checker.dataset.prof,
+                'Start': checker.dataset.start
+            }
             if(checker.checked){
                 console.log(`${checker.dataset.course} ${checker.dataset.section} added!`)
-                clicked.push(`${checker.dataset.course} ${checker.dataset.section}`);
+                clicked.push(course_data);
             } else {
                 console.log(`${checker.dataset.course} ${checker.dataset.section} removed!`)
-                deleteFromClicked(`${checker.dataset.course} ${checker.dataset.section}`);
+                deleteFromClicked(course_data);
             }
-            console.log(clicked);
         });
 
         board.appendChild(small_div);
         board.appendChild(checker);
     });
+    let button_div = document.createElement('div');
+    button_div.id = 'submit-button-box';
+    let submit_button = document.createElement('button');
+    submit_button.innerText = 'Submit';
+    submit_button.id = 'update-list-submit';
+
+    submit_button.addEventListener('click', () => {
+        //console.log(clicked);
+        if(clicked.length === 0){
+            alert('Please select at least 1 course to edit')
+        } else {
+            console.log(clicked);
+            localStorage.setItem('selectedItems', JSON.stringify(clicked));
+            window.location.href = `edit_by_list.html`
+        }
+    });
+
+    board.appendChild(button_div);
+    button_div.appendChild(submit_button);
   });

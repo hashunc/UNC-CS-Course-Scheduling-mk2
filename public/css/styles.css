@@ -192,3 +192,35 @@
     right: 25em;
     transform: translateY(-115px);
 }
+
+#submit-button-box {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+#update-list-submit:hover {
+    background-color: rgb(159, 159, 159);
+    cursor: pointer;
+}
+
+#return-to-update-by-list {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.return-button:hover {
+    background-color: rgb(159, 159, 159);
+    cursor: pointer;
+}
+
+.list-edit-table {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
