@@ -169,3 +169,26 @@
 #list-view {
     font-family: 'Monaco', monospace;
 }
+
+.update-small-div {
+    background-color: rgb(92, 144, 174);
+    border-radius: 40px;
+    margin-top: 20px;
+    margin-left: 15em;
+    margin-right: 15em;
+    border-width: 500px;
+    font-family: 'Monaco', monospace;
+    padding-left: 40px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.update-list-check {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 25em;
+    transform: translateY(-115px);
+}

@@ -40,22 +40,18 @@ tth_periods = {
 # MW periods (75 minutes each)
 mw_periods = {
     1: {'start_time': '8:00AM', 'duration': 75, 'end_time': '9:15AM'},
-    2: {'start_time': '9:05AM', 'duration': 75, 'end_time': '10:20AM'},
     3: {'start_time': '10:10AM', 'duration': 75, 'end_time': '11:25AM'},
-    4: {'start_time': '11:15AM', 'duration': 75, 'end_time': '12:30PM'},
     5: {'start_time': '12:20PM', 'duration': 75, 'end_time': '1:35PM'},
-    6: {'start_time': '1:25PM', 'duration': 75, 'end_time': '2:40PM'},
     7: {'start_time': '2:30PM', 'duration': 75, 'end_time': '3:45PM'},
-    8: {'start_time': '3:35PM', 'duration': 75, 'end_time': '4:50PM'},
 }
 
 
 
 # Define meeting patterns with their corresponding days and periods
 meeting_patterns = {
-    'MWF': {'days': ['Monday'], 'periods': mwf_periods},
-    'TTH': {'days': ['Tuesday'], 'periods': tth_periods},
-    'MW': {'days': ['Monday'], 'periods': mw_periods},
+    'MWF': {'days': ['Monday', 'Wednesday', "Friday"], 'periods': mwf_periods},
+    'TTH': {'days': ['Tuesday', 'Thursday'], 'periods': tth_periods},
+    'MW': {'days': ['Monday', "Wednesday"], 'periods': mw_periods},
     #'WF': {'days': ['Wednesday', 'Friday'], 'periods': wf_periods}
 }
 
@@ -66,220 +62,239 @@ for mp in meeting_patterns.values():
         for period in mp['periods'].keys():
             time_slots.append((day, period))
 print(time_slots)
+
+# Create time slots specific to each meeting pattern
+def get_time_slots(mp):
+    periods = sorted(meeting_patterns[mp]['periods'].keys())
+    time_slots = [(mp, period) for period in periods]
+    return time_slots
+
+# Generate time slots for each meeting pattern
+mwf= get_time_slots('MWF')
+th = get_time_slots('TTH')
+mw = get_time_slots('MW')
+
+
+def is_prof_available_for_time_slot(p, mp, period):
+    return (mp, period) in professors[p]['availability']
+
+
+
+
+
+
+# Union of all availability
+all_availability = mwf + th + mw
+
 # Professors with their qualifications and availability
 # For this example, let's assume professors are available for all time slots
 # You can customize this based on actual availability
-mwf = time_slots[:8]
-th = time_slots[8:15]
-mw = time_slots[15:]
+
+print(mwf)
+print(th)
+print(mw)
+
 professors = {
     'Montek Singh': {
         'qualified_courses': ['COMP541', 'COMP572'],
-        'availability': time_slots,
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Tessa Joseph-Nicholas': {
         'qualified_courses': ['COMP126', "COMP380", "COMP380H"],
-        'availability': time_slots,
+        'availability': mwf[0],  # Changed from time_slots to mwf
         'max_classes': 3
     },
     'Ketan Mayer-Patel': {
         'qualified_courses': ['COMP301', 'COMP426'],
-        'availability': time_slots,
+        'availability': mw,  # Changed from time_slots to mw
         'max_classes': 1
     },
     'Prairie Goodwin': {
         'qualified_courses': ['COMP301'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Sayeed Ghani': {
         'qualified_courses': ['COMP210'],
-        'availability': time_slots,
+        'availability': th,  # Changed from all_availability to th
         'max_classes': 2
     },
     'P.S. Thiagarajan': {
         'qualified_courses': ['COMP455'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Jasleen Kaur': {
         'qualified_courses': ['COMP431'],
-        'availability': time_slots,
+        'availability': mwf[0],  # Changed from time_slots to mwf
         'max_classes': 0
     },
     'Saba Eskandarian': {
         'qualified_courses': ['COMP537', 'COMP455', 'COMP435', 'COMP590', 'COMP790'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Ron Alterovitz': {
         'qualified_courses': ['COMP581', 'COMP781', 'COMP782'],
-        'availability': time_slots,
+        'availability': mw,  # Changed from time_slots to mw
         'max_classes': 1
     },
     'Cynthia Sturton': {
         'qualified_courses': ['COMP435'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Marc Niethammer': {
         'qualified_courses': ['COMP775'],
-        'availability': time_slots,
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Izzi Hinks': {
         'qualified_courses': ['COMP110'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Samarjit Chakraborty': {
         'qualified_courses': ['COMP545', 'COMP790-148'],
-        'availability': time_slots,
+        'availability': mwf,  # Changed from time_slots to mwf
         'max_classes': 2
     },
     'Donald Porter': {
         'qualified_courses': ['COMP530'],
-        'availability': time_slots,
+        'availability': mwf,  # No change
         'max_classes': 1
     },
-    # Note: No longer at UNC
     'John Majikes': {
         'qualified_courses': ['COMP421', 'COMP550', 'COMP116'],
-        'availability': time_slots,
+        'availability': mw,  # Changed from time_slots to mw
         'max_classes': 2
     },
-    # Note: Alyssa not on the given spreadsheet
     'Alyssa Byrnes': {
         'qualified_courses': ['COMP110', 'COMP116', 'COMP210', 'COMP283'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Gedas Bertasius': {
-        # Note, cross listed 590 and 790. Should get rid of 790 version
         'qualified_courses': ['COMP790-170'],
-        'availability': time_slots,
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Roni Sengupta': {
         'qualified_courses': ['COMP590-177'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Kevin Sun': {
         'qualified_courses': ['COMP283', 'COMP455', 'COMP550'],
-        'availability': time_slots,
+        'availability': [('MW', 3)],  # Changed from time_slots to mwf
         'max_classes': 2
     },
     'Cece McMahon': {
         'qualified_courses': ['COMP311', 'COMP541'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Shahriar Nirjon': {
         'qualified_courses': ['COMP433'],
-        'availability': time_slots,
+        'availability': th[4:5],  # Changed from time_slots to th
         'max_classes': 1
     },
     'Jack Snoeyink': {
         'qualified_courses': ['COMP283', 'DATA140'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Brent Munsell': {
         'qualified_courses': ['COMP211', 'COMP590', 'COMP530', 'COMP311', 'COMP116'],
-        'availability': time_slots,
+        'availability': mw,  # Changed from time_slots to mw
         'max_classes': 2
     },
     'James Anderson': {
         'qualified_courses': ['COMP737', 'COMP750'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 2
     },
     'Danielle Szafir': {
-        # Note, he says he prefers visualization design, but is happy to teach something else
-        # How do we specify what his qualified courses are?
         'qualified_courses': ['COMP790-172'],
-        'availability': time_slots,
+        'availability': mwf,  # Changed from time_slots to mwf
         'max_classes': 1
     },
     'Daniel Szafir': {
         'qualified_courses': ['COMP581'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
-    # Note: The course he specified was Safe Autonomy, but the course he teaches is Formal Methods
     'Parasara Sridhar Duggirala': {
-        'qualified_courses': ['COMP089','COMP790-144'],
-        'availability': time_slots,
+        'qualified_courses': ['COMP089', 'COMP790-144'],
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Praneeth Chakravarthula': {
-        'qualified_courses': [ 'COMP790-175'],
-        'availability': time_slots,
+        'qualified_courses': ['COMP790-175'],
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Ben Berg': {
         'qualified_courses': ['COMP790-178'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Shashank Srivastava': {
         'qualified_courses': ['COMP664'],
-        'availability': time_slots,
+        'availability': mwf,  # Changed from time_slots to mwf
         'max_classes': 1
     },
     'Snigdha Chaturvedi': {
         'qualified_courses': ['COMP790-158'],
-        'availability': time_slots,
+        'availability': mwf[:3],  # No change
         'max_classes': 1
     },
     'Huaxiu Yao': {
         'qualified_courses': ['COMP790-183'],
-        'availability': time_slots,
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Andrew Kwong': {
         'qualified_courses': ['COMP790-185'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Mike Reed': {
         'qualified_courses': ['COMP475'],
-        'availability': time_slots,
+        'availability': mw,  # Changed from time_slots to mw
         'max_classes': 1
     },
     'Paul Stotts': {
         'qualified_courses': ['COMP590-59', 'COMP523'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 3
     },
     'Prasun Dewan': {
         'qualified_courses': ['COMP524'],
-        'availability': time_slots,
+        'availability': mwf,  # Already mwf, no change
         'max_classes': 1
     },
     'Jorge Silva': {
         'qualified_courses': ['COMP562'],
-        'availability': time_slots,
+        'availability': th,  # Changed from time_slots to th
         'max_classes': 1
     },
     'Kris Jordan': {
         'qualified_courses': ['COMP590-140'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
     'Junier Oliva': {
         'qualified_courses': ['COMP755'],
-        'availability': time_slots,
+        'availability': mwf,  # Changed from time_slots to mwf
         'max_classes': 1
     },
     'TBD': {
         'qualified_courses': ['COMP421'],
-        'availability': time_slots,
+        'availability': all_availability,  # No change
         'max_classes': 1
     },
-    
 }
 
 
@@ -692,7 +707,7 @@ manually_scheduled_classes = [
         'section': 3,
         'professor': 'Alyssa Byrnes',
         'meeting_pattern': 'MWF',
-        'time_slot': ('Monday', 1),
+        'period': 1,  # Period within the 'MWF' meeting pattern
         'room': 'university'
     },
     # Example of a partial specification (only professor assigned)
@@ -729,13 +744,14 @@ def is_prof_available_and_qualified(p, c, ts):
 prob = pulp.LpProblem("Course_Scheduling_Problem", pulp.LpMaximize)
 
 # Create time slots specific to each meeting pattern
+# Create time slots specific to each meeting pattern
 time_slots_mp = {}
 for mp in meeting_patterns:
     mp_time_slots = []
-    for day in meeting_patterns[mp]['days']:
-        for period in meeting_patterns[mp]['periods'].keys():
-            mp_time_slots.append((day, period))
+    for period in meeting_patterns[mp]['periods'].keys():
+        mp_time_slots.append((mp, period))
     time_slots_mp[mp] = mp_time_slots
+
 # Define the threshold for small classes
 small_class_threshold = 100
 
@@ -755,12 +771,16 @@ for c in courses:
 # Generate all valid combinations of indices for x
 x_indices = []
 
+# Generate all valid combinations of indices for x
+x_indices = []
+
 for c in courses:
     for section in courses[c]['sections']:
         s = section['section_number']
         seat_capacity = section['seat_capacity']
         for mp in possible_meeting_patterns:
-            for ts in time_slots_mp[mp]:
+            for period in meeting_patterns[mp]['periods'].keys():
+                ts = (mp, period)
                 for r in rooms.keys():
                     # Enforce large classes to use 'university' room only
                     if (c, s) in large_classes and r != 'university':
@@ -771,8 +791,9 @@ for c in courses:
                     # Enforce room capacity constraints
                     if seat_capacity is not None and rooms[r]['capacity'] < seat_capacity:
                         continue  # Skip this combination
-                    idx = (c, s, mp, ts, r)
+                    idx = (c, s, mp, period, r)
                     x_indices.append(idx)
+
 
 # Define the decision variables
 
@@ -809,67 +830,44 @@ for entry in manually_scheduled_classes:
         p = entry['professor']
         # Ensure the professor is assigned to the class
         prob += z[(c, s, p)] == 1, f"Manual_Professor_Assigned_{c}_{s}_{p}"
-        # Ensure the professor is not assigned to other classes at the same time
-        if 'time_slot' in entry:
-            ts = entry['time_slot']
-            day, period = ts
-            # Professors can't teach other classes at the same time
-            for other_c in courses:
-                for section in courses[other_c]['sections']:
-                    other_s = section['section_number']
-                    if (other_c, other_s, p) in z and (other_c != c or other_s != s):
-                        # Ensure uniqueness of constraint names
-                        # In the manual constraints section
-                        constraint_name = f"Manual_Prof_Time_Conflict_{p}_{day}_{period}_{other_c}_{other_s}"
-                        prob += pulp.lpSum([
-                            x[idx]
-                            for idx in x_indices
-                            if idx[0] == other_c and idx[1] == other_s and idx[3] == ts
-                        ]) == 0, constraint_name
 
-
-    # Fix meeting pattern, time slot, and room if specified
-    if 'meeting_pattern' in entry and 'time_slot' in entry and 'room' in entry:
+    # Fix meeting pattern, period, and room if specified
+    if 'meeting_pattern' in entry and 'period' in entry and 'room' in entry:
         mp = entry['meeting_pattern']
-        ts = entry['time_slot']
+        period = entry['period']
         r = entry['room']
-        # Set x variable corresponding to these values to 1
-        idx = (c, s, mp, ts, r)
+        idx = (c, s, mp, period, r)
         if idx in x:
-            prob += x[idx] == 1, f"Manual_Schedule_{c}_{s}_{mp}_{ts}_{r}"
+            prob += x[idx] == 1, f"Manual_Schedule_{c}_{s}_{mp}_{period}_{r}"
         else:
             print(f"Warning: Invalid manual schedule for class {c} section {s}.")
     else:
-        # If only partial information is provided, adjust accordingly
         # Fix meeting pattern if specified
         if 'meeting_pattern' in entry:
             mp = entry['meeting_pattern']
-            # The class must be scheduled in the specified meeting pattern
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
                 if idx[0] == c and idx[1] == s and idx[2] == mp
-            ]) == 1, f"Manual_Meeting_Pattern_{c}_{s}_{mp}"
+            ]) == y[(c, s)], f"Manual_Meeting_Pattern_{c}_{s}_{mp}"
 
-        # Fix time slot if specified
-        if 'time_slot' in entry:
-            ts = entry['time_slot']
-            # The class must be scheduled at the specified time slot
+        # Fix period if specified
+        if 'period' in entry:
+            period = entry['period']
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
-                if idx[0] == c and idx[1] == s and idx[3] == ts
-            ]) == 1, f"Manual_Time_Slot_{c}_{s}_{ts}"
+                if idx[0] == c and idx[1] == s and idx[3] == period
+            ]) == y[(c, s)], f"Manual_Period_{c}_{s}_{period}"
 
         # Fix room if specified
         if 'room' in entry:
             r = entry['room']
-            # The class must be scheduled in the specified room
             prob += pulp.lpSum([
                 x[idx]
                 for idx in x_indices
                 if idx[0] == c and idx[1] == s and idx[4] == r
-            ]) == 1, f"Manual_Room_{c}_{s}_{r}"
+            ]) == y[(c, s)], f"Manual_Room_{c}_{s}_{r}"
 
 # -----------------------------
 # Constraints
@@ -921,18 +919,18 @@ for p in professors:
 
 # 4. A professor cannot teach more than one class at the same time
 for p in professors:
-    for ts in set(professors[p]['availability']):
-        day, period = ts
-        ts_str = f"{day}_{period}"
-        constraint_name = f"Prof_Time_Conflict_{p}_{ts_str}"
-        
-        # Ensure that a professor is not assigned to more than one class in the same time slot
-        prob += pulp.lpSum([
-            x[idx]
-            for idx in x_indices
-            if idx[3] == ts and (idx[0], idx[1], p) in z
-        ]) <= 1, constraint_name
-        # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each professor p and time slot ts
+    for mp in meeting_patterns:
+        for period in meeting_patterns[mp]['periods']:
+            constraint_name = f"Prof_Time_Conflict_{p}_{mp}_{period}"
+            # Sum over all classes assigned to professor p at (mp, period)
+            prob += pulp.lpSum([
+                x[idx]
+                for idx in x_indices
+                if (idx[0], idx[1], p) in z
+                and idx[2] == mp
+                and idx[3] == period
+            ]) <= 1, constraint_name
+
 
 
 
@@ -944,61 +942,50 @@ for c in courses:
             if (c, s, p) in z:
                 constraint_name = f"Link_z_x_{c}_{s}_{p}"
                 
-                # Ensure that if a professor is assigned to a class (z[c,s,p] = 1),
-                # then the class must be scheduled in at least one available time slot for that professor
                 prob += pulp.lpSum([
                     x[idx]
                     for idx in x_indices
-                    if idx[0] == c and idx[1] == s and idx[3] in professors[p]['availability']
+                    if idx[0] == c and idx[1] == s and is_prof_available_for_time_slot(p, idx[2], idx[3])
                 ]) >= z[(c, s, p)], constraint_name
-                # Equation: Σ x[c,s,mp,ts,r] ≥ z[c,s,p]
-
 
 # 5b. If x[idx] == 1, then z[(c, s, p)] == 1 for some p
 for idx in x_indices:
-    c, s, mp, ts, r = idx
-    day, period = ts
-    ts_str = f"{day}_{period}"
-    constraint_name = f"Link_x_z_{c}_{s}_{mp}_{ts_str}_{r}"
+    c, s, mp, period, r = idx
+    constraint_name = f"Link_x_z_{c}_{s}_{mp}_{period}_{r}"
     
-    # Ensure that if a class is scheduled in a specific meeting pattern, time slot, and room (x[idx] = 1),
-    # then at least one qualified and available professor is assigned to it
     prob += x[idx] <= pulp.lpSum([
         z[(c, s, p)]
         for p in professors
-        if (c, s, p) in z and ts in professors[p]['availability']
+        if (c, s, p) in z and is_prof_available_for_time_slot(p, mp, period)
     ]), constraint_name
-    # Equation: x[c,s,mp,ts,r] ≤ Σ z[c,s,p] for all p qualified and available at ts
 
 
 
-# Collect all unique time slots across all meeting patterns
-all_time_slots = set()
-for mp in time_slots_mp:
-    all_time_slots.update(time_slots_mp[mp])
+
+# Collect all unique day-period combinations
+all_day_periods = set()
+for mp in meeting_patterns:
+    days = meeting_patterns[mp]['days']
+    periods = meeting_patterns[mp]['periods'].keys()
+    for day in days:
+        for period in periods:
+            all_day_periods.add((day, period))
 
 # 6. Room capacity constraints (no double booking)
 for r in rooms:
     if r != 'university':
-        for ts in all_time_slots:
-            day, period = ts
-            ts_str = f"{day}_{period}"
-            constraint_name = f"Room_Capacity_{r}_{ts_str}"
-            
-            # Ensure that no room (except 'university') is double-booked in any time slot
-            # If the room is already booked for a class at a specific time, it cannot be assigned to another class at that time
-            if constraint_name in prob.constraints:
-                # Append an index or additional identifier to make it unique
-                index = 1
-                while f"{constraint_name}_{index}" in prob.constraints:
-                    index += 1
-                constraint_name = f"{constraint_name}_{index}"
-            prob += pulp.lpSum([
-                x[idx]
-                for idx in x_indices
-                if idx[4] == r and idx[3] == ts
-            ]) <= 1, constraint_name
-            # Equation: Σ x[c,s,mp,ts,r] ≤ 1 for each room r and time slot ts
+        for mp in meeting_patterns:
+            for period in meeting_patterns[mp]['periods']:
+                constraint_name = f"Room_Capacity_{r}_{mp}_{period}"
+                prob += pulp.lpSum([
+                    x[idx]
+                    for idx in x_indices
+                    if idx[4] == r
+                    and idx[2] == mp
+                    and idx[3] == period
+                ]) <= 1, constraint_name
+
+
 
 
 
@@ -1006,6 +993,8 @@ for r in rooms:
     for d in days:
         # Get sorted list of periods for the day based on 'MW' meeting patterns
         periods = sorted(meeting_patterns['MW']['periods'].keys())
+        # print("awiubfewabfiwauebfwaoiefbwaoiefbiewbf")
+        # print(periods)
         for p in periods:
             next_p = p + 1
             if next_p in meeting_patterns['MW']['periods'].keys():
@@ -1119,6 +1108,7 @@ prob.solve()
 # Output the Schedule and Store Assignments
 # -----------------------------
 
+# Output the Schedule and Store Assignments
 if pulp.LpStatus[prob.status] == 'Optimal':
     schedule = []
     unscheduled_classes = []
@@ -1128,11 +1118,10 @@ if pulp.LpStatus[prob.status] == 'Optimal':
             s = section['section_number']
             if pulp.value(y[(c, s)]) == 1:
                 # Class is scheduled
-                # Find the scheduled time slot and room
                 assigned = False
                 for idx in x_indices:
                     if idx[0] == c and idx[1] == s and pulp.value(x[idx]) == 1:
-                        c, s, mp, ts, r = idx
+                        c, s, mp, period, r = idx
                         section = next(sec for sec in courses[c]['sections'] if sec['section_number'] == s)
                         seat_capacity = section['seat_capacity']
                         # Find the assigned professor
@@ -1141,7 +1130,7 @@ if pulp.LpStatus[prob.status] == 'Optimal':
                             if (c, s, p) in z and pulp.value(z[(c, s, p)]) == 1:
                                 assigned_professor = p
                                 break
-                        day, period = ts
+                        days = meeting_patterns[mp]['days']
                         start_time = meeting_patterns[mp]['periods'][period]['start_time']
                         end_time = meeting_patterns[mp]['periods'][period]['end_time']
                         schedule.append({
@@ -1150,7 +1139,7 @@ if pulp.LpStatus[prob.status] == 'Optimal':
                             'Title': courses[c]['title'],
                             'Professor': assigned_professor,
                             'Meeting Pattern': mp,
-                            'Day': day,
+                            'Days': days,
                             'Period': period,
                             'Start Time': start_time,
                             'End Time': end_time,
@@ -1171,9 +1160,10 @@ if pulp.LpStatus[prob.status] == 'Optimal':
         print(f"Course: {entry['Course']} Section {entry['Section']}, Title: {entry['Title']}")
         print(f"  Professor: {entry['Professor']}")
         print(f"  Meeting Pattern: {entry['Meeting Pattern']}")
-        print(f"  Day: {entry['Day']}, Period: {entry['Period']}, Start Time: {entry['Start Time']}, End Time: {entry['End Time']}")
+        print(f"  Days: {', '.join(entry['Days'])}, Period: {entry['Period']}, Start Time: {entry['Start Time']}, End Time: {entry['End Time']}")
         print(f"  Room: {entry['Room']}")
         print(f"  Seat Capacity: {entry['Seat Capacity']}\n")
+
     
     # Print unscheduled classes
     if unscheduled_classes:
@@ -1185,147 +1175,147 @@ if pulp.LpStatus[prob.status] == 'Optimal':
     # New Code to Print Professors with No Classes Scheduled
     # -----------------------------
     
-    # Initialize a dictionary to count classes assigned to each professor
-    professor_class_counts = {p: 0 for p in professors}
+#     # Initialize a dictionary to count classes assigned to each professor
+#     professor_class_counts = {p: 0 for p in professors}
     
-    # Iterate over the assignment variables z to count classes
-    for (c, s, p) in z:
-        if pulp.value(z[(c, s, p)]) == 1:
-            professor_class_counts[p] += 1
+#     # Iterate over the assignment variables z to count classes
+#     for (c, s, p) in z:
+#         if pulp.value(z[(c, s, p)]) == 1:
+#             professor_class_counts[p] += 1
     
-    # List of professors with no classes assigned
-    professors_with_no_classes = [p for p, count in professor_class_counts.items() if count == 0]
+#     # List of professors with no classes assigned
+#     professors_with_no_classes = [p for p, count in professor_class_counts.items() if count == 0]
     
-    # Print professors with no classes scheduled
-    if professors_with_no_classes:
-        print("\nProfessors with no classes scheduled:")
-        for p in professors_with_no_classes:
-            print(f"Professor: {p}")
-    else:
-        print("\nAll professors have at least one class scheduled.")
+#     # Print professors with no classes scheduled
+#     if professors_with_no_classes:
+#         print("\nProfessors with no classes scheduled:")
+#         for p in professors_with_no_classes:
+#             print(f"Professor: {p}")
+#     else:
+#         print("\nAll professors have at least one class scheduled.")
     
-else:
-    print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
-print("All Time Slots:", time_slots)
-print("MWF Segments:", mwf, "MW Segments:", mwf, "TTH Segments:", th)
-print("Time Slots per Meeting Pattern:", time_slots_mp)
+# else:
+#     print("No feasible solution found. Solver Status:", pulp.LpStatus[prob.status])
+# print("All Time Slots:", time_slots)
+# print("MWF Segments:", mwf, "MW Segments:", mwf, "TTH Segments:", th)
+# print("Time Slots per Meeting Pattern:", time_slots_mp)
 
 
-def remove_and_reassign(prob, x, y, z, x_indices, assignment, c_remove, s_remove, new_mp, new_ts, new_r):
-    """
-    Removes a course section from its current assignment and attempts to reassign it to a new meeting pattern, time slot, and room.
+# def remove_and_reassign(prob, x, y, z, x_indices, assignment, c_remove, s_remove, new_mp, new_ts, new_r):
+#     """
+#     Removes a course section from its current assignment and attempts to reassign it to a new meeting pattern, time slot, and room.
 
-    :param prob: The PuLP problem instance.
-    :param x: Dictionary of x variables.
-    :param y: Dictionary of y variables.
-    :param z: Dictionary of z variables.
-    :param x_indices: List of all x indices.
-    :param assignment: Dictionary storing current assignments.
-    :param c_remove: Course code to remove.
-    :param s_remove: Section number to remove.
-    :param new_mp: New meeting pattern (e.g., 'MWF', 'TTH', 'MW').
-    :param new_ts: New time slot tuple (day, period).
-    :param new_r: New room code.
-    :return: True if reassignment is possible, False otherwise.
-    """
-    key = (c_remove, s_remove)
-    if key not in assignment:
-        print(f"Course {c_remove} Section {s_remove} is not scheduled. No action taken.")
-        return False
+#     :param prob: The PuLP problem instance.
+#     :param x: Dictionary of x variables.
+#     :param y: Dictionary of y variables.
+#     :param z: Dictionary of z variables.
+#     :param x_indices: List of all x indices.
+#     :param assignment: Dictionary storing current assignments.
+#     :param c_remove: Course code to remove.
+#     :param s_remove: Section number to remove.
+#     :param new_mp: New meeting pattern (e.g., 'MWF', 'TTH', 'MW').
+#     :param new_ts: New time slot tuple (day, period).
+#     :param new_r: New room code.
+#     :return: True if reassignment is possible, False otherwise.
+#     """
+#     key = (c_remove, s_remove)
+#     if key not in assignment:
+#         print(f"Course {c_remove} Section {s_remove} is not scheduled. No action taken.")
+#         return False
     
-    # Get the current assignment index
-    current_idx = assignment[key]
+#     # Get the current assignment index
+#     current_idx = assignment[key]
     
-    # Remove the current assignment by setting x[current_idx] == 0
-    prob += x[current_idx] == 0, f"Remove_Assignment_{c_remove}_{s_remove}"
+#     # Remove the current assignment by setting x[current_idx] == 0
+#     prob += x[current_idx] == 0, f"Remove_Assignment_{c_remove}_{s_remove}"
     
-    # Remove the current professor assignment if any
-    assigned_professor = None
-    for p in professors:
-        if (c_remove, s_remove, p) in z and pulp.value(z[(c_remove, s_remove, p)]) == 1:
-            assigned_professor = p
-            # Set z[c,s,p] == 0
-            prob += z[(c_remove, s_remove, p)] == 0, f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{p}"
-            break
+#     # Remove the current professor assignment if any
+#     assigned_professor = None
+#     for p in professors:
+#         if (c_remove, s_remove, p) in z and pulp.value(z[(c_remove, s_remove, p)]) == 1:
+#             assigned_professor = p
+#             # Set z[c,s,p] == 0
+#             prob += z[(c_remove, s_remove, p)] == 0, f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{p}"
+#             break
     
-    # Allow the class to be rescheduled elsewhere by keeping y[c,s] ==1
-    prob += y[key] == 1, f"Ensure_Class_Scheduled_{c_remove}_{s_remove}"
+#     # Allow the class to be rescheduled elsewhere by keeping y[c,s] ==1
+#     prob += y[key] == 1, f"Ensure_Class_Scheduled_{c_remove}_{s_remove}"
     
-    # Attempt to assign to the new meeting pattern, time slot, and room
-    # Find the index corresponding to the new assignment
-    new_idx = (c_remove, s_remove, new_mp, new_ts, new_r)
-    if new_idx not in x:
-        print(f"Warning: The new assignment ({new_mp}, {new_ts}, {new_r}) for Course {c_remove} Section {s_remove} is invalid.")
-        return False
+#     # Attempt to assign to the new meeting pattern, time slot, and room
+#     # Find the index corresponding to the new assignment
+#     new_idx = (c_remove, s_remove, new_mp, new_ts, new_r)
+#     if new_idx not in x:
+#         print(f"Warning: The new assignment ({new_mp}, {new_ts}, {new_r}) for Course {c_remove} Section {s_remove} is invalid.")
+#         return False
     
-    # Add constraint to set x[new_idx] ==1
-    prob += x[new_idx] == 1, f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}"
+#     # Add constraint to set x[new_idx] ==1
+#     prob += x[new_idx] == 1, f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}"
     
-    # Find a qualified and available professor for the new assignment
-    qualified_professors = [p for p in professors if c_remove in professors[p]['qualified_courses']]
+#     # Find a qualified and available professor for the new assignment
+#     qualified_professors = [p for p in professors if c_remove in professors[p]['qualified_courses']]
     
-    # Attempt to assign a professor
-    professor_assigned = False
-    for p in qualified_professors:
-        if new_ts in professors[p]['availability']:
-            # Check if the professor is available at the new time slot
-            conflict = False
-            for idx in x_indices:
-                if idx[3] == new_ts and (idx[0], idx[1], p) in z and pulp.value(z[(idx[0], idx[1], p)]) == 1:
-                    conflict = True
-                    break
-            if not conflict:
-                # Assign this professor
-                prob += z[(c_remove, s_remove, p)] == 1, f"Assign_New_Professor_{c_remove}_{s_remove}_{p}"
-                professor_assigned = True
-                break
+#     # Attempt to assign a professor
+#     professor_assigned = False
+#     for p in qualified_professors:
+#         if new_ts in professors[p]['availability']:
+#             # Check if the professor is available at the new time slot
+#             conflict = False
+#             for idx in x_indices:
+#                 if idx[3] == new_ts and (idx[0], idx[1], p) in z and pulp.value(z[(idx[0], idx[1], p)]) == 1:
+#                     conflict = True
+#                     break
+#             if not conflict:
+#                 # Assign this professor
+#                 prob += z[(c_remove, s_remove, p)] == 1, f"Assign_New_Professor_{c_remove}_{s_remove}_{p}"
+#                 professor_assigned = True
+#                 break
     
-    if not professor_assigned:
-        print(f"No available and qualified professor found for Course {c_remove} Section {s_remove} at the new time slot.")
-        # Remove the constraint we just added since no professor can be assigned
-        prob.constraints.pop(f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}", None)
-        # Revert removal of current assignment
-        prob.constraints.pop(f"Remove_Assignment_{c_remove}_{s_remove}", None)
-        if assigned_professor:
-            prob.constraints.pop(f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{assigned_professor}", None)
-        return False
+#     if not professor_assigned:
+#         print(f"No available and qualified professor found for Course {c_remove} Section {s_remove} at the new time slot.")
+#         # Remove the constraint we just added since no professor can be assigned
+#         prob.constraints.pop(f"Assign_New_Schedule_{c_remove}_{s_remove}_{new_mp}_{new_ts}_{new_r}", None)
+#         # Revert removal of current assignment
+#         prob.constraints.pop(f"Remove_Assignment_{c_remove}_{s_remove}", None)
+#         if assigned_professor:
+#             prob.constraints.pop(f"Remove_Professor_Assigned_{c_remove}_{s_remove}_{assigned_professor}", None)
+#         return False
     
-    # Re-solve the problem
-    prob.solve()
+#     # Re-solve the problem
+#     prob.solve()
     
-    if pulp.LpStatus[prob.status] == 'Optimal':
-        # Verify the new assignment
-        if pulp.value(x[new_idx]) == 1:
-            # Update the assignment dictionary
-            assignment[key] = new_idx
-            print(f"Course {c_remove} Section {s_remove} has been successfully reassigned to:")
-            print(f"  Meeting Pattern: {new_mp}")
-            print(f"  Time Slot: {new_ts}")
-            print(f"  Room: {new_r}")
-            print(f"  Professor: {p}\n")
-            return True
-        else:
-            print(f"Failed to assign Course {c_remove} Section {s_remove} to the new schedule.")
-            return False
-    else:
-        print(f"Unable to reassign Course {c_remove} Section {s_remove} due to constraints.")
-        return False
-# Example Usage of remove_and_reassign Function
+#     if pulp.LpStatus[prob.status] == 'Optimal':
+#         # Verify the new assignment
+#         if pulp.value(x[new_idx]) == 1:
+#             # Update the assignment dictionary
+#             assignment[key] = new_idx
+#             print(f"Course {c_remove} Section {s_remove} has been successfully reassigned to:")
+#             print(f"  Meeting Pattern: {new_mp}")
+#             print(f"  Time Slot: {new_ts}")
+#             print(f"  Room: {new_r}")
+#             print(f"  Professor: {p}\n")
+#             return True
+#         else:
+#             print(f"Failed to assign Course {c_remove} Section {s_remove} to the new schedule.")
+#             return False
+#     else:
+#         print(f"Unable to reassign Course {c_remove} Section {s_remove} due to constraints.")
+#         return False
+# # Example Usage of remove_and_reassign Function
 
-# Suppose you want to remove and reassign COMP110 Section 3 to ('Tuesday', 2) in room 'FB-F009' with meeting pattern 'TTH'
-c_to_remove = 'COMP110'
-s_to_remove = 3
-new_meeting_pattern = 'TTH'
-new_time_slot = ('Tuesday', 3)
-new_room = 'FB-F009'
+# # Suppose you want to remove and reassign COMP110 Section 3 to ('Tuesday', 2) in room 'FB-F009' with meeting pattern 'TTH'
+# c_to_remove = 'COMP110'
+# s_to_remove = 3
+# new_meeting_pattern = 'TTH'
+# new_time_slot = ('Tuesday', 3)
+# new_room = 'FB-F009'
 
-print(f"\nAttempting to remove and reassign Course {c_to_remove} Section {s_to_remove}...\n")
-result = remove_and_reassign(prob, x, y, z, x_indices, assignment, 
-                             c_to_remove, s_to_remove, 
-                             new_meeting_pattern, new_time_slot, new_room)
+# print(f"\nAttempting to remove and reassign Course {c_to_remove} Section {s_to_remove}...\n")
+# result = remove_and_reassign(prob, x, y, z, x_indices, assignment, 
+#                              c_to_remove, s_to_remove, 
+#                              new_meeting_pattern, new_time_slot, new_room)
 
-if result:
-    print(f"\nSuccessfully reassigned Course {c_to_remove} Section {s_to_remove}.\n")
-else:
-    print(f"\nFailed to reassign Course {c_to_remove} Section {s_to_remove}.\n")
+# if result:
+#     print(f"\nSuccessfully reassigned Course {c_to_remove} Section {s_to_remove}.\n")
+# else:
+#     print(f"\nFailed to reassign Course {c_to_remove} Section {s_to_remove}.\n")
 
