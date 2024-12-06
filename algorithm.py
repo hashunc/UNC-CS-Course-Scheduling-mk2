@@ -7,38 +7,38 @@ def load_days():
 
 def load_periods():
     mwf_periods = {
-        1: {'start_time': '8:00AM', 'duration': 50},
-        2: {'start_time': '9:05AM', 'duration': 50},
-        3: {'start_time': '10:10AM', 'duration': 50},
-        4: {'start_time': '11:15AM', 'duration': 50},
-        5: {'start_time': '12:20PM', 'duration': 50},
-        6: {'start_time': '1:25PM', 'duration': 50},
-        7: {'start_time': '2:30PM', 'duration': 50},
-        8: {'start_time': '3:35PM', 'duration': 50},
+    1: {'start_time': '8:00AM', 'duration': 50, 'end_time': '8:50AM'},
+    2: {'start_time': '9:05AM', 'duration': 50, 'end_time': '9:55AM'},
+    3: {'start_time': '10:10AM', 'duration': 50, 'end_time': '11:00AM'},
+    4: {'start_time': '11:15AM', 'duration': 50, 'end_time': '12:05PM'},
+    5: {'start_time': '12:20PM', 'duration': 50, 'end_time': '1:10PM'},
+    6: {'start_time': '1:25PM', 'duration': 50, 'end_time': '2:15PM'},
+    7: {'start_time': '2:30PM', 'duration': 50, 'end_time': '3:20PM'},
+    8: {'start_time': '3:35PM', 'duration': 50, 'end_time': '4:25PM'},
 }
 
 # TTH periods (75 minutes each)
     tth_periods = {
-        1: {'start_time': '8:00AM', 'duration': 75},
-        2: {'start_time': '9:30AM', 'duration': 75},
-        3: {'start_time': '11:00AM', 'duration': 75},
-        4: {'start_time': '12:30PM', 'duration': 75},
-        5: {'start_time': '2:00PM', 'duration': 75},
-        6: {'start_time': '3:30PM', 'duration': 75},
-        7: {'start_time': '5:00PM', 'duration': 75}
+        1: {'start_time': '8:00AM', 'duration': 75, 'end_time': '9:15AM'},
+        2: {'start_time': '9:30AM', 'duration': 75, 'end_time': '10:45AM'},
+        3: {'start_time': '11:00AM', 'duration': 75, 'end_time': '12:15PM'},
+        4: {'start_time': '12:30PM', 'duration': 75, 'end_time': '1:45PM'},
+        5: {'start_time': '2:00PM', 'duration': 75, 'end_time': '3:15PM'},
+        6: {'start_time': '3:30PM', 'duration': 75, 'end_time': '4:45PM'},
+        7: {'start_time': '5:00PM', 'duration': 75, 'end_time': '6:15PM'}
     }
 
-# MW periods (75 minutes each)
+    # MW periods (75 minutes each)
     mw_periods = {
-        1: {'start_time': '8:00AM', 'duration': 75},
-        2: {'start_time': '9:05AM', 'duration': 75},
-        3: {'start_time': '10:10AM', 'duration': 75},
-        4: {'start_time': '11:15AM', 'duration': 75},
-        5: {'start_time': '12:20PM', 'duration': 75},
-        6: {'start_time': '1:25PM', 'duration': 75},
-        7: {'start_time': '2:30PM', 'duration': 75},
-        8: {'start_time': '3:35PM', 'duration': 75},
-}
+        1: {'start_time': '8:00AM', 'duration': 75, 'end_time': '9:15AM'},
+        2: {'start_time': '9:05AM', 'duration': 75, 'end_time': '10:20AM'},
+        3: {'start_time': '10:10AM', 'duration': 75, 'end_time': '11:25AM'},
+        4: {'start_time': '11:15AM', 'duration': 75, 'end_time': '12:30PM'},
+        5: {'start_time': '12:20PM', 'duration': 75, 'end_time': '1:35PM'},
+        6: {'start_time': '1:25PM', 'duration': 75, 'end_time': '2:40PM'},
+        7: {'start_time': '2:30PM', 'duration': 75, 'end_time': '3:45PM'},
+        8: {'start_time': '3:35PM', 'duration': 75, 'end_time': '4:50PM'},
+    }
     return mwf_periods, tth_periods, mw_periods
 
 
@@ -1040,6 +1040,7 @@ def run_scheduling_algorithm (
                                     break
                             day, period = ts
                             start_time = meeting_patterns[mp]['periods'][period]['start_time']
+                            end_time = meeting_patterns[mp]['periods'][period]['end_time']
                             schedule.append({
                                 'Course': c,
                                 'Section': s,
@@ -1049,6 +1050,7 @@ def run_scheduling_algorithm (
                                 'Day': day,
                                 'Period': period,
                                 'Start Time': start_time,
+                                'End Time': end_time,
                                 'Room': r,
                                 'Seat Capacity': seat_capacity
                             })

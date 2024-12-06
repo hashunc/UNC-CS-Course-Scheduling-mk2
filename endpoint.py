@@ -2,10 +2,18 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from algorithm import load_days, load_courses, load_meeting_patterns, load_professors, load_rooms, load_periods, run_scheduling_algorithm, load_manually_scheduled_classes
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React app origin during development
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all HTTP headers
+)
 
 @app.get("/")
 def schedule_classes():
