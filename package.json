@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@schedule-x/drag-and-drop": "^2.4.1",
+    "@schedule-x/event-recurrence": "^2.4.1",
+    "@schedule-x/events-service": "^2.4.1"
+  }
+}
