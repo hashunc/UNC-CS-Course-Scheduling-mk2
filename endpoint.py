@@ -47,6 +47,7 @@ def schedule_classes():
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 class Professor(BaseModel):
     name: str
     qualified_courses: list[str]
