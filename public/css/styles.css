@@ -252,3 +252,22 @@
 .list-edit-bottom {
     gap: 30px;
 }
+
+.scrollable-element {
+    height: 200px;
+    overflow-y: auto;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 30px;
+}
+
+.max-courses {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.max-course-input {
+    margin-left: 10px;
+    width: 40px;
+}
