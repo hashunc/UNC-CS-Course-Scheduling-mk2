@@ -22,7 +22,7 @@ def get_db_connection():
     return connection
 
 #General data dictionary and algorithm endpoints
-@app.get("/")
+@app.get("/run_alg")
 def schedule_classes():
     manually_scheduled_classes = None
     days = load_days()
@@ -68,6 +68,169 @@ def get_rooms():
         raise HTTPException(status_code = 500, detail = str(e))
     
 #Database CRUD Endpoints
+@app.get("/schedule")
+async def get_qcourse():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("""
+            SELECT * FROM CourseSchedule 
+        """)
+        courses = cursor.fetchall()
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    return courses
+
+@app.get("/schedule/{course}-{section}")
+async def get_course(course: str, section: str):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.execute("""
+            SELECT * FROM CourseSchedule 
+            WHERE Course = ? AND Section = ?
+        """, (course, section))
+        existing_row = cursor.fetchone()
+        
+        if not existing_row:
+            raise HTTPException(status_code=404, detail="Course and section not found")
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    return existing_row
+
+@app.post("/schedule")
+async def add_course(course:str, section:int, title:str = None, professor:str = None, start:str = None, meeting_pattern:str = None, capacity: str = None, room:str = None):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("""
+            INSERT INTO CourseSchedule (Course, Section, Title, Prof, Start, MeetingPattern, SeatCapacity, Room, Type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            course,
+            section,
+            title,
+            professor,
+            start,
+            meeting_pattern,
+            capacity,
+            room,
+            'AUTOMATED'
+        ))
+        connection.commit()
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    finally:
+        connection.close()
+    return f"Manual course added successfully course: {course}"
+
+@app.put("/schedule/{course}-{section}")
+async def update_course(
+    course: str,
+    section: int,
+    title: str = None,
+    professor: str = None,
+    start: str = None,
+    meeting_pattern: str = None,
+    capacity: str = None,
+    room: str = None,
+):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        # Check if the course and section exist
+        cursor.execute("""
+            SELECT * FROM CourseSchedule
+            WHERE Course = ? AND Section = ?
+        """, (course, section))
+        existing_row = cursor.fetchone()
+
+        if not existing_row:
+            print(existing_row)
+            raise HTTPException(status_code=404, detail="Course and section not found")
+        
+        # Build the update query dynamically based on non-null parameters
+        update_fields = []
+        update_values = []
+
+        if title is not None:
+            update_fields.append("Title = ?")
+            update_values.append(title)
+        if professor is not None:
+            update_fields.append("Prof = ?")
+            update_values.append(professor)
+        if start is not None:
+            update_fields.append("Start = ?")
+            update_values.append(start)
+        if meeting_pattern is not None:
+            update_fields.append("MeetingPattern = ?")
+            update_values.append(meeting_pattern)
+        if capacity is not None:
+            update_fields.append("SeatCapacity = ?")
+            update_values.append(capacity)
+        if room is not None:
+            update_fields.append("Room = ?")
+            update_values.append(room)
+
+        # Add the WHERE condition to the query
+        update_query = f"""
+            UPDATE CourseSchedule
+            SET {", ".join(update_fields)}
+            WHERE Course = ? AND Section = ?
+        """
+        update_values.extend([course, section])
+
+        # Execute the update query
+        cursor.execute(update_query, update_values)
+        connection.commit()
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    return {"message": f"Course {course}, section {section} updated successfully."}
+
+@app.delete("/schedule/{course}-{section}")
+async def delete_course(course: str, section: int):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        # Check if the course and section exist
+        cursor.execute("""
+            SELECT * FROM CourseSchedule
+            WHERE Course = ? AND Section = ?
+        """, (course, section))
+        existing_row = cursor.fetchone()
+
+        if not existing_row:
+            raise HTTPException(status_code=404, detail="Course and section not found")
+        
+        # Delete the course and section
+        cursor.execute("""
+            DELETE FROM CourseSchedule
+            WHERE Course = ? AND Section = ?
+        """, (course, section))
+        connection.commit()
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    
+    return f"Course {course}, section {section} has been deleted successfully."
+
+
 class Course(BaseModel):
     Course: str
     Title: str
@@ -516,3 +679,106 @@ async def delete_professor_availability(professor: str, AvailableMp: str, Availa
         connection.close()
 
     return {f"Availability for Professor '{professor}' during MP '{AvailableMp}' and Period '{AvailablePeriod}' has been deleted"}
+
+@app.get("/manual")
+async def get_manual_courses():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("""
+            SELECT * FROM CourseSchedule 
+            WHERE Type = 'MANUAL'
+        """)
+        courses = cursor.fetchall()
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    return courses
+
+
+@app.get("/manual")
+async def get_manual_courses():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("""
+            SELECT * FROM CourseSchedule 
+            WHERE Type = 'MANUAL'
+        """)
+        courses = cursor.fetchall()
+    
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    
+    finally:
+        connection.close()
+    return courses
+
+@app.post("/manual")
+async def add_manual_course(course:str, section:int, title:str = None, professor:str = None, start:str = None, meeting_pattern:str = None, capacity: str = None, room:str = None):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    try:
+        cursor.execute("""
+            INSERT INTO CourseSchedule (Course, Section, Title, Prof, Start, MeetingPattern, SeatCapacity, Room, Type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            course,
+            section,
+            title,
+            professor,
+            start,
+            meeting_pattern,
+            capacity,
+            room,
+            'MANUAL'
+        ))
+        connection.commit()
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+    finally:
+        connection.close()
+    return f"Manual course added successfully", "course: {course}"
+
+@app.delete("/manual/{course}/{section}")
+async def delete_manual_course(course: str, section: int):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        # Check if the course and section exist in the database
+        cursor.execute("""
+            SELECT * FROM CourseSchedule 
+            WHERE Course = ? AND Section = ? AND Type = 'MANUAL'
+        """, (course, section))
+        existing_course = cursor.fetchone()
+
+        if not existing_course:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Manual course with Course '{course}' and Section '{section}' not found."
+            )
+
+        # Delete the manual course
+        cursor.execute("""
+            DELETE FROM CourseSchedule 
+            WHERE Course = ? AND Section = ? AND Type = 'MANUAL'
+        """, (course, section))
+        connection.commit()
+
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+
+    finally:
+        connection.close()
+
+    return f"Manual course '{course}' with Section '{section}' has been deleted."
+
+
+
