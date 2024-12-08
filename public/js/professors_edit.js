@@ -7,14 +7,12 @@ fetch('http://127.0.0.1:8000/courses')
     .then(response => response.json())
     .then(data => {
         courses = Object.keys(data);
-        console.log(courses);
     })
 
 fetch('http://127.0.0.1:8000/professors')
     .then(response => response.json())
     .then(data => {
         original_data = data;
-        console.log(original_data);
         for(let prof of Object.keys(data)){
             const list_item = document.createElement('div');
             list_item.className = 'edit-list-item';
@@ -61,8 +59,43 @@ fetch('http://127.0.0.1:8000/professors')
             max_input_div.appendChild(max_label);
             max_input_div.appendChild(max_input);
 
+            let delete_div = document.createElement('div');
+            delete_div.className = 'delete-div';
+
+            let delete_button = document.createElement('button');
+            let reset_button = document.createElement('button');
+            delete_button.innerText = 'Delete';
+            reset_button.innerText = 'Reset';
+
+            delete_div.appendChild(delete_button);
+            delete_div.appendChild(reset_button);
+            reset_button.className = 'reset-button';
+
+            reset_button.addEventListener('click', () => {
+                const profData = original_data[prof];
+                max_input.value = profData['max_classes'];
+                const originalQualifiedCourses = profData['qualified_courses'];
+                const checkboxInputs = courses_scrollable.querySelectorAll('input[type="checkbox"]');
+                checkboxInputs.forEach(checkbox => {
+                    const label = checkbox.nextSibling;
+                    const courseName = label.textContent;
+                    checkbox.checked = originalQualifiedCourses.includes(courseName);
+                });
+            });
+
+            delete_button.addEventListener('click', () => {
+                const confirmation = confirm(`Are you sure you want to delete data for ${prof}?`);
+                if (confirmation) {
+                    // Remove the professor's div from the DOM
+                    // list_item.remove();
+
+                    console.log('Working!');
+                }
+            });
+
             list_item.appendChild(courses_scrollable);
             list_item.appendChild(max_input_div);
+            list_item.appendChild(delete_div);
             editItems.appendChild(list_item);
         }
     })
