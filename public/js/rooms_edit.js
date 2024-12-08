@@ -59,6 +59,8 @@ fetch('http://127.0.0.1:8000/rooms')
         reset.innerText = 'Reset'
         const submit = document.createElement('button');
         submit.innerText = 'Submit';
+        const return_button = document.createElement('button');
+        return_button.innerText = 'Return';
 
         add_room.addEventListener('click', () => {
             const newRow = rooms_table.insertRow(-1);
@@ -125,14 +127,20 @@ fetch('http://127.0.0.1:8000/rooms')
             // Need to fill out with correct endpoint and redirect
         });
 
+        return_button.addEventListener('click', () => {
+            window.location.href = `edit_fields.html`;
+        });
+
         buttons_div.className = 'general-center';
         buttons_div.style.marginTop = '20px';
 
         reset.style.marginLeft = '20px';
+        return_button.style.marginLeft = '20px';
         submit.style.marginLeft = '20px';
 
         buttons_div.appendChild(add_room);
         buttons_div.appendChild(reset);
+        buttons_div.appendChild(return_button);
         buttons_div.appendChild(submit);
 
         rooms_table_div.appendChild(rooms_table);
