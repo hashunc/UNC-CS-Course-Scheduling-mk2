@@ -412,7 +412,16 @@ async def get_qcourse(professor: str):
 async def create_qcourse(qcourse: QualifiedCourse):
     connection = get_db_connection()
     cursor = connection.cursor()
+    
     try:
+        cursor.execute("""
+            SELECT Prof, Course 
+            FROM QualifiedCourses 
+            WHERE Prof = ? AND Course = ?
+        """, (qcourse.Professor, qcourse.Course))
+        existing_room = cursor.fetchone()
+        if existing_room:
+            raise HTTPException(status_code=400, detail=f"Course '{qcourse.Course}' already exists")
         cursor.execute("""
             INSERT INTO QualifiedCourses (Prof, Course) 
             VALUES (?, ?)
