@@ -99,3 +99,29 @@ fetch('http://127.0.0.1:8000/professors')
             editItems.appendChild(list_item);
         }
     })
+
+const buttons_div = document.getElementById('return-to-update-by-list');
+let back_button = document.createElement('button');
+let submit_button = document.createElement('button');
+
+back_button.innerText = 'Return';
+submit_button.innerText = 'Submit';
+
+back_button.addEventListener('click', () => {
+    window.location.href = `edit_fields.html`;
+});
+
+submit_button.addEventListener('click', () => {
+    if(validate()){
+        console.log('WAHOO!');
+    }
+});
+
+function validate() {
+    return true;
+}
+
+buttons_div.className = 'list-edit-bottom';
+
+buttons_div.appendChild(back_button);
+buttons_div.appendChild(submit_button);
