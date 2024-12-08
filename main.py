@@ -1,7 +1,7 @@
 import sqlite3
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from algorithm import load_days, load_meeting_patterns, load_periods, create_professors_data, create_courses_data, create_rooms_data, run_scheduling_algorithm
+from algorithm import load_days, load_meeting_patterns, load_periods, create_professors_data, create_courses_data, create_rooms_data, run_scheduling_algorithm, create_manually_scheduled_data
 from fastapi.middleware.cors import CORSMiddleware
 
 DATABASE_URL = "sqlite:///./database.db"
@@ -21,16 +21,15 @@ def get_db_connection():
     connection.row_factory = sqlite3.Row  
     return connection
 
-#General data dictionary and algorithm endpoints
 @app.get("/run_alg")
 def schedule_classes():
-    manually_scheduled_classes = None
+    manually_scheduled_classes = None  
     days = load_days()
     mwf_periods, tth_periods, mw_periods = load_periods()
-    meeting_patterns =  load_meeting_patterns(mwf_periods, tth_periods, mw_periods)
-    professors =  create_professors_data()
-    courses =  create_courses_data()
-    rooms =  create_rooms_data()
+    meeting_patterns = load_meeting_patterns(mwf_periods, tth_periods, mw_periods)
+    professors = create_professors_data()
+    courses = create_courses_data()
+    rooms = create_rooms_data()
 
     try:
         results = run_scheduling_algorithm(
@@ -39,12 +38,53 @@ def schedule_classes():
             professors=professors,
             courses=courses,
             rooms=rooms,
-            manually_scheduled_classes=manually_scheduled_classes
+            manually_scheduled_classes=manually_scheduled_classes,
         )
-        return results
+
+        print(results)
+
+        if "schedule" not in results or not isinstance(results["schedule"], list):
+            raise HTTPException(status_code=500, detail="Invalid schedule data returned")
+
+        connection = sqlite3.connect("database.db")
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            DELETE FROM CourseSchedule
+        """)
+        for course in results["schedule"]:
+            if not isinstance(course, dict):
+                raise ValueError(f"Unexpected course data structure: {course}")
+
+            cursor.execute("""
+                INSERT INTO CourseSchedule (Course, Section, Title, Prof, Start, MeetingPattern, SeatCapacity, Room, Type)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, "AUTOMATED")
+            """, (
+                course.get("Course"),
+                course.get("Section"),
+                course.get("Title"),
+                course.get("Professor"),
+                course.get("Start Time"),
+                course.get("Meeting Pattern"),
+                course.get("Seat Capacity"),
+                course.get("Room")
+    
+            ))
+
+        # Commit changes
+        connection.commit()
+
+        # Return the results
+        return {"message": "Schedule successfully updated", "results": results}
+
+    except sqlite3.Error as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+    finally:
+        # Ensure connection is always closed
+        if connection:
+            connection.close()
 @app.get("/professors")
 def get_professors():
     try: 
