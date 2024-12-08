@@ -1050,6 +1050,19 @@ for idx in x_indices:
 # Adjust this value to control the severity of the penalty
 rush_hour_penalty = 0  # You can experiment with different values like 0.5, 1, or 2
 
+
+#sample constraint: slight penalty for scheduling 8am.
+# morning_penalty = 0.5  # Example: half a class unit penalty per class scheduled at period 1
+# morning_x_indices = [
+#     idx for idx in x_indices
+#     if idx[3] == 1  # idx = (c, s, mp, period, r) and period == 1 means earliest slot
+# ]
+#idx 3 would then represent period
+# - morning_penalty * pulp.lpSum([
+#         x[idx]
+#         for idx in morning_x_indices
+#     ])
+
 # Modify the objective function to include rush-hour penalties
 prob += (
     pulp.lpSum([
@@ -1067,6 +1080,8 @@ prob += (
         for idx in rush_hour_x_indices
     ])
 ), "Objective_Function"
+
+
 
 # Explanation:
 # Maximize the number of classes scheduled (Σ y[c,s])
