@@ -282,3 +282,39 @@
 .reset-button {
     margin-left: 15px;
 }
+
+.center-table {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin: 0 50px;
+    margin-top: 18px;
+}
+
+.format-course-table {
+    border-spacing: 100px 10px;
+}
+
+.course-th-column {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.narrow-input {
+    width: 50px;
+}
+
+.general-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.prof-edit-section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-style: italic;
+    font-size: 12px;
+    margin-top: 20px;
+}

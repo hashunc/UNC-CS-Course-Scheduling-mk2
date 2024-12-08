@@ -5,6 +5,11 @@
         <title>UNC Computer Science Course Scheduler Log-In</title>
         <link rel="stylesheet" href="css/styles.css">
     </head>
+    <style>
+        table, th, td {
+          border:1px solid black;
+        }
+    </style>
     <body style="background-color: #7BAFD4;">
         <div class="navigation-tab">
             <ul class="title" style="float: left;">
@@ -12,7 +17,7 @@
                     UNC COMP Course Scheduler
                 </li>
             </ul>
-            <ul class="right-menu" style="display: inline-block;">
+            <ul class="home-button" style="display: inline-block;">
                 <li class="nav-button" style="list-style-type: none;">
                     <a href="index.html" id="login-button">
                         Log-Out
@@ -25,21 +30,10 @@
                 </li>
             </ul>
         </div>
-        <div id="sub-main-text">
-            Which field would you like to edit?
+        <div id="main-text" style="font-weight: bold;">
+            Add New Course
         </div>
-        <div class="two-options">
-            <ul class="options">
-                <li><button onclick="location.href = 'professors.html';">
-                    Professors
-                </button></li>
-                <li><button onclick="location.href = 'classes.html';">
-                    Classes
-                </button></li>
-                <li><button onclick="location.href = 'rooms.html';">
-                    Rooms
-                </button></li>
-            </ul>
-        </div>
+        <div id="add-new-course"></div>
+        <script src="js/add_new_course.js" type="module"></script>
     </body>
 </html>
