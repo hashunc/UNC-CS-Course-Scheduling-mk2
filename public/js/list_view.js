@@ -1,8 +1,8 @@
-fetch('http://127.0.0.1:8000')
+fetch('http://127.0.0.1:8000/schedule')
   .then(response => response.json()
   )
   .then(data => {
-    data = data['schedule'];
+    //data = data['schedule'];
     console.log(data);
     const tableDiv = document.getElementById('list-view');
 
@@ -36,8 +36,8 @@ fetch('http://127.0.0.1:8000')
         cell0.innerHTML = element['Course'];
         cell1.innerHTML = element['Section'];
         cell2.innerHTML = element['Title'];
-        cell3.innerHTML = element['Professor'];
-        cell4.innerHTML = element['Start Time'];
+        cell3.innerHTML = element['Prof'];
+        cell4.innerHTML = element['MeetingPattern'] + " " + element['Start'];
         cell5.innerHTML = element["Room"];
         idx += 1;
     });

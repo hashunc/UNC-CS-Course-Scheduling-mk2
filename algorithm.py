@@ -207,7 +207,41 @@ def create_courses_data():
         connection.close()
         print("Database connection closed.")
 
+
+import sqlite3
+
+def create_manually_scheduled_data():
+    connection = sqlite3.connect("database.db")
+    connection.row_factory = sqlite3.Row
+
+    cursor = connection.cursor()
+    try:
+        query = "SELECT Course, Section, Prof, Start, MeetingPattern, Room FROM CourseSchedule WHERE Type = 'MANUAL'"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        key_mapping = {
+            "Course": "course",
+            "Section": "section",
+            "Prof": "professor",
+            "Start": "start",
+            "MeetingPattern": "meeting_pattern",
+            "Room": "room"
+        }
+        result = [
+            {key_mapping[k]: v for k, v in dict(row).items()}
+            for row in rows
+        ]
+        return result
+    except sqlite3.Error as error:
+        print(f"Error occurred: {error}")
+        return []
+    finally:
+        connection.close()
+        print("Database connection closed.")
+    
+
 def is_prof_available_for_time_slot(p, mp, period):
+    professors = create_professors_data()
     return (mp, period) in professors[p]['availability']
 
 def is_prof_available_and_qualified(p, c, ts):
@@ -220,7 +254,7 @@ def run_scheduling_algorithm (
     professors,
     courses,
     rooms,
-    manually_scheduled_classes = None,
+    manually_scheduled_classes,
     small_class_threshold=100,
     rush_hour_penalty=0,
     possible_meeting_patterns=['MWF', 'TTH', 'MW']
@@ -609,21 +643,3 @@ def run_scheduling_algorithm (
             'message': f"No feasible solution found. Solver Status: {pulp.LpStatus[prob.status]}"
         }
         return result
-
-
-manually_scheduled_classes = None
-days = load_days()
-mwf_periods, tth_periods, mw_periods = load_periods()
-meeting_patterns =  load_meeting_patterns(mwf_periods, tth_periods, mw_periods)
-professors =  create_professors_data()
-courses =  create_courses_data()
-rooms =  create_rooms_data()
-
-results = run_scheduling_algorithm(
-days=days,
-meeting_patterns=meeting_patterns,
-professors=professors,
-courses=courses,
-rooms=rooms,
-manually_scheduled_classes=manually_scheduled_classes
-)

@@ -21,10 +21,10 @@ function deleteFromClicked(json_in){
     }
 }
 
-fetch('http://127.0.0.1:8000')
+fetch('http://127.0.0.1:8000/schedule')
   .then(response => response.json())
   .then(data => {
-    data = data['schedule'];
+    //data = data['schedule'];
     console.log(data);
 
     const board = document.getElementById('update-course-board');
@@ -33,10 +33,10 @@ fetch('http://127.0.0.1:8000')
         small_div.innerText = `Course: ${element['Course']}\n
                                 Section: ${element['Section']}\n
                                 Title: ${element['Title']}\n
-                                Professor: ${element['Professor']}\n
-                                Start Time: ${element['Start Time']}\n
-                                Meeting Pattern: ${element['Meeting Pattern']}\n
-                                Seat Capacity: ${element['Seat Capacity']}\n
+                                Professor: ${element['Prof']}\n
+                                Start Time: ${element['Start']}\n
+                                Meeting Pattern: ${element['MeetingPattern']}\n
+                                Seat Capacity: ${element['SeatCapacity']}\n
                                 Room: ${element['Room']}\n`;
         small_div.className = 'update-small-div';
         let checker = document.createElement('input');
