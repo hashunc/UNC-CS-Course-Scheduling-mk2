@@ -47,3 +47,62 @@ uvicorn main:app --reload
 4. **Browser**: In your browser of choice, navigate to <ins>http://127.0.0.1:5500/public/index.html</ins>
 
 5. You should be all set!
+
+## Data Definitions
+We stored all our data in a Sqlite3 database. We created 7 databases to appropriately handle all the necessary data that we needed to run and edit our algorithm. We have included the database schemas below: 
+
+CourseSchedule:
+- Course: str
+- Section: int
+- Title: str
+- Prof: str
+- Start: str
+- MeetingPattern: str
+- SeatCapcity: int
+- Room: str
+- Type:str
+
+
+Availability:
+- Prof: str
+- AvailableMP: str
+- AvailablePeriod: int
+
+ClassPeriod:
+- MeetingPattern: str
+- Number: int
+- StartTime: str
+- Duration: int
+
+CourseSchedule:
+- Course: str
+- Title: str
+- Section: int
+- SeatCapacity: str
+
+MaxCourses
+- Prof: str
+- MaxCourses: int
+
+
+QualifiedCourses:
+- Course: str
+- Section: int
+
+
+Rooms:
+- Room: str
+- SeatCapacity: int
+
+We passed in serialized versions of this data as professor, course, and room data dictionaries. For our course dictionaries each individual dictionaries stored the course title, and list of section numbers and respective section capacities. For our professor dictionaries we stored qualified courses, the list of available class periods, and the max number of classes of professor wants to teach. For our room dictionaries we stored room name and capacities. The algorithm handles these dictionaries to formulate an appropriate schedule.  
+
+
+## Design Rationale
+
+There are a variety of decisions that we made in order to create this software in accordance with Professor Singh's requirements.
+
+One of the major decisions came down to how we wanted to store our data in our SQLite database. Structuring this data was cruicial as retrieving the data and serializing the data needed to be handled properly in order to pass in the parameters into the algorithm to maintain some level of efficiency and accuracy. We decided to split the data among 7 tables so split the data for their specific purposes. This made writing the endpoints for getting, deleting, and adding data to be much simpler.
+
+Another major decision we had to make was how to structure our objective function to provide an ideal schedule for Professor Singh. We ended up deciding to adjust our objective function such that it penalizes courses that are scheduled in the middle of the day, which we labelled as a "rush hour" penalty.
+
+Lastly, another major decision we had to make was how to prioritize our feature development in the final project. We originally had plans to implement a calendar view for updating a course's schedule, similar to Google Calendar. However, we ran into many technical difficulties and it became tedious to debug. Seeing this, we decided to keep this component off to the side in order to have the important functionalities completed. We are still able to update and view the courses, however it is just in a tabular format as of now as opposed to a calendar view.

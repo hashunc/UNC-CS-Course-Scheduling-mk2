@@ -90,7 +90,7 @@ professors = {
         'max_classes': 1
     },
     'Tessa Joseph-Nicholas': {
-        'qualified_courses': ['COMP126', "COMP380", "COMP380H"],
+        'qualified_courses': ['COMP126', "COMP380", "COMP380H", 'COMP227'],
         'availability': all_availability,  # Changed from time_slots to mwf
         'max_classes': 3
     },
@@ -280,7 +280,7 @@ professors = {
         'max_classes': 1
     },
     'TBD': {
-        'qualified_courses': ['COMP421'],
+        'qualified_courses': ['COMP421'], #Only eligble class should be the class you assigned them to teach
         'availability': all_availability,  # No change
         'max_classes': 1
     },
@@ -745,8 +745,6 @@ for c in courses:
             else:
                 small_classes.append((c, s))
 
-# Generate all valid combinations of indices for x
-x_indices = []
 
 # Generate all valid combinations of indices for x
 x_indices = []
@@ -939,14 +937,6 @@ for idx in x_indices:
 
 
 
-# Collect all unique day-period combinations
-all_day_periods = set()
-for mp in meeting_patterns:
-    days = meeting_patterns[mp]['days']
-    periods = meeting_patterns[mp]['periods'].keys()
-    for day in days:
-        for period in periods:
-            all_day_periods.add((day, period))
 
 # 6. Room capacity constraints (no double booking)
 for r in rooms:
@@ -1050,6 +1040,19 @@ for idx in x_indices:
 # Adjust this value to control the severity of the penalty
 rush_hour_penalty = 0  # You can experiment with different values like 0.5, 1, or 2
 
+
+#sample constraint: slight penalty for scheduling 8am.
+# morning_penalty = 0.5  # Example: half a class unit penalty per class scheduled at period 1
+# morning_x_indices = [
+#     idx for idx in x_indices
+#     if idx[3] == 1  # idx = (c, s, mp, period, r) and period == 1 means earliest slot
+# ]
+#idx 3 would then represent period
+# - morning_penalty * pulp.lpSum([
+#         x[idx]
+#         for idx in morning_x_indices
+#     ])
+
 # Modify the objective function to include rush-hour penalties
 prob += (
     pulp.lpSum([
@@ -1067,6 +1070,8 @@ prob += (
         for idx in rush_hour_x_indices
     ])
 ), "Objective_Function"
+
+
 
 # Explanation:
 # Maximize the number of classes scheduled (Σ y[c,s])
