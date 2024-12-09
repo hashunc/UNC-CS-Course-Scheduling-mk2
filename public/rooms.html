@@ -5,11 +5,6 @@
         <title>UNC Computer Science Course Scheduler Log-In</title>
         <link rel="stylesheet" href="css/styles.css">
     </head>
-    <style>
-        table, th, td {
-          border:1px solid black;
-        }
-    </style>
     <body style="background-color: #7BAFD4;">
         <div class="navigation-tab">
             <ul class="title" style="float: left;">
@@ -17,7 +12,7 @@
                     UNC COMP Course Scheduler
                 </li>
             </ul>
-            <ul class="home-button" style="display: inline-block;">
+            <ul class="right-menu" style="display: inline-block;">
                 <li class="nav-button" style="list-style-type: none;">
                     <a href="index.html" id="login-button">
                         Log-Out
@@ -30,17 +25,11 @@
                 </li>
             </ul>
         </div>
-        <div id="main-text" style="font-weight: bold;">
-            List View
+        <div id="main-text">
+            Rooms Edit
         </div>
-        <script>
-            function run_alg() {
-                fetch('http://127.0.0.1:8000/run_alg')
-                .then(response => response.json())
-            }
-        </script>
-        <div id="list-view"></div>
-        <script src="js/list_view.js" type="module"></script>
-        <button onclick="run_alg()" class="button" style="margin-left: 94.5%;"> Re-Run Algorithm </button>
+        <div id="rooms-edit-table"></div>
+        <script src="js/rooms_edit.js" type="module"></script>
+        <div id="return-to-update-by-list"></div>
     </body>
 </html>

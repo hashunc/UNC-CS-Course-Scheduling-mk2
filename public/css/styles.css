@@ -252,3 +252,81 @@
 .list-edit-bottom {
     gap: 30px;
 }
+
+.scrollable-element {
+    height: 200px;
+    overflow-y: auto;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 30px;
+}
+
+.max-courses {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.max-course-input {
+    margin-left: 10px;
+    width: 40px;
+}
+
+.delete-div {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin-top: 20px;
+}
+
+.reset-button {
+    margin-left: 15px;
+}
+
+.center-table {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin: 0 50px;
+    margin-top: 18px;
+}
+
+.format-course-table {
+    border-spacing: 100px 10px;
+}
+
+.course-th-column {
+    font-size: 13px;
+    font-style: italic;
+}
+
+.narrow-input {
+    width: 50px;
+}
+
+.general-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.prof-edit-section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-style: italic;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+.button {
+    padding: 25px 20px; /* Adding padding around the text */
+    background-color: rgb(199, 199, 199);
+    border-radius: 6px;
+    height: 35px;
+    width: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
