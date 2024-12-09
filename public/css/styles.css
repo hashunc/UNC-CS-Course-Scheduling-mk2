@@ -318,3 +318,15 @@
     font-size: 12px;
     margin-top: 20px;
 }
+
+.button {
+    padding: 25px 20px; /* Adding padding around the text */
+    background-color: rgb(199, 199, 199);
+    border-radius: 6px;
+    height: 35px;
+    width: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
