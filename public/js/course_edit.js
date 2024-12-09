@@ -3,6 +3,13 @@ let courses = [];
 
 let original_data = [];
 
+let courses_to_update = []; //PUT {course-section} Used to update section or max capacity of an existing course
+
+let courses_to_remove = []; //DELETE {course-section} Used to remove section of an course
+
+let courses_to_add = []; //POST {course (JSON Body)} Used to add a new course/section of a course
+
+
 fetch('http://127.0.0.1:8000/courses')
     .then(response => response.json())
     .then(data => {
@@ -71,6 +78,8 @@ fetch('http://127.0.0.1:8000/courses')
             }
 
             renderTableRows();
+
+
 
             let delete_div = document.createElement('div');
             delete_div.className = 'delete-div';
@@ -156,6 +165,11 @@ back_button.addEventListener('click', () => {
 });
 
 submit_button.addEventListener('click', () => {
+    if(courses_to_update.length > 0) {
+        courses_to_update.forEach((coursePayload) => {
+            updateCourses(coursePayload);
+        })
+    }
     if(validate()){
         console.log('WAHOO!');
     }
