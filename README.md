@@ -48,6 +48,55 @@ uvicorn main:app --reload
 
 5. You should be all set!
 
+## Data Definitions
+We stored all our data in a Sqlite3 database. We created 7 databases to appropriately handle all the necessary data that we needed to run and edit our algorithm. We have included the database schemas below: 
+
+CourseSchedule:
+- Course: str
+- Section: int
+- Title: str
+- Prof: str
+- Start: str
+- MeetingPattern: str
+- SeatCapcity: int
+- Room: str
+- Type:str
+
+
+Availability:
+- Prof: str
+- AvailableMP: str
+- AvailablePeriod: int
+
+ClassPeriod:
+- MeetingPattern: str
+- Number: int
+- StartTime: str
+- Duration: int
+
+CourseSchedule:
+- Course: str
+- Title: str
+- Section: int
+- SeatCapacity: str
+
+MaxCourses
+- Prof: str
+- MaxCourses: int
+
+
+QualifiedCourses:
+- Course: str
+- Section: int
+
+
+Rooms:
+- Room: str
+- SeatCapacity: int
+
+We passed in serialized versions of this data as professor, course, and room data dictionaries. For our course dictionaries each individual dictionaries stored the course title, and list of section numbers and respective section capacities. For our professor dictionaries we stored qualified courses, the list of available class periods, and the max number of classes of professor wants to teach. For our room dictionaries we stored room name and capacities. The algorithm handles these dictionaries to formulate an appropriate schedule.  
+
+
 ## Design Rationale
 
 There are a variety of decisions that we made in order to create this software in accordance with Professor Singh's requirements.
