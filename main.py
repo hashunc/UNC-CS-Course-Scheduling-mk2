@@ -23,7 +23,7 @@ def get_db_connection():
 
 @app.get("/run_alg")
 def schedule_classes():
-    manually_scheduled_classes = None  
+    manually_scheduled_classes = create_manually_scheduled_data()  
     days = load_days()
     mwf_periods, tth_periods, mw_periods = load_periods()
     meeting_patterns = load_meeting_patterns(mwf_periods, tth_periods, mw_periods)
