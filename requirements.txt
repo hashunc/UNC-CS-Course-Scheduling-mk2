@@ -1,5 +1,7 @@
-fastapi[standard]~=0.115.7
+#fastapi[standard]~=0.115.7
+#uvicorn
+# requirements above are only needed for the old code base
 black~=24.10.0
 pylint~=3.3.4
 PuLP
-uvicorn
+pandas

@@ -1,15 +1,15 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/universal
 {
-	"name": "Python Black with Five Server",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/vscode/devcontainers/python:3.13",
+    "name": "Python Black with Five Server",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/vscode/devcontainers/python:3.13",
     "customizations": {
         "vscode": {
             "extensions": [
                 "ms-python.python",
                 "ms-python.black-formatter",
-				"yandeu.five-server"
+                "yandeu.five-server"
             ],
             "settings": {
                 "[python]": {
@@ -26,17 +26,11 @@
             }
         }
     },
-	"postCreateCommand": "pip install -r requirements.txt"
-
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+    "postCreateCommand": "pip install -r requirements.txt"
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
 }
