@@ -1,0 +1,3 @@
+CourseID,Sec,EnrollCapacity,ProfessorName,Ability,Willingness,Professor_PreferredTimeSlots,Professor_PreferredRooms
+110,1,300,"Hinks,Isabella Rose",5,0,"MWF_1,2,3,4",FB003
+110,1,300,"Ghani,Muhammad Sayeed",3,3,"TTH_1,2,3,4,5",FB001
