@@ -10,22 +10,25 @@ testing_files: List[Path] = [
 matching_names: List[str] = [
     "base_case",
 ]
-matching_files: Dict[Path, Path] = {
-    home / "test_data" / name: home / "target_data" / (name + ".csv")
+matching_files: Dict[str, tuple[Path, Path, Path]] = {
+    name: (
+        home / "test_data" / name,
+        home / "target_data" / f"{name}.csv",
+        home / "test_results" / f"{name}.csv",
+    )
     for name in matching_names
 }
 
 
 # given outputted schedule and correct schedule, check if schedules are equivalent
 def compare_output():
-    for case in matching_files:
-        print([pd.read_csv(case / file) for file in ["data.csv", "room.csv"]])
+    for name in matching_names:
+        case, target, result = matching_files[name]
         service = CourseScheduler(case / "data.csv", case / "room.csv")
         service.schedule_courses(case / "output.csv")
-        diff = pd.read_csv(case / "output.csv").compare(
-            pd.read_csv(matching_files[case])
-        )
-        print(diff)
+        diff = pd.read_csv(case / "output.csv").compare(pd.read_csv(target))
+        with open(result, "w") as file:
+            print(diff, file=file)
         assert diff.empty
 
 
