@@ -48,6 +48,7 @@ class CourseScheduler:
 
         self.X = None
         self.prob = None
+        self.valid_course_professor_pairs = None
 
         self.preference_time_penalties = {}
         self.preference_room_penalties = {}
@@ -92,38 +93,37 @@ class CourseScheduler:
     def initialize_problem(self):
         """Initialize the LP problem and decision variables."""
 
-        # 创建一个集合，记录哪些(课程,教授)组合是有效的
-        valid_course_professor_pairs = set()
+        # create a set to record valid professor-course with scores higher than threshold
+        self.valid_course_professor_pairs = set()
         for idx, row in self.data.iterrows():
-            valid_course_professor_pairs.add((row["CourseID"], row["Sec"], row["ProfessorName"]))
+            self.valid_course_professor_pairs.add((row["CourseID"], row["Sec"], row["ProfessorName"]))
         
-        # 只为有效组合创建决策变量
-        self.X = {}
-        for c, s in self.all_courses:
-            for t in self.time_slots:
-                for r in self.room_ids:
-                    for p in self.professors:
-                        if (c, s, p) in valid_course_professor_pairs:
-                            self.X[(c, s, t, r, p)] = LpVariable(f"X_{c}_{s}_{t}_{r}_{p}", cat="Binary")
+        self.X = {
+            (c, s, t, r, p): LpVariable(f"X_{c}_{s}_{t}_{r}_{p}", cat="Binary")
+            for c, s in self.all_courses
+            for t in self.time_slots
+            for r in self.room_ids
+            for p in self.professors
+        }
 
-            self.prob = LpProblem("Course_Scheduling", LpMinimize)
-            self.prob += lpSum(
-                self.X[c, s, t, r, p] 
-                for c, s in self.all_courses
-                for t in self.time_slots 
-                for r in self.room_ids
-                for p in self.professors
-            )
+        self.prob = LpProblem("Course_Scheduling", LpMinimize)
+        self.prob += lpSum(
+            self.X[c, s, t, r, p]
+            for c, s in self.all_courses
+            for t in self.time_slots
+            for r in self.room_ids
+            for p in self.professors
+        )
 
         # Initialize penalty variables
         for idx, row in self.data.iterrows():
             key = (row["CourseID"], row["Sec"], row["ProfessorName"])
             self.preference_time_penalties[key] = LpVariable(
-                f"Penalty_{row['CourseID']}_{row['Sec']}_{row['ProfessorName']}", 
+                f"TimePenalty_{row['CourseID']}_{row['Sec']}_{row['ProfessorName']}", 
                 lowBound=0
             )
             self.score_rank_penalties[key] = LpVariable(
-                f"Penalty_{row['CourseID']}_{row['Sec']}_{row['ProfessorName']}", 
+                f"ScorePenalty_{row['CourseID']}_{row['Sec']}_{row['ProfessorName']}", 
                 lowBound=0
             )
             score = row['Ability'] + row['Willingness']
@@ -136,7 +136,8 @@ class CourseScheduler:
 
 
     def add_course_assignment_constraints(self):
-        """Add constraints to ensure every course would be arranged to 1 time slot and 1 room and 1 professor."""
+        """Add constraints to ensure every (course + sec) would be arranged to 1 time slot and 1 room and 1 professor at most."""
+        """However, every (course) would be arranged at least once."""
 
         for (course_id, section) in self.all_courses:
             self.prob += lpSum(
@@ -144,68 +145,112 @@ class CourseScheduler:
                 for t in self.time_slots 
                 for r in self.room_ids
                 for p in self.professors
-            ) == 1
+            ) <= 1
+        
+
+        unique_course_ids = set(c for c, s in self.all_courses)
+        for course_id in unique_course_ids:
+            sections = [s for c, s in self.all_courses if c == course_id]
+            self.prob += lpSum(
+                self.X[course_id, section, t, r, p]
+                for section in sections
+                for t in self.time_slots
+                for r in self.room_ids
+                for p in self.professors
+            ) >= 1
 
 
     def add_professor_preference_constraints(self):
         """Add soft constraints for professor time slot preferences."""
 
-        # 收集所有非偏好时段安排的惩罚项
-        preference_penalties = []
-        
-        for _, row in self.data.iterrows():
+        for idx, row in self.data.iterrows():
             c = row["CourseID"]
             s = row["Sec"]
             p = row["ProfessorName"]
+            key = (c, s, p)
             
-            # 获取偏好时间段
-            preferred_times = row["Professor_PreferredTimeSlots"].split(";")
-            non_preferred_times = [t for t in self.time_slots if t not in preferred_times]
+            # 获取教授偏好的时间段
+            preferred_times = row["Professor_PreferredTimeSlots"].split(",") if "," in row["Professor_PreferredTimeSlots"] else [row["Professor_PreferredTimeSlots"]]
             
-            # 对于每个非偏好时间段，如果安排了，则增加惩罚
-            for t in non_preferred_times:
-                for r in self.room_ids:
-                    if (c, s, t, r, p) in self.X:
-                        # 将每个非偏好时段的安排加入惩罚列表
-                        preference_penalties.append(self.X[(c, s, t, r, p)])
-        
-        # 更新目标函数：添加教授偏好惩罚项
-        # 权重100表示对教授偏好的高度重视
-        self.prob += 100 * lpSum(preference_penalties)
-    
-
-    def add_professor_scores_constraints(self):
-        """Add soft constraints based on professor's Ability and Willingness scores for course assignments."""
-        
-        # 为每个课程-分组组合创建教授分数映射
-        for _, row in self.data.iterrows():
-            c = row["CourseID"]
-            s = row["Sec"]
-            p = row["ProfessorName"]
-            score = row['Ability'] + row['Willingness']
-            
-            # 计算与得分成反比的归一化惩罚系数（低分高惩罚）
-            max_score = 10  # 假设最大分数为10
-            penalty_coefficient = (max_score - score) / max_score if max_score > 0 else 0
-            
-            # 对于该教授被分配到的每个位置，增加惩罚项
-            for t in self.time_slots:
-                for r in self.room_ids:
-                    if (c, s, t, r, p) in self.X:
-                        # 正确的线性约束：惩罚变量必须大于等于决策变量乘以惩罚系数
-                        self.prob += self.score_rank_penalties[(c, s, p)] >= penalty_coefficient * self.X[(c, s, t, r, p)]
-            
-            # 确保只有在教授被分配课程时才应用惩罚
-            course_assigned = lpSum(
+            # 检查课程是否被安排给这位教授
+            assigned_to_this_professor = lpSum(
                 self.X[(c, s, t, r, p)]
                 for t in self.time_slots
                 for r in self.room_ids
                 if (c, s, t, r, p) in self.X
             )
             
-            self.prob += self.score_rank_penalties[(c, s, p)] <= course_assigned
+            non_preferred_time_assignment = lpSum(
+                self.X[(c, s, t, r, p)]
+                for t in self.time_slots
+                for r in self.room_ids
+                if t not in preferred_times and (c, s, t, r, p) in self.X
+            )
+            
+            self.prob += self.preference_time_penalties[key] >= non_preferred_time_assignment
+            
+            self.prob += self.preference_time_penalties[key] <= assigned_to_this_professor
         
-        # 将惩罚添加到目标函数
+        self.prob += 100 * lpSum(self.preference_time_penalties.values())
+
+
+    def add_professor_zero_score_constraints(self):
+
+        for c, s in self.all_courses:
+            for p in self.professors:
+                if (c, s, p) not in self.valid_course_professor_pairs:
+                    for t in self.time_slots:
+                        for r in self.room_ids:
+                            self.prob += self.X[(c, s, t, r, p)] == 0
+    
+
+    def add_professor_scores_constraints(self):
+        """
+        添加基于教授能力和意愿分数的软约束
+        课程未安排时，根据教授评分添加惩罚（评分越高惩罚越重）
+        """
+        
+        # 按课程分组处理
+        course_sections = {}
+        for _, row in self.data.iterrows():
+            c = row["CourseID"]
+            s = row["Sec"]
+            p = row["ProfessorName"]
+            score = row['Ability'] + row['Willingness']
+            
+            key = (c, s)
+            if key not in course_sections:
+                course_sections[key] = []
+            course_sections[key].append((p, score))
+        
+        # 对每门课程处理
+        for (c, s), professors in course_sections.items():
+            # 检查此课程是否被安排（到任何教授）
+            course_assigned = lpSum(
+                self.X[(c, s, t, r, prof)]
+                for t in self.time_slots
+                for r in self.room_ids
+                for prof in self.professors
+                if (c, s, prof) in self.valid_course_professor_pairs and (c, s, t, r, prof) in self.X
+            )
+            
+            # 为每个教授添加惩罚项
+            for p, score in professors:
+                if (c, s, p) not in self.valid_course_professor_pairs:
+                    continue
+                    
+                # 计算归一化权重（高分高惩罚）
+                max_score = 10  # 假设最大分数为10
+                penalty_weight = score / max_score
+                
+                # 当课程未被安排时，添加基于教授评分的惩罚
+                # 即 1 - course_assigned = 1 时（课程未安排）
+                self.prob += self.score_rank_penalties[(c, s, p)] >= penalty_weight * (1 - course_assigned)
+                
+                # 确保惩罚上限
+                self.prob += self.score_rank_penalties[(c, s, p)] <= 1 - course_assigned
+            
+        # 将惩罚项加入目标函数
         self.prob += 100 * lpSum(self.score_rank_penalties.values())
 
 
@@ -389,7 +434,7 @@ class CourseScheduler:
             for t in self.time_slots:
                 for r in self.room_ids:
                     for p in self.professors:
-                        if self.X[c, s, t, r, p].varValue == 1:
+                        if (c, s, t, r, p) in self.X and self.X[c, s, t, r, p].varValue == 1:
                             course = c
                             section = s
                             professor_name = p
@@ -416,17 +461,18 @@ class CourseScheduler:
 
         # Add constraints
         self.add_course_assignment_constraints()
+        self.add_professor_zero_score_constraints()
         self.add_professor_scores_constraints()
         self.add_professor_preference_constraints()
-        # self.add_section_time_constraints()
-        # self.add_professor_time_constraints()
-        # self.add_room_time_constraints()
-        # self.add_specific_course_constraints()
-        # self.add_mwf_course_constraints()
-        # self.add_mw_course_constraints()
-        # self.add_high_demand_period_constraints()
-        # self.add_core_course_constraints()
-        # self.add_room_capacity_constraints()
+        self.add_section_time_constraints()
+        self.add_professor_time_constraints()
+        self.add_room_time_constraints()
+        self.add_specific_course_constraints()
+        self.add_mwf_course_constraints()
+        self.add_mw_course_constraints()
+        self.add_high_demand_period_constraints()
+        self.add_core_course_constraints()
+        self.add_room_capacity_constraints()
 
         # Solve the problem
         success = self.solve_problem()
