@@ -13,6 +13,7 @@ Chaturvedi,COMP 486,3,2,5
 Chaturvedi,COMP 487,3,2,5
 Chaturvedi,COMP 560,3,2,5
 Chaturvedi,COMP 562,3,2,5
+Dewan,COMP 524,4,4,8
 Duggirala,COMP 455,4,4,8
 Duggirala,COMP 545,4,3,7
 Duggirala,COMP 550,4,3,7
@@ -29,6 +30,7 @@ Gaikwad,COMP 560,4,4,8
 Gaikwad,COMP 562,4,4,8
 Gaikwad,COMP 110,3,3,6
 Gaikwad,COMP 486,3,3,6
+Ghani,COMP 210,4,4,8
 Goodwin,COMP 301,4,4,8
 Goodwin,COMP 210,4,3,7
 Goodwin,COMP 380,3,3,6
@@ -76,6 +78,7 @@ Munsell,COMP 311,4,4,8
 Munsell,COMP 475,4,3,7
 Munsell,COMP 530,4,3,7
 Munsell,COMP 575,4,3,7
+Nirjon,COMP 433,4,4,8
 Porter,COMP 530,4,4,8
 Porter,COMP 311,3,3,6
 Porter,COMP 211,2,3,5
@@ -104,9 +107,9 @@ Stanley,COMP 116,3,2,5
 Stanley,COMP 488,3,2,5
 Stanley,COMP 283,2,2,4
 Stanley,COMP 110,2,0,2
+Stotts,COMP 523,4,4,8
 Stotts,COMP 210,4,0,4
 Stotts,COMP 301,4,0,4
-Stotts,COMP 523,4,0,4
 Stotts,COMP 110,3,0,3
 Stotts,COMP 116,3,0,3
 Sturton,COMP 435,4,4,8
