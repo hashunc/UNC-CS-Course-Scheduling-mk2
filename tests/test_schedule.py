@@ -18,13 +18,11 @@ simple_cases = ("base_case",)
     ("service", "expected"),
     (
         pytest.param(
-            (
-                CourseScheduler(
-                    test_data / name / "data.csv",
-                    test_data / name / "room.csv",
-                ),
-                Path("./tests/target_data") / f"{name}.csv",
+            CourseScheduler(
+                test_data / name / "data.csv",
+                test_data / name / "room.csv",
             ),
+            Path("./tests/target_data") / f"{name}.csv",
             id=name,
         )
         for name in simple_cases
