@@ -1,7 +1,10 @@
 import pytest
-from scheduler.schedule import CourseScheduler
 import pandas as pd
 from pathlib import Path
+
+# TODO: fix import
+from scheduler.schedule import CourseScheduler
+
 
 # home of test and target data
 test_data = Path("./tests/test_data")
