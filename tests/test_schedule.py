@@ -1,7 +1,10 @@
 import pytest
-from ..scheduler.schedule import CourseScheduler
+from scheduler.schedule import CourseScheduler
 import pandas as pd
 from pathlib import Path
+
+# home of test and target data
+test_data = Path("./tests/test_data")
 
 # provides case names
 simple_cases = ("base_case",)
@@ -14,10 +17,10 @@ simple_cases = ("base_case",)
         pytest.param(
             (
                 CourseScheduler(
-                    Path("./test_data") / name / "data.csv",
-                    Path("./test_data") / name / "room.csv",
+                    test_data / name / "data.csv",
+                    test_data / name / "room.csv",
                 ),
-                Path("./target_data") / f"{name}.csv",
+                Path("./tests/target_data") / f"{name}.csv",
             ),
             id=name,
         )
@@ -43,8 +46,8 @@ full_scale_cases = ()
     (
         pytest.param(
             (
-                Path("./test_data") / name / "data.csv",
-                Path("./test_data") / name / "room.csv",
+                test_data / name / "data.csv",
+                test_data / name / "room.csv",
             ),
             id=name,
         )
