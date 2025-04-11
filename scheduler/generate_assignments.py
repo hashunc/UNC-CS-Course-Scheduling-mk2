@@ -19,6 +19,7 @@ instructor_course_counts = dict(zip(
 ))
 
 # Extract all available sections
+course_cap_df.columns = course_cap_df.columns.str.strip()
 course_cap_df["Course"] = "COMP " + course_cap_df["Course Num"].astype(str) + " - " + course_cap_df["Sec #"].astype(str)
 all_courses = course_cap_df["Course"].tolist()
 
@@ -49,7 +50,15 @@ for instructor_last_name, count in instructor_course_counts.items():
     for course_num in preferred_course_nums:
         for section in course_sections.get(course_num, []):
             if section not in used_courses:
-                assignments.append({"Instructor": instructor_last_name, "CourseID": course_num, "Sec": section.split(" - ")[1]})
+                sec_num = section.split(" - ")[1]
+                cap_row = course_cap_df[course_cap_df["Course"] == section]
+                capacity = int(cap_row["Enroll Cap"].values[0]) if not cap_row.empty else None
+                assignments.append({
+                    "CourseID": course_num,
+                    "Sec": sec_num,
+                    "EnrollCapacity": capacity,
+                    "ProfessorName": instructor_last_name
+                })
                 used_courses.add(section)
                 assigned += 1
                 if assigned == count:
