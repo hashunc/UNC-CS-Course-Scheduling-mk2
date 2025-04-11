@@ -22,11 +22,8 @@ Chaturvedi,COMP 790-158 Special Topics: Special topics in Natural Language Proce
 Chaturvedi,COMP 486 Applications of Natural Language Processing,3,2,5
 Chaturvedi,COMP 487 Information Retrieval,3,2,5
 Chaturvedi,COMP 560 Artificial Intelligence,3,2,5
-Chen,COMP 790-150   Special Topics: Efficient Deep Learning,4,4,8
-Deng,COMP 790-189   Special Topics: Theoretical Foundations of Machine Learning,4,4,8
 Dewan,COMP 524 Programming Language Concepts,4,4,8
 Dewan,COMP 89H - 063,4,4,8
-Ding,COMP 790-186 Special Topics: Robot Learning,4,4,8
 Duggirala,COMP 455 Models of Languages and Computation,4,4,8
 Duggirala,COMP 545 Programming Intelligent Physical Systems,4,3,7
 Duggirala,COMP 550 Algorithms and Analysis,4,3,7
@@ -37,44 +34,17 @@ Eskandarian,COMP 455 Models of Languages and Computation,2,3,5
 Eskandarian,COMP 283 Discrete Structures,2,2,4
 Eskandarian,COMP 435 Computer Security Concepts,2,2,4
 Eskandarian,COMP 550 Algorithms and Analysis,2,2,4
-Fuchs,COMP 311 Computer Organization,0,1,1
-Gaikwad,"COMP 380 Technology, Ethics, &amp; Culture",4,4,8
-Gaikwad,COMP 560 Artificial Intelligence,4,4,8
-Gaikwad,COMP 562 Introduction to Machine Learning,4,4,8
-Gaikwad,COMP 110 Introduction to Programming and Data Science,3,3,6
-Gaikwad,COMP 486 Applications of Natural Language Processing,3,3,6
-Gandecha,COMP 426 Modern Web Programming,4,4,8
 Ghani,COMP 210 Data Structures and Analysis,4,4,8
-Goodwin,COMP 301 Foundations of Programming,4,4,8
-Goodwin,COMP 210 Data Structures and Analysis,4,3,7
-Goodwin,"COMP 380 Technology, Ethics, &amp; Culture",3,3,6
-Goodwin,COMP 388 Advanced Cyberculture Studies,3,3,6
-Goodwin,COMP 110 Introduction to Programming and Data Science,3,2,5
 Hinks,COMP 110 Introduction to Programming and Data Science,4,4,8
 Hinks,COMP 116 Introduction to Scientific Programming,4,4,8
 Hinks,COMP 227 Effective Peer Teaching in Computer Science,3,3,6
 Hinks,COMP 555 Bioalgorithms,3,3,6
 Hinks,COMP 126 Practical Web Design and Development for Everyone,3,2,5
-Jeffay,COMP 431 Internet Services and Protocols,4,4,8
-Jeffay,COMP 530 Operating Systems,4,4,8
-Jeffay,COMP 533 Distributed Systems,3,2,5
-Jeffay,COMP 211 Systems Fundamentals,2,2,4
-Jeffay,COMP 311 Computer Organization,2,2,4
-Jordan,COMP 423 Foundations of Sofware Engineering,4,4,8
-Jordan,COMP 110 Introduction to Programming and Data Science,4,3,7
-Jordan,COMP 227 Effective Peer Teaching in Computer Science,4,2,6
-Jordan,COMP 426 Modern Web Programming,3,3,6
-Jordan,COMP 126 Practical Web Design and Development for Everyone,3,2,5
 Joseph-Nicholas,COMP 126 Practical Web Design and Development for Everyone,4,4,8
 Joseph-Nicholas,"COMP 380 Technology, Ethics, &amp; Culture",4,4,8
 Joseph-Nicholas,COMP 388 Advanced Cyberculture Studies,4,4,8
 Joseph-Nicholas,COMP 227 Effective Peer Teaching in Computer Science,4,2,6
-Kandel,COMP 590-173   Special Topics: Information Visualization,4,4,8
-Kaur,COMP 431 Internet Services and Protocols,4,4,8
-Kaur,COMP 110 Introduction to Programming and Data Science,2,1,3
-Kaur,COMP 530 Operating Systems,1,1,2
 Kwong,COMP 790-185 Special Topics: Research Topics in Computer Security,4,4,8
-Len,COMP  790-188   Special Topics: Topics in Applied Cryptography,4,4,8
 Mayer-Patel,COMP 590-080   Special Topics: Video Compression and Streaming,4,4,8
 Mayer-Patel,COMP 301 Foundations of Programming,4,3,7
 Mayer-Patel,COMP 426 Modern Web Programming,4,3,7
@@ -85,7 +55,6 @@ McMahon,COMP 311 Computer Organization,4,4,8
 McMahon,COMP 541 Digital Logic and Computer Design,4,4,8
 McMahon,COMP 227 Effective Peer Teaching in Computer Science,4,3,7
 McMahon,"COMP 380 Technology, Ethics, &amp; Culture",4,3,7
-McMillan,COMP 311 Computer Organization,4,4,8
 Munsell,COMP 211 Systems Fundamentals,4,4,8
 Munsell,COMP 311 Computer Organization,4,4,8
 Munsell,COMP 590-159 Special Topics: Interactive Computer Graphics using WebGL and HTML5,4,4,8
@@ -98,14 +67,7 @@ Porter,COMP 311 Computer Organization,3,3,6
 Porter,COMP 211 Systems Fundamentals,2,3,5
 Porter,COMP 421 Files and Databases,2,3,5
 Porter,COMP 435 Computer Security Concepts,3,2,5
-Pothukuchi,COMP 590&790-187 Special Topics: Building the Infinite Brain,4,4,8
-Pothukuchi,COMP 311 Computer Organization,2,4,6
-Pothukuchi,COMP 541 Digital Logic and Computer Design,2,4,6
-Pothukuchi,COMP 211 Systems Fundamentals,2,2,4
-Pothukuchi,COMP 520 Compilers,1,2,3
 Reed,COMP 475 2D Computer Graphics,4,4,8
-Ryan,COMP 311 Computer Organization,4,4,8
-Ryan,COMP 435 Computer Security Concepts,4,4,8
 Sengupta,COMP 577 Introduction to Computer Vision,4,4,8
 Sengupta,COMP 590-177   Special Topics: Introduction to Computer Vision,4,4,8
 Sengupta,COMP 562 Introduction to Machine Learning,3,3,6
@@ -121,11 +83,6 @@ Snoeyink,COMP 488 Data Science in the Business World,3,3,6
 Snoeyink,COMP 550 Algorithms and Analysis,3,3,6
 Snoeyink,COMP 116 Introduction to Scientific Programming,3,2,5
 Srivastava,COMP 664 Deep Learning,4,4,8
-Stanley,COMP 562 Introduction to Machine Learning,4,3,7
-Stanley,COMP 116 Introduction to Scientific Programming,3,2,5
-Stanley,COMP 488 Data Science in the Business World,3,2,5
-Stanley,COMP 283 Discrete Structures,2,2,4
-Stanley,COMP 110 Introduction to Programming and Data Science,2,0,2
 Stotts,COMP 523 Software Engineering Laboratory,4,4,8
 Stotts,"COMP 590-059   Special Topics: Special topics: Programming Methods, Models, Languages, and Analysis",4,4,8
 Stotts,COMP 210 Data Structures and Analysis,4,0,4
