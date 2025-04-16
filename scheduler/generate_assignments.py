@@ -74,3 +74,30 @@ assignments_sorted = assignments_df.sort_values(by="Course Num").drop(columns=["
 # Save to CSV
 assignments_sorted.to_csv("data/CSV/new_data.csv", index=False)
 print("Saved to data/CSV/new_data.csv")
+
+# === Append after writing new_data.csv ===
+
+# Load exported assignment result
+new_data_df = pd.read_csv("data/CSV/new_data.csv")
+
+# Load faculty time preferences
+faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv")
+
+# Merge using Last Name (note: assumes no duplicate last names)
+merged_df = new_data_df.merge(
+    faculty_pref_df[["Last Name", "Available Time Slots"]],
+    left_on="ProfessorName",
+    right_on="Last Name",
+    how="left"
+)
+
+# Drop redundant Last Name column from right side
+merged_df = merged_df.drop(columns=["Last Name"])
+
+# Reorder for output
+merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Available Time Slots"]]
+
+# Save merged output
+merged_df.to_csv("data/CSV/merged_assignments_with_time_slots.csv", index=False)
+print("✅ Saved merged assignment with time slots: data/CSV/merged_assignments_with_time_slots.csv")
+

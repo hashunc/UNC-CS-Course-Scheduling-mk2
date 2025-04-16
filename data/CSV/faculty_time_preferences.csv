@@ -1,40 +1,40 @@
-Name,Available Time Slots
-Alterovitz Ron,"MWF_1,MWF_2,MWF_3,MWF_4,MWF_5,MWF_6,MWF_7"
-Anderson James,"MWF_3,MWF_6,TTH_2,TTH_4,TTH_5"
-Bansal Mohit,TTH_3
-Berg Benjamin,"TTH_3,TTH_4,TTH_5,TTH_6"
-Bertasius Gedas,"MW_34,MW_56,MW_78,MW_90"
-Chakravarthula Praneeth,"TTH_3,TTH_4,TTH_5"
-Chaturvedi Snigdha,2H_class
-Dewan Prasun,"TTH_2,TTH_3,TTH_4"
-Duggirala Parasara Sridhar,TTH_3
-Eskandarian Saba,"TTH_3,TTH_4,TTH_5,TTH_6,TTH_7"
-Ghani Sayeed,"TTH_5,TTH_6"
-Joseph-Nicholas Tessa,TTH_7
-Kwong Andrew,"TTH_3,TTH_5,TTH_6"
-Byrnes Alyssa,"MWF_4,MWF_5,MWF_6,MWF_7,TTH_3,TTH_4"
-Mayer-Patel Ketan,"TTH_1,TTH_2,TTH_3,TTH_4,TTH_5,TTH_6"
-McMahon Cece,"MWF_2,MWF_3,MWF_4,MWF_5,MWF_6,MWF_7,MWF_8,MWF_9,MWF_10"
-Munsell Brent,"TTH_4,TTH_6"
-Nirjon Shahriar,TTH_3
-Oliva Junier,"TTH_1,TTH_2"
-Porter Don,"TTH_1,TTH_2,TTH_3,TTH_5"
-Reed Mike,"TTH_2,TTH_3"
-Sengupta Roni,"TTH_2,TTH_4"
-Silva Jorge,"TTH_3,TTH_4,TTH_5"
-Singh Montek,"TTH_4,TTH_6"
-Snoeyink Jack,"TTH_2,TTH_4,TTH_6"
-Srivastava Shashank,"TTH_1,TTH_2"
-Stotts David,"TTH_1,TTH_2,TTH_3"
-Sturton Cynthia,"MWF_1,MWF_2,MWF_3,MWF_4,MWF_5"
-Sun Kevin,"TTH_3,TTH_4,TTH_5"
-Szafir Danielle,"TTH_3,TTH_4,TTH_5"
-Yao Huaxiu,TTH_2
-Hinks Isabella,"TTH_1,TTH_3,TTH_6"
-Ryan Kaki,"MW_56,MW_78,MW_90,TTH_5"
-Silva Jorge,TTH_7
-Ding Mingyu,"MW_34,MW_56"
-Len Julia,TTH_6
-Deng Zhun,"MW_90,TTH_6"
-Gandecha Ajay,"MWF_3,MWF_4,MWF_5,MWF_6,MW_34,MW_56"
-Pothukuchi Raghavendra,MW_78
+First Name,Last Name,Available Time Slots
+Ron,Alterovitz,"MWF_1,MWF_2,MWF_3,MWF_4,MWF_5,MWF_6,MWF_7"
+James,Anderson,"MWF_3,MWF_6,TTH_2,TTH_4,TTH_5"
+Mohit,Bansal,TTH_3
+Benjamin,Berg,"TTH_3,TTH_4,TTH_5,TTH_6"
+Gedas,Bertasius,"MW_34,MW_56,MW_78,MW_90"
+Praneeth,Chakravarthula,"TTH_3,TTH_4,TTH_5"
+Snigdha,Chaturvedi,2H_class
+Prasun,Dewan,"TTH_2,TTH_3,TTH_4"
+Parasara Sridhar,Duggirala,TTH_3
+Saba,Eskandarian,"TTH_3,TTH_4,TTH_5,TTH_6,TTH_7"
+Sayeed,Ghani,"TTH_5,TTH_6"
+Tessa,Joseph-Nicholas,TTH_7
+Andrew,Kwong,"TTH_3,TTH_5,TTH_6"
+Alyssa,Byrnes,"MWF_4,MWF_5,MWF_6,MWF_7,TTH_3,TTH_4"
+Ketan,Mayer-Patel,"TTH_1,TTH_2,TTH_3,TTH_4,TTH_5,TTH_6"
+Cece,McMahon,"MWF_2,MWF_3,MWF_4,MWF_5,MWF_6,MWF_7,MWF_8,MWF_9,MWF_10"
+Brent,Munsell,"TTH_4,TTH_6"
+Shahriar,Nirjon,TTH_3
+Junier,Oliva,"TTH_1,TTH_2"
+Don,Porter,"TTH_1,TTH_2,TTH_3,TTH_5"
+Mike,Reed,"TTH_2,TTH_3"
+Roni,Sengupta,"TTH_2,TTH_4"
+Jorge,Silva,"TTH_3,TTH_4,TTH_5"
+Montek,Singh,"TTH_4,TTH_6"
+Jack,Snoeyink,"TTH_2,TTH_4,TTH_6"
+Shashank,Srivastava,"TTH_1,TTH_2"
+David,Stotts,"TTH_1,TTH_2,TTH_3"
+Cynthia,Sturton,"MWF_1,MWF_2,MWF_3,MWF_4,MWF_5"
+Kevin,Sun,"TTH_3,TTH_4,TTH_5"
+Danielle,Szafir,"TTH_3,TTH_4,TTH_5"
+Huaxiu,Yao,TTH_2
+Isabella,Hinks,"TTH_1,TTH_3,TTH_6"
+Kaki,Ryan,"MW_56,MW_78,MW_90,TTH_5"
+Jorge,Silva,TTH_7
+Mingyu,Ding,"MW_34,MW_56"
+Julia,Len,TTH_6
+Zhun,Deng,"MW_90,TTH_6"
+Ajay,Gandecha,"MWF_3,MWF_4,MWF_5,MWF_6,MW_34,MW_56"
+Raghavendra,Pothukuchi,MW_78
