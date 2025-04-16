@@ -1,10 +1,10 @@
 import pandas as pd
 
-# Load the Excel file from the correct relative path
-file_path = "../data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx"
-df = pd.read_excel(file_path)
+# Load Excel
+file_path = "data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx"
+availability_df = pd.read_excel(file_path)
 
-# Mapping from original column names to time slot codes
+# Time slot header → code mapping
 column_to_slot = {
     "M/W/F schedule [8:00 - 8:50 a.m.]": "MWF_1",
     "M/W/F schedule [9:05 - 9:55 a.m.]": "MWF_2",
@@ -31,27 +31,66 @@ column_to_slot = {
 }
 
 # Clean column names
-df.columns = [col.strip() for col in df.columns]
+availability_df.columns = [col.strip() for col in availability_df.columns]
 
-# Filter only the relevant columns
-required_columns = ["Last name", "First name"] + list(column_to_slot.keys())
-filtered_df = df[required_columns]
+# Select relevant columns
+time_slot_cols = list(column_to_slot.keys())
+required_columns = [
+    "Last name", "First name",
+    "How many classes you will teach in the next semester.",
+    "If you are teaching a single two-hour class, please click this button. (If not, please skip this question.)"
+] + time_slot_cols
 
-# Extract available time slots
+filtered_df = availability_df[required_columns]
+
+# Parse availability
 results = []
-for _, row in filtered_df.iterrows():
-    last = row["Last name"]
-    first = row["First name"]
-    time_slots = []
+skipped = []
 
-    for col, slot in column_to_slot.items():
-        if str(row[col]).strip().upper() == "V":
-            time_slots.append(slot)
+for _, row in filtered_df.iterrows():
+    last = str(row["Last name"]).strip()
+    first = str(row["First name"]).strip()
+    full_name = f"{last} {first}"
+
+    # Check teaching load
+    try:
+        course_count = int(row["How many classes you will teach in the next semester."])
+    except:
+        reason = "invalid class count"
+        skipped.append([full_name, reason])
+        continue
+
+    if course_count == 0:
+        reason = "teaching 0 classes"
+        skipped.append([full_name, reason])
+        continue
+
+    # Gather time slots
+    time_slots = []
+    for col in time_slot_cols:
+        val = str(row[col]).strip().upper()
+        if val == "V":
+            time_slots.append(column_to_slot[col])
+
+    # 2H course flag
+    two_hour = str(row["If you are teaching a single two-hour class, please click this button. (If not, please skip this question.)"]).strip()
+    if two_hour == "Yes, I only teach one 2-hour course.":
+        time_slots.append("2H_class")
 
     if time_slots:
-        results.append([f"{last} {first}", ",".join(time_slots)])
+        results.append([full_name, ",".join(time_slots)])
+    else:
+        reason = "no time preferences marked"
+        skipped.append([full_name, reason])
 
-# Output to CSV
+# Export valid preferences
 output_df = pd.DataFrame(results, columns=["Name", "Available Time Slots"])
-output_df.to_csv("../data/CSV/faculty_time_preferences.csv", index=False)
-print(output_df)
+output_df.to_csv("data/CSV/faculty_time_preferences.csv", index=False)
+
+# Export skipped reasons
+skipped_df = pd.DataFrame(skipped, columns=["Name", "Reason Skipped"])
+skipped_df.to_csv("data/CSV/skipped_faculty.csv", index=False)
+
+print("✅ Exported:")
+print("  • data/CSV/faculty_time_preferences.csv")
+print("  • data/CSV/skipped_faculty.csv")
