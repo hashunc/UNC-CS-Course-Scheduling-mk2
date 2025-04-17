@@ -491,7 +491,7 @@ class CourseScheduler:
                             course = c
                             section = s
                             professor_name = p
-                            formatted_time = f"{t.split('_')[0]}: {self.time_slot_mapping.get(t, t)}"
+                            formatted_time = f"{t}: {self.time_slot_mapping.get(t, t)}"
                             room = r
                             schedule.append([course, section, professor_name, formatted_time, room])
 
