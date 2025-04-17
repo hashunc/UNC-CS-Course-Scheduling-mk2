@@ -1,4 +1,5 @@
 import pandas as pd
+import pulp
 from pulp import LpProblem, LpVariable, LpMinimize, lpSum
 
 
@@ -6,8 +7,9 @@ class CourseScheduler:
     def __init__(self, data_file, rooms_file):
         self.time_slots = [
             "MWF_1", "MWF_2", "MWF_3", "MWF_4", "MWF_5", "MWF_6", "MWF_7", "MWF_8", "MWF_9", "MWF_10",
-            "MW_1", "MW_2", "MW_3", "MW_4", "MW_5", "MW_6", "MW_7",
-            "TTH_1", "TTH_2", "TTH_3", "TTH_4", "TTH_5", "TTH_6", "TTH_7"
+            "MW_12", "MW_34", "MW_56", "MW_78", "MW_90",
+            "TTH_1", "TTH_2", "TTH_3", "TTH_4", "TTH_5", "TTH_6", "TTH_7",
+            "2H_class_1", "2H_class_2", "2H_class_3", "2H_class_4", "2H_class_5"
         ]
         self.time_slot_mapping = {
             "MWF_1": "8:00 – 8:50 a.m.",
@@ -20,13 +22,11 @@ class CourseScheduler:
             "MWF_8": "3:35 – 4:25 p.m.",
             "MWF_9": "4:40 – 5:30 p.m.",
             "MWF_10": "5:45 – 6:35 p.m.",
-            "MW_1": "8:00 – 9:15 a.m.",
-            "MW_2": "9:30 – 10:45 a.m.",
-            "MW_3": "11:00 – 12:15 p.m.",
-            "MW_4": "12:30 – 1:45 p.m.",
-            "MW_5": "2:00 – 3:15 p.m.",
-            "MW_6": "3:30 – 4:45 p.m.",
-            "MW_7": "5:00 – 6:15 p.m.",
+            "MW_12": "8:00 – 9:15 a.m.",
+            "MW_34": "10:10 – 11:25 p.m.",
+            "MW_56": "12:20 – 1:35 p.m.",
+            "MW_78": "2:30 – 3:45 p.m.",
+            "MW_90": "4:40 – 5:55 p.m.",
             "TTH_1": "8:00 – 9:15 a.m.",
             "TTH_2": "9:30 – 10:45 a.m.",
             "TTH_3": "11:00 – 12:15 p.m.",
@@ -34,17 +34,34 @@ class CourseScheduler:
             "TTH_5": "2:00 – 3:15 p.m.",
             "TTH_6": "3:30 – 4:45 p.m.",
             "TTH_7": "5:00 – 6:15 p.m.",
+            "2H_class_1": "9:00 – 11:00 a.m.",
+            "2H_class_2": "9:00 – 11:00 a.m.",
+            "2H_class_3": "9:00 – 11:00 a.m.",
+            "2H_class_4": "9:00 – 11:00 a.m.",
+            "2H_class_5": "9:00 – 11:00 a.m."
         }
+
         self.data = self.read_data(data_file)
+        self.professors = self.data["ProfessorName"].unique().tolist()
+        self.course_ids = self.data["CourseID"].tolist()
+        self.secs = self.data["Sec"].tolist()
+        self.all_courses = set(zip(self.course_ids, self.secs))
+
         self.rooms_data = self.read_rooms(rooms_file)
-        self.prof_course_scores = None
-        self.course_ids = None
-        self.secs = None
-        self.room_ids = None
+        self.room_ids = self.rooms_data["RoomID"].tolist()
+
         self.X = None
         self.prob = None
-        self.preference_penalties = {}
-        self.core_courses = []
+        self.valid_course_professor_pairs = []
+        self.professors_courses = {}
+
+        self.course_miss_penalties = {}
+        self.preference_time_penalties = {}
+        self.peak_penalties = {}
+
+        self.course_miss_weight = 900
+        self.preference_time_weight = 100
+        self.peak_weight = 1000
 
 
     def expand_time_slots(self, time_slots):
@@ -84,68 +101,69 @@ class CourseScheduler:
     def initialize_problem(self):
         """Initialize the LP problem and decision variables."""
 
+        print("Initialize Problem...")
+
+        # create a list to record valid professor-course with scores higher than threshold
+        for idx, row in self.data.iterrows():
+            self.valid_course_professor_pairs.append((row["CourseID"], row["Sec"], row["ProfessorName"]))
+            if row["ProfessorName"] in self.professors_courses:
+                self.professors_courses[row["ProfessorName"]].append((row["CourseID"], row["Sec"]))
+            else:
+                self.professors_courses[row["ProfessorName"]] = [(row["CourseID"], row["Sec"])]
+        
         self.X = {
-            (c, s, t, r): LpVariable(f"X_{c}_{s}_{t}_{r}", cat="Binary")
-            for c, s in zip(self.course_ids, self.secs)
+            (c, s, t, r, p): LpVariable(f"X_{c}_{s}_{t}_{r}_{p}", cat="Binary")
+            for c, s, p in self.valid_course_professor_pairs
             for t in self.time_slots
             for r in self.room_ids
         }
 
         self.prob = LpProblem("Course_Scheduling", LpMinimize)
-        self.prob += lpSum(
-            self.X[c, s, t, r] 
-            for c, s in zip(self.course_ids, self.secs) 
-            for t in self.time_slots 
-            for r in self.room_ids
+        
+        # Initialize course missing penalty variables
+        self.course_miss_penalties["miss"] = LpVariable(
+            "course_missing", 
+            lowBound=0,
+            cat='Integer'
         )
-
-        # Initialize preference penalty variables
-        for idx, row in self.data.iterrows():
-            self.preference_penalties[row["CourseID"], row["Sec"]] = LpVariable(
-                f"Penalty_{row['CourseID']}_{row['Sec']}", 
-                lowBound=0
+        # Initialize time preference penalty variables
+        for c, s, p in self.valid_course_professor_pairs:
+            self.preference_time_penalties[c, s, p] = LpVariable(
+                f"TimePenalty_{c}_{s}_{p}", 
+                lowBound=0,
+                cat='Binary'
             )
-
-        # Use big weight 100 for preferences
-        self.prob += 100 * lpSum(self.preference_penalties.values())
+        # Initialize peak arrangements penalty variables
+        self.peak_penalties["over"] = LpVariable(
+            "peak_time_arrangements_over", 
+            lowBound=0,
+            cat='Integer'
+        )
 
 
     def add_course_assignment_constraints(self):
-        """Add constraints to ensure each course is assigned exactly once."""
+        """Add constraints to prevent course being arranged multiple times and rooms."""
+        """Every course must be arranged."""
 
-        for idx, row in self.data.iterrows():
-            # Make sure every course would be arranged to 1 time slot and 1 room
+        for c, s, p in self.valid_course_professor_pairs:
             self.prob += lpSum(
-                self.X[row["CourseID"], row["Sec"], t, r] 
-                for t in self.time_slots 
+                self.X[c, s, t, r, p]
+                for t in self.time_slots
                 for r in self.room_ids
             ) == 1
 
-
-    def add_professor_preference_constraints(self):
-        """Add soft constraints for professor time slot preferences."""
-
-        for idx, row in self.data.iterrows():
-            # Get preference and non-preference time slots
-            preferred_times = row["Professor_PreferredTimeSlots"].split(";")
-            non_preferred_times = [t for t in self.time_slots if t not in preferred_times]
-
-            # If the professor has non-preference time slots
-            if len(non_preferred_times) > 0:
-                self.prob += lpSum(
-                    self.X[row["CourseID"], row["Sec"], t, r] 
-                    for t in non_preferred_times 
-                    for r in self.room_ids
-                ) <= self.preference_penalties[row["CourseID"], row["Sec"]]
-                
-            # If the professor has preference time slots
-            if len(preferred_times) > 0:
-                # Encourage to use preference time slots
-                self.prob += lpSum(
-                    self.X[row["CourseID"], row["Sec"], t, r] 
-                    for t in preferred_times 
-                    for r in self.room_ids
-                ) + self.preference_penalties[row["CourseID"], row["Sec"]] >= 1
+        # hard: every [course] would be arranged at least once.
+        # unique_course_ids = set(c for c, s in self.all_courses)
+        # for course_id in unique_course_ids:
+        #     sections = [s for c, s, p in self.valid_course_professor_pairs if c == course_id]
+        #     professors = [p for c, s, p in self.valid_course_professor_pairs if c == course_id]
+        #     self.prob += lpSum(
+        #         self.X[course_id, section, t, r, p]
+        #         for section in sections
+        #         for t in self.time_slots
+        #         for r in self.room_ids
+        #         for p in professors
+        #     ) >= 1
 
 
     def add_section_time_constraints(self):
@@ -153,30 +171,38 @@ class CourseScheduler:
         from being scheduled at the same time."""
 
         for c in set(self.course_ids):
-            for t in self.time_slots:
-                self.prob += lpSum(
-                    self.X[c, s, t, r] 
-                    for s in self.data[self.data["CourseID"] == c]["Sec"] 
-                    for r in self.room_ids
-                ) <= 1
+            if c not in ["COMP 590", "COMP 790"]:
+                for t in self.time_slots:
+                    self.prob += lpSum(
+                        self.X[c, s, t, r, p] 
+                        for s in self.data[self.data["CourseID"] == c]["Sec"] 
+                        for r in self.room_ids
+                        for p in self.professors if (c, s, p) in self.valid_course_professor_pairs
+                    ) <= 1
 
 
     def add_professor_time_constraints(self):
         """Add constraints to prevent a professor from teaching multiple courses at the same time."""
 
-        for professor in set(self.data["ProfessorName"]):
+        for p in self.professors:
             for t in self.time_slots:
-                self.prob += (
-                    lpSum(
-                        self.X[c, s, t, r]
-                        for c, s in zip(self.course_ids, self.secs)
-                        for r in self.room_ids
-                        if self.data.loc[
-                            (self.data["CourseID"] == c) & (self.data["Sec"] == s), "ProfessorName"
-                        ].values[0] == professor
-                    ) <= 1
-                )
+                self.prob += lpSum(
+                    self.X[(c, s, t, r, p)]
+                    for c, s in self.professors_courses[p]
+                    for r in self.room_ids
+                ) <= 1
 
+
+    def add_room_time_constraints(self):
+        """Add constraints to prevent multiple courses from being scheduled in the same room at the same time."""
+        
+        for r in self.room_ids:
+            for t in self.time_slots:
+                self.prob += lpSum(
+                    self.X[(c, s, t, r, p)]
+                    for c, s, p in self.valid_course_professor_pairs
+                ) <= 1
+    
 
     def add_specific_course_constraints(self):
         """Add constraints that Courses 301 and 211 cannot be scheduled at the same time."""
@@ -184,10 +210,10 @@ class CourseScheduler:
         for t in self.time_slots:
             self.prob += (
                 lpSum(
-                    self.X[c, s, t, r]
-                    for c, s in zip(self.course_ids, self.secs)
+                    self.X[c, s, t, r, p]
+                    for c, s, p in self.valid_course_professor_pairs
                     for r in self.room_ids
-                    if c in [301, 211]
+                    if c in ["COMP 301", "COMP 211"]
                 ) <= 1
             )
 
@@ -196,94 +222,219 @@ class CourseScheduler:
         """Add constraints for MWF courses. MoWeFr 3x50-min courses can only be scheduled in MoWe periods 
         (excluding Period 1 and Period 10)"""
 
-        for c, s in zip(self.course_ids, self.secs):
+        for c, s, p in self.valid_course_professor_pairs:
             for t in self.time_slots:
                 if "MWF" in t and (t.endswith("_1") or t.endswith("_10")):
                     for r in self.room_ids:
-                        self.prob += self.X[c, s, t, r] == 0
-
-    def add_mw_course_constraints(self):
-        """Add constraints for MW courses. MW 2x75-min courses must start in Periods 3, 5, 7, 9."""
-
-        for c, s in zip(self.course_ids, self.secs):
-            for t in self.time_slots:
-                if "MW" in t and not any(t.endswith(f"_{p}") for p in [3, 5, 7, 9]):
-                    for r in self.room_ids:
-                        self.prob += self.X[c, s, t, r] == 0
-
-    def add_high_demand_period_constraints(self):
-        """Add constraints to limit courses in high-demand periods. The number of courses scheduled 
-        in MWF_4,5,6,7 / MW_3,4,5 / TTH_3,4,5 should be at most 65% of total courses."""
-
-        high_demand_periods = [
-            "MWF_4", "MWF_5", "MWF_6", "MWF_7",
-            "MW_3", "MW_4", "MW_5",
-            "TTH_3", "TTH_4", "TTH_5",
-        ]
-        total_courses = len(self.data)
-        max_allowed = int(0.65 * total_courses)
-
-        high_demand_courses = lpSum(
-            self.X[c, s, t, r]
-            for c, s in zip(self.course_ids, self.secs)
-            for t in self.time_slots
-            for r in self.room_ids
-            if any(period in t for period in high_demand_periods)
-        )
-
-        # Add as a soft constraint that can be skipped if no solution is found
-        self.prob += high_demand_courses <= max_allowed
+                        self.prob += self.X[c, s, t, r, p] == 0
 
 
     def add_core_course_constraints(self):
         """Add constraints to ensure core courses must be taught in a semester."""
 
-        for c in self.core_courses:
-            related_secs = [s for c_id, s in zip(self.course_ids, self.secs) if c_id == c]
-            if related_secs:  # Only add constraint if there are sections for this course
-                self.prob += lpSum(
-                    self.X[c, s, t, r] 
-                    for s in related_secs 
-                    for t in self.time_slots 
-                    for r in self.room_ids
-                ) >= 1
+        core_courses = ["COMP 210", "COMP 211", "COMP 283", "COMP 301", "COMP 311", "COMP 455", "COMP 550"]
 
-
-    def add_room_time_constraints(self):
-        """Add constraints to prevent multiple courses in the same room at the same time."""
-
-        for t in self.time_slots:
-            for r in self.room_ids:
-                self.prob += lpSum(
-                    self.X[(c, s, t, r)] 
-                    for c, s in zip(self.data["CourseID"], self.data["Sec"])
-                ) <= 1
+        for c, s, p in self.valid_course_professor_pairs:
+            self.prob += lpSum(
+                self.X[c, s, t, r, p]
+                for t in self.time_slots
+                for r in self.room_ids
+                if c in core_courses
+            ) >= 1
 
 
     def add_room_capacity_constraints(self):
         """Add constraints to ensure room capacity is sufficient for course enrollment."""
 
-        for c, s in zip(self.data["CourseID"], self.data["Sec"]):
+        for c, s, p in self.valid_course_professor_pairs:
             course_capacity = self.data.loc[
                 (self.data["CourseID"] == c) & (self.data["Sec"] == s), 
                 "EnrollCapacity"
             ].values[0]
-            
             for t in self.time_slots:
                 for r in self.room_ids:
-                    # Check if the room capacity is smaller than enroll capacity of the course
+                    # check if the room capacity is smaller than enroll capacity of the course
                     if self.rooms_data.loc[self.rooms_data["RoomID"] == r, "Capacity"].values[0] < course_capacity:
-                        self.prob += self.X[c, s, t, r] == 0
+                        self.prob += self.X[c, s, t, r, p] == 0
 
 
-    def add_room_preference_constraints(self):
-        # TODO
-        return
+    def add_same_pre_courses_constraints(self):
+        """Add constraints to avoid courses with the same prerequisite being arranged at the same time."""
+
+        for t in self.time_slots:
+            self.prob += lpSum(
+                self.X[c, s, t, r, p] 
+                for c, s, p in self.valid_course_professor_pairs
+                for r in self.room_ids
+                if c in ["COMP 283", "COMP 210"] or c in ["COMP 211", "COMP 301", "COMP 455", "COMP 550"]
+            ) <= 1
+
+        conflict_periods = [
+            (["MWF_1", "MWF_2"], ["MW_12"]),
+            (["MWF_3", "MWF_4"], ["MW_34"]),
+            (["MWF_5", "MWF_6"], ["MW_56"]),
+            (["MWF_7", "MWF_8"], ["MW_78"]),
+            (["MWF_9", "MWF_10"], ["MW_90"])
+        ]
+
+        for mwf_periods, mw_periods in conflict_periods:
+            for r in self.room_ids:
+                for mwf_period in mwf_periods:
+                    self.prob += lpSum(
+                        self.X[c, s, mwf_period, r, p] 
+                        for c, s, p in self.valid_course_professor_pairs
+                        if c in ["COMP 283", "COMP 210"] or c in ["COMP 211", "COMP 301", "COMP 455", "COMP 550"]
+                    ) + lpSum(
+                        self.X[c, s, mw_periods[0], r, p]
+                        for c, s, p in self.valid_course_professor_pairs
+                        if c in ["COMP 283", "COMP 210"] or c in ["COMP 211", "COMP 301", "COMP 455", "COMP 550"]
+                    ) <= 1
     
 
-    def add_professor_scores_constraints(self):
-        # TODO
-        return
+    def add_mw_mwf_time_constraints(self):
+        """Add constraints to avoid courses with the same prerequisite being arranged at the same time."""\
+        
+        conflict_periods = [
+            (["MWF_1", "MWF_2"], ["MW_12"]),
+            (["MWF_3", "MWF_4"], ["MW_34"]),
+            (["MWF_5", "MWF_6"], ["MW_56"]),
+            (["MWF_7", "MWF_8"], ["MW_78"]),
+            (["MWF_9", "MWF_10"], ["MW_90"])
+        ]
+
+        for mwf_periods, mw_periods in conflict_periods:
+            for r in self.room_ids:
+                for mwf_period in mwf_periods:
+                    # constraint for the same room
+                    self.prob += lpSum(
+                        self.X[c, s, mwf_period, r, p] 
+                        for c, s, p in self.valid_course_professor_pairs
+                    ) + lpSum(
+                        self.X[c, s, mw_periods[0], r, p]
+                        for c, s, p in self.valid_course_professor_pairs
+                    ) <= 1
+                        
+                    # constraint for the same professor
+                    for p in self.professors:
+                        self.prob += lpSum(
+                            self.X[c, s, mwf_period, r, p]
+                            for c, s in self.professors_courses[p]
+                            for r in self.room_ids
+                        ) + lpSum(
+                            self.X[c, s, mw_periods[0], r, p]
+                            for c, s in self.professors_courses[p]
+                            for r in self.room_ids
+                        ) <= 1
+
+
+    def add_professor_preference_constraints(self):
+        """Add soft constraints for professor time slot preferences."""
+
+        preferred_times = {}
+        
+        for idx, row in self.data.iterrows():
+            c = row["CourseID"]
+            s = row["Sec"]
+            p = row["ProfessorName"]
+            key = (c, s, p)
+
+            # get preferred time periods of every professor
+            professor_preferred_times = row["Professor_PreferredTimeSlots"].split(",") if "," in row["Professor_PreferredTimeSlots"] else [row["Professor_PreferredTimeSlots"]]
+            preferred_times[key] = professor_preferred_times
+
+        # set preference time penalties with 0 or 1
+        for c, s, p in self.valid_course_professor_pairs:
+            disliked_times = [t for t in self.time_slots if t not in preferred_times[c, s, p]]
+            for t in disliked_times:
+                self.prob += self.preference_time_penalties[(c, s, p)] >= lpSum(self.X[c, s, t, r, p] for r in self.room_ids)
+            self.prob += self.preference_time_penalties[(c, s, p)] <= lpSum(self.X[c, s, t, r, p] for t in disliked_times for r in self.room_ids)
+        
+        # soft constraint by penalty
+        self.prob += self.preference_time_weight * lpSum(self.preference_time_penalties.values())
+    
+
+    def add_course_miss_constraint(self):
+        """Add soft constraints to encourage (not force) every [course+sec] to be arranged."""
+
+        course_nums = len(self.valid_course_professor_pairs)
+        
+        # soft: encourage every course to be arranged by adding penalty to missing course.
+        self.prob += lpSum(
+            self.X[c, s, t, r, p]
+            for c, s, p in self.valid_course_professor_pairs
+            for t in self.time_slots 
+            for r in self.room_ids
+        ) + self.course_miss_penalties["miss"] == course_nums
+        
+        self.prob += self.course_miss_weight * self.course_miss_penalties["miss"]
+    
+
+    def add_peak_time_constraints(self):
+        """Add constraints to limit courses in high-demand periods. The number of courses scheduled 
+        in MWF_4,5,6,7 / MW I don't know / TTH_3,4,5 should be at most 65% of total courses."""
+
+        high_demand_periods = [
+            "MWF_4", "MWF_5", "MWF_6", "MWF_7",
+            "MW_34", "MW_56", "MW_78",
+            "TTH_3", "TTH_4", "TTH_5",
+        ]
+        total_courses = len(self.valid_course_professor_pairs)
+        max_allowed = int(0.65 * total_courses)
+
+        high_demand_courses = lpSum(
+            self.X[c, s, t, r, p]
+            for c, s, p in self.valid_course_professor_pairs
+            for t in self.time_slots
+            for r in self.room_ids
+            if any(period in t for period in high_demand_periods)
+        )
+
+        self.prob += high_demand_courses <= max_allowed
+
+        # Add as a constraint that can be skipped if no solution is found
+        # self.prob += self.peak_weight * self.peak_penalties["over"]
+    
+
+    def add_2Hclass_constraints(self):
+        """Add constraints to a 2H-class to Professor Chaturvedi for 790-150."""
+
+        class_2H_list = ["2H_class_1", "2H_class_2", "2H_class_3", "2H_class_4", "2H_class_5"]
+        conflict_periods = [
+            (["2H_class_1"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_class_2"], ["TTH_1", "TTH_2", "TTH_3"]),
+            (["2H_class_3"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_class_4"], ["TTH_1", "TTH_2", "TTH_3"]),
+            (["2H_class_5"], ["MWF_2", "MWF_3"])
+        ]
+        c_2H = "COMP 790"
+        s_2H = 150
+        p_2H = "Chaturvedi"
+
+        self.prob += lpSum(
+            self.X[c_2H, s_2H, t, r, p_2H]
+            for t in class_2H_list
+            for r in self.room_ids
+        ) == 1
+
+        # constraint for the same room of conflicted time of 2H class
+        for class_2H_periods, normal_periods in conflict_periods:
+            for normal_t in normal_periods:
+                for r in self.room_ids:
+                    self.prob += lpSum(
+                        self.X[c_2H, s_2H, class_2H_periods[0], r, p_2H] 
+                    ) + lpSum(
+                        self.X[c, s, normal_t, r, p]
+                        for c, s, p in self.valid_course_professor_pairs
+                    ) <= 1
+        
+        # constraint for other professors, they can't be arrange to 2H class
+        for c, s, p in self.valid_course_professor_pairs:
+            self.prob += lpSum(
+                self.X[c, s, t, r, p]
+                for t in class_2H_list
+                for r in self.room_ids
+                if (c, s, p) != (c_2H, s_2H, p_2H)
+            ) == 0
 
 
     def solve_problem(self):
@@ -291,10 +442,24 @@ class CourseScheduler:
 
         try:
             self.prob.solve()
+            print("======penalty sum======")
+            print(pulp.value(self.prob.objective))
+            print("======preference time penalty======")
+            time_penalty_sum = sum(pulp.value(var) for var in self.preference_time_penalties.values())
+            print(time_penalty_sum)
+            # print every course penalty
+            # for key, var in self.preference_time_penalties.items():
+            #     print(f"{key}: {var.value()}")
+            
+            # print("======course miss penalty======")
+            # for key, var in self.course_miss_penalties.items():
+            #     print(f"{key}: {var.value() * self.course_miss_weight}")
+            # print("======peak time penalty======")
+            # for key, var in self.peak_penalties.items():
+            #     print(f"{key}: {var.value() * self.peak_weight}")
             return True
         except Exception as e:
             print(f"Solver encountered an error: {e}")
-            print("At most 65% in 11am-3pm failed, the program skipped constraint 7.")
             return False
 
 
@@ -302,10 +467,9 @@ class CourseScheduler:
         """Check and report any unscheduled courses."""
 
         assigned_courses = set(
-            (c, s) for c, s, t, r in self.X if self.X[c, s, t, r].varValue == 1
+            (c, s) for c, s, t, r, p in self.X if self.X[c, s, t, r, p].varValue == 1
         )
-        all_courses = set(zip(self.course_ids, self.secs))
-        unassigned_courses = all_courses - assigned_courses
+        unassigned_courses = self.all_courses - assigned_courses
 
         if unassigned_courses:
             print("The following courses are not scheduled:")
@@ -322,15 +486,14 @@ class CourseScheduler:
         for c, s in zip(self.course_ids, self.secs):
             for t in self.time_slots:
                 for r in self.room_ids:
-                    if self.X[c, s, t, r].varValue == 1:
-                        professor_name = self.data.loc[
-                            (self.data["CourseID"] == c) & (self.data["Sec"] == s), 
-                            "ProfessorName"
-                        ].values[0]
-                        section = s
-                        formatted_time = f"{t}: {self.time_slot_mapping.get(t, t)}"
-                        room = r
-                        schedule.append([c, section, professor_name, formatted_time, room])
+                    for p in self.professors:
+                        if (c, s, t, r, p) in self.X and self.X[c, s, t, r, p].varValue == 1:
+                            course = c
+                            section = s
+                            professor_name = p
+                            formatted_time = f"{t.split('_')[0]}: {self.time_slot_mapping.get(t, t)}"
+                            room = r
+                            schedule.append([course, section, professor_name, formatted_time, room])
 
         schedule_df = pd.DataFrame(
             schedule, columns=["CourseID", "Sec", "ProfessorName", "Time", "Room"]
@@ -346,11 +509,6 @@ class CourseScheduler:
     def schedule_courses(self, output_file):
         """Main method to schedule courses."""
 
-        # Extract required data
-        self.course_ids = self.data["CourseID"].tolist()
-        self.secs = self.data["Sec"].tolist()
-        self.room_ids = self.rooms_data["RoomID"].tolist()
-
         # Initialize the LP problem
         self.initialize_problem()
 
@@ -359,13 +517,16 @@ class CourseScheduler:
         self.add_professor_preference_constraints()
         self.add_section_time_constraints()
         self.add_professor_time_constraints()
+        self.add_room_time_constraints()
         self.add_specific_course_constraints()
         self.add_mwf_course_constraints()
-        self.add_mw_course_constraints()
-        self.add_high_demand_period_constraints()
-        self.add_core_course_constraints()
-        self.add_room_time_constraints()
         self.add_room_capacity_constraints()
+        self.add_same_pre_courses_constraints()
+        self.add_mw_mwf_time_constraints()
+        self.add_peak_time_constraints()
+        self.add_2Hclass_constraints()
+        # self.add_course_miss_constraint()
+        # self.add_core_course_constraints()
 
         # Solve the problem
         success = self.solve_problem()
@@ -379,9 +540,9 @@ class CourseScheduler:
 
 # Example usage
 if __name__ == "__main__":
-    data_file = "CSV/data.csv"
-    rooms_file = "CSV/room.csv"
-    output_file = "CSV/schedule_output.csv"
+    data_file = "../data/CSV/new_data.csv"
+    rooms_file = "../data/CSV/room.csv"
+    output_file = "../data/CSV/schedule_output.csv"
     
     scheduler = CourseScheduler(data_file, rooms_file)
     schedule = scheduler.schedule_courses(output_file)
