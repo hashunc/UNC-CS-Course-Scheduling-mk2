@@ -9,7 +9,7 @@ class CourseScheduler:
             "MWF_1", "MWF_2", "MWF_3", "MWF_4", "MWF_5", "MWF_6", "MWF_7", "MWF_8", "MWF_9", "MWF_10",
             "MW_12", "MW_34", "MW_56", "MW_78", "MW_90",
             "TTH_1", "TTH_2", "TTH_3", "TTH_4", "TTH_5", "TTH_6", "TTH_7",
-            "2H_class_1", "2H_class_2", "2H_class_3", "2H_class_4", "2H_class_5"
+            "2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"
         ]
         self.time_slot_mapping = {
             "MWF_1": "8:00 – 8:50 a.m.",
@@ -34,11 +34,11 @@ class CourseScheduler:
             "TTH_5": "2:00 – 3:15 p.m.",
             "TTH_6": "3:30 – 4:45 p.m.",
             "TTH_7": "5:00 – 6:15 p.m.",
-            "2H_class_1": "9:00 – 11:00 a.m.",
-            "2H_class_2": "9:00 – 11:00 a.m.",
-            "2H_class_3": "9:00 – 11:00 a.m.",
-            "2H_class_4": "9:00 – 11:00 a.m.",
-            "2H_class_5": "9:00 – 11:00 a.m."
+            "2H_M": "9:00 – 11:00 a.m.",
+            "2H_T": "9:00 – 11:00 a.m.",
+            "2H_W": "9:00 – 11:00 a.m.",
+            "2H_TH": "9:00 – 11:00 a.m.",
+            "2H_F": "9:00 – 11:00 a.m."
         }
 
         self.data = self.read_data(data_file)
@@ -398,13 +398,13 @@ class CourseScheduler:
     def add_2Hclass_constraints(self):
         """Add constraints to a 2H-class to Professor Chaturvedi for 790-150."""
 
-        class_2H_list = ["2H_class_1", "2H_class_2", "2H_class_3", "2H_class_4", "2H_class_5"]
+        class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
         conflict_periods = [
-            (["2H_class_1"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
-            (["2H_class_2"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_class_3"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
-            (["2H_class_4"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_class_5"], ["MWF_2", "MWF_3"])
+            (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_T"], ["TTH_1", "TTH_2", "TTH_3"]),
+            (["2H_W"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
+            (["2H_F"], ["MWF_2", "MWF_3"])
         ]
         c_2H = "COMP 790"
         s_2H = 150
@@ -493,10 +493,14 @@ class CourseScheduler:
                             professor_name = p
                             formatted_time = f"{t}: {self.time_slot_mapping.get(t, t)}"
                             room = r
-                            schedule.append([course, section, professor_name, formatted_time, room])
+                            enroll_capacity  = self.data.loc[
+                                (self.data["CourseID"] == c) & (self.data["Sec"] == s), 
+                                "EnrollCapacity"
+                            ].values[0]
+                            schedule.append([course, section, professor_name, formatted_time, room, enroll_capacity])
 
         schedule_df = pd.DataFrame(
-            schedule, columns=["CourseID", "Sec", "ProfessorName", "Time", "Room"]
+            schedule, columns=["CourseID", "Sec", "ProfessorName", "Time", "Room", "Enroll Capacity"]
         )
         schedule_df.drop_duplicates(inplace=True)
 
