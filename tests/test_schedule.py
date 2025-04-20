@@ -6,7 +6,7 @@ from pathlib import Path
 from scheduler.schedule import CourseScheduler
 
 
-# home of test and target data
+# home of test input and target output
 test_data = Path("./tests/test_data")
 
 # provides case names
@@ -22,7 +22,7 @@ simple_cases = ("base_case",)
                 test_data / name / "data.csv",
                 test_data / name / "room.csv",
             ),
-            Path("./tests/target_data") / f"{name}.csv",
+            test_data / name / "output.csv",
             id=name,
         )
         for name in simple_cases
