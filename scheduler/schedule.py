@@ -77,14 +77,14 @@ class CourseScheduler:
         self.rooms_data: pd.DataFrame = self.read_rooms(rooms_file)
         self.room_ids: List[str] = self.rooms_data["RoomID"].tolist()
 
-        self.X: Dict[tuple, LpProblem]
+        self.X: Dict[tuple, LpVariable]
         self.prob: LpProblem
-        self.valid_course_professor_pairs: List[str] = []
-        self.professors_courses: Dict[str, str] = {}
+        self.valid_course_professor_pairs: List[tuple[str, str, str]] = []
+        self.professors_courses: Dict[str, List[tuple[str, str]]] = {}
 
-        self.course_miss_penalties: Dict[str, int] = {}
-        self.preference_time_penalties: Dict[str, int] = {}
-        self.peak_penalties: Dict[str, int] = {}
+        self.course_miss_penalties: Dict[str, LpVariable] = {}
+        self.preference_time_penalties: Dict[tuple[str, str, str], LpVariable] = {}
+        self.peak_penalties: Dict[str, LpVariable] = {}
 
         self.course_miss_weight = 900
         self.preference_time_weight = 100
@@ -534,9 +534,10 @@ class CourseScheduler:
             print("======penalty sum======")
             print(pulp.value(self.prob.objective))
             print("======preference time penalty======")
-            time_penalty_sum = sum(
+            time_penalties: List[LpVariable] = [
                 pulp.value(var) for var in self.preference_time_penalties.values()
-            )
+            ]  # type:ignore
+            time_penalty_sum = sum(time_penalties)
             print(time_penalty_sum)
             # print every course penalty
             # for key, var in self.preference_time_penalties.items():
