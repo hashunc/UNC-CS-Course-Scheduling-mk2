@@ -77,7 +77,7 @@ class CourseScheduler:
         self.rooms_data: pd.DataFrame = self.read_rooms(rooms_file)
         self.room_ids: List[str] = self.rooms_data["RoomID"].tolist()
 
-        self.X: Dict[tuple[str], LpProblem]
+        self.X: Dict[tuple, LpProblem]
         self.prob: LpProblem
         self.valid_course_professor_pairs: List[str] = []
         self.professors_courses: Dict[str, str] = {}
@@ -477,7 +477,14 @@ class CourseScheduler:
     def add_2Hclass_constraints(self):
         """Add constraints to a 2H-class to Professor Chaturvedi for 790-150."""
 
+        c_2H = "COMP 790"
+        s_2H = 150
+        # skip constraint if Chaturvedi's class is not being scheduled
+        if (c_2H, s_2H) not in self.all_courses:
+            return
+        p_2H = "Chaturvedi"
         class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
+
         conflict_periods = [
             (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
             (["2H_T"], ["TTH_1", "TTH_2", "TTH_3"]),
@@ -485,9 +492,6 @@ class CourseScheduler:
             (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
             (["2H_F"], ["MWF_2", "MWF_3"]),
         ]
-        c_2H = "COMP 790"
-        s_2H = 150
-        p_2H = "Chaturvedi"
 
         self.prob += (
             lpSum(
@@ -497,7 +501,6 @@ class CourseScheduler:
             )
             == 1
         )
-
         # constraint for the same room of conflicted time of 2H class
         for class_2H_periods, normal_periods in conflict_periods:
             for normal_t in normal_periods:
