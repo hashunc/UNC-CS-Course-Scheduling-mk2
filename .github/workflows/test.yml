@@ -27,4 +27,6 @@ jobs:
       - name: Validation - pytest
         env:
           PYTHONPATH: .
-        run: pytest
+        run: |
+          black .
+          pytest
