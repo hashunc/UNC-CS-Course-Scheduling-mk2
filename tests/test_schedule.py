@@ -1,3 +1,4 @@
+from numpy import ndarray
 import pytest
 import pandas as pd
 from pathlib import Path
@@ -33,7 +34,7 @@ simple_cases = (
         for name in simple_cases
     ),
 )  # compares algorithm output with expected output for simple cases
-def test_schedule_courses_output(service, tmp_path, expected: pd.DataFrame):
+def test_schedule_courses_output(service, tmp_path: Path, expected: pd.DataFrame):
     # get actual output and compare with expected
     out_path = tmp_path / "output.csv"
     service.schedule_courses(out_path)
@@ -71,6 +72,15 @@ full_scale_cases = ()
     ),
 )
 class TestConstraints:
+    out: pd.DataFrame
+
+    # scheduling output as DataFrame fixture
+    @pytest.fixture(autouse=True, scope="class")
+    def output(self, data_file, rooms_file, tmp_path: Path):
+        service = CourseScheduler(data_file, rooms_file)
+        output_path = tmp_path / "output.csv"
+        service.schedule_courses(output_path)
+        self.out = pd.read_csv(output_path)
 
     # room and data fixtures
     @pytest.fixture(scope="class")
@@ -81,20 +91,22 @@ class TestConstraints:
     def rooms(self, rooms_file):
         yield pd.read_csv(rooms_file)
 
-    # scheduling output as DataFrame fixture
-    @pytest.fixture(autouse=True, scope="class")
-    def output(self, data_file, rooms_file, tmp_path):
-        service = CourseScheduler(data_file, rooms_file)
-        output_path = tmp_path / "output.csv"
-        service.schedule_courses(output_path)
-        yield pd.read_csv(output_path)
+    @pytest.fixture(scope="class")
+    def profs(self):
+        yield self.out["ProfessorName"].unique()
 
     # the following tests check whether:
-    # TODO: any professor has two classes scheduled concurrently
-    def test_prof_conflict(self): ...
+    # any professor has two classes scheduled concurrently
+    def test_prof_conflict(self, profs: ndarray):
+        for prof in profs:
+            teaching_time = self.out["Time", self.out["ProfessorName"] == prof]
+            duplicates = teaching_time[teaching_time.duplicated()]
+            if not duplicates.empty:
+                pytest.fail(reason=f"Professor {prof} is double booked: \n{duplicates}")
+            # TODO: add MW and 2H checks
 
     # TODO: any professor is scheduled for a class or at a time they cannot teach
-    def test_prof_can_teach(self, data): ...
+    def test_prof_can_teach(self, data: pd.DataFrame): ...
 
     # TODO: any room has two classes scheduled concurrently
     def test_room_conflict(self): ...
