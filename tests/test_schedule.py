@@ -22,7 +22,7 @@ simple_cases = ("base_case",)
                 test_data / name / "data.csv",
                 test_data / name / "room.csv",
             ),
-            test_data / name / "output.csv",
+            pd.read_csv(test_data / name / "output.csv"),
             id=name,
         )
         for name in simple_cases
@@ -30,8 +30,9 @@ simple_cases = ("base_case",)
 )  # compares algorithm output with expected output for simple cases
 def test_schedule_courses_output(service, tmp_path, expected):
     # get actual output and compare with expected
-    service.schedule_courses(tmp_path / "output.csv")
-    diff = pd.read_csv(tmp_path / "output.csv").compare(pd.read_csv(expected))
+    out_path = tmp_path / "output.csv"
+    service.schedule_courses(out_path)
+    diff = expected.compare(pd.read_csv(out_path), keep_shape=True)
     # upon failure, makes differences between actual and expected output available
     if not diff.empty:
         pytest.fail(reason=diff.to_string())
