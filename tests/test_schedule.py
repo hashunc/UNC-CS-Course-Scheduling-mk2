@@ -28,14 +28,16 @@ simple_cases = ("base_case",)
         for name in simple_cases
     ),
 )  # compares algorithm output with expected output for simple cases
-def test_schedule_courses_output(service, tmp_path, expected):
+def test_schedule_courses_output(service, tmp_path, expected: pd.DataFrame):
     # get actual output and compare with expected
     out_path = tmp_path / "output.csv"
     service.schedule_courses(out_path)
-    diff = expected.compare(pd.read_csv(out_path), keep_shape=True)
+    diff = expected.compare(pd.read_csv(out_path), result_names=("Expected", "Actual"))
     # upon failure, makes differences between actual and expected output available
     if not diff.empty:
-        pytest.fail(reason=diff.to_string())
+        pytest.fail(
+            reason=f"Output does not match expected, differences:\n{diff.to_string()}"
+        )
 
 
 # provides case names
