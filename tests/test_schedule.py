@@ -1,6 +1,7 @@
 import pytest
 import pandas as pd
 from pathlib import Path
+from datacompy import Compare
 
 # TODO: fix import
 from scheduler.schedule import CourseScheduler
@@ -10,7 +11,11 @@ from scheduler.schedule import CourseScheduler
 test_data = Path("./tests/test_data")
 
 # provides case names
-simple_cases = ("base_case",)
+simple_cases = (
+    "base_case",
+    "core_case",
+    "peak_case",
+)
 
 
 # creates separate tests for each case by parametrizing expected data and schedulers instantiated from each case's input data
@@ -32,11 +37,17 @@ def test_schedule_courses_output(service, tmp_path, expected: pd.DataFrame):
     # get actual output and compare with expected
     out_path = tmp_path / "output.csv"
     service.schedule_courses(out_path)
-    diff = expected.compare(pd.read_csv(out_path), result_names=("Expected", "Actual"))
     # upon failure, makes differences between actual and expected output available
-    if not diff.empty:
+    if not expected.equals(pd.read_csv(out_path)):
+        diff = Compare(
+            expected,
+            pd.read_csv(out_path),
+            join_columns=["CourseID", "Sec"],
+            df1_name="Expected",
+            df2_name="Actual",
+        )
         pytest.fail(
-            reason=f"Output does not match expected, differences:\n{diff.to_string()}"
+            reason=f"Actual output does not match expected, differences:\n{diff.report()}"
         )
 
 
