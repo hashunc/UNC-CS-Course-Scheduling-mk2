@@ -38,10 +38,11 @@ def test_schedule_courses_output(service, tmp_path, expected: pd.DataFrame):
     out_path = tmp_path / "output.csv"
     service.schedule_courses(out_path)
     # upon failure, makes differences between actual and expected output available
-    if not expected.equals(pd.read_csv(out_path)):
+    actual = pd.read_csv(out_path)
+    if not expected.equals(actual):
         diff = Compare(
             expected,
-            pd.read_csv(out_path),
+            actual,
             join_columns=["CourseID", "Sec"],
             df1_name="Expected",
             df2_name="Actual",
