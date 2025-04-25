@@ -244,7 +244,11 @@ class CourseScheduler:
 
 
     def add_room_capacity_constraints(self):
-        """Add constraints to ensure room capacity is sufficient for course enrollment."""
+        """Add constraints to ensure room capacity is sufficient for course enrollment, but the room can't be too empty."""
+
+        other_rooms = ["ClassRoom1_200", "ClassRoom2_200", "ClassRoom3_200", "ClassRoom4_200", "ClassRoom5_200", "ClassRoom6_200", 
+                       "ClassRoom1_250", "ClassRoom2_250", "ClassRoom3_250", "ClassRoom4_250", "ClassRoom5_250", "ClassRoom6_250", 
+                       "ClassRoom1_300", "ClassRoom2_300", "ClassRoom3_300", "ClassRoom4_300", "ClassRoom5_300", "ClassRoom6_300"]
 
         for c, s, p in self.valid_course_professor_pairs:
             course_capacity = self.data.loc[
@@ -256,6 +260,13 @@ class CourseScheduler:
                     # check if the room capacity is smaller than enroll capacity of the course
                     if self.rooms_data.loc[self.rooms_data["RoomID"] == r, "Capacity"].values[0] < course_capacity:
                         self.prob += self.X[c, s, t, r, p] == 0
+            # try our best to avoid arranging courses to non-CS buildings
+            if course_capacity <= 128:
+                self.prob += lpSum(
+                    self.X[c, s, t, r, p]
+                    for t in self.time_slots
+                    for r in other_rooms
+                ) == 0
 
 
     def add_same_pre_courses_constraints(self):
@@ -407,7 +418,7 @@ class CourseScheduler:
             (["2H_F"], ["MWF_2", "MWF_3"])
         ]
         c_2H = "COMP 790"
-        s_2H = 150
+        s_2H = 158
         p_2H = "Chaturvedi"
 
         self.prob += lpSum(
@@ -448,8 +459,9 @@ class CourseScheduler:
             time_penalty_sum = sum(pulp.value(var) for var in self.preference_time_penalties.values())
             print(time_penalty_sum)
             # print every course penalty
-            # for key, var in self.preference_time_penalties.items():
-            #     print(f"{key}: {var.value()}")
+            for key, var in self.preference_time_penalties.items():
+                if var.value() > 0:
+                    print(f"{key}: {var.value()}")
             
             # print("======course miss penalty======")
             # for key, var in self.course_miss_penalties.items():
