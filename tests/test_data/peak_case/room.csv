@@ -1,0 +1,5 @@
+﻿RoomID,Building,Capacity,AvailableTimeSlots
+FB001,CS,250,All
+FB002,CS,200,All
+FB003,CS,150,All
+Other,Hane,300,All

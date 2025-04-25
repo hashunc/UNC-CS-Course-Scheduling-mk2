@@ -1,2 +1,3 @@
 ﻿CourseID,Sec,EnrollCapacity,ProfessorName,Professor_PreferredTimeSlots
-COMP 210,1,210,Ghani,"TTH_2"
+COMP 301,1,210,Mayer-Patel,"TTH_2"
+COMP 590,80,210,Mayer-Patel,"TTH_2"
