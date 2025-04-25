@@ -29,6 +29,7 @@ course_cap_df["Full"] = course_cap_df["Course"] + "-" + course_cap_df["Section"]
 all_courses = course_cap_df["Full"].tolist()
 
 # Map: course_key -> sections
+from collections import defaultdict
 course_sections = defaultdict(list)
 for i, row in course_cap_df.iterrows():
     full = row["Full"]
@@ -84,8 +85,8 @@ for instructor_last_name, count in instructor_course_counts.items():
 assignments_df = pd.DataFrame(assignments)
 assignments_df["Course Num"] = assignments_df["CourseID"].str.extract(r"COMP (\d+)").fillna(0).astype(int)
 assignments_sorted = assignments_df.sort_values(by="Course Num").drop(columns=["Course Num"]).reset_index(drop=True)
-assignments_sorted.to_csv("data/CSV/new_data.csv", index=False)
-print("Saved to data/CSV/new_data.csv")
+assignments_sorted.to_csv("data/CSV/new_data1.csv", index=False)
+print("Saved to data/CSV/new_data1.csv")
 
 # Merge time slots
 faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv")
@@ -98,6 +99,9 @@ merged_df = new_data_df.merge(
     how="left"
 )
 merged_df = merged_df.drop(columns=["Last Name"])
-merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Available Time Slots"]]
-merged_df.to_csv("data/CSV/merged_assignments_with_time_slots.csv", index=False)
-print("✅ Saved merged assignment with time slots: data/CSV/merged_assignments_with_time_slots.csv")
+
+# ✅ Rename column before saving
+merged_df.rename(columns={"Available Time Slots": "Professor_PreferredTimeSlots"}, inplace=True)
+merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Professor_PreferredTimeSlots"]]
+merged_df.to_csv("data/CSV/new_data.csv", index=False)
+print("✅ Saved merged assignment with time slots: data/CSV/new_data.csv")

@@ -478,7 +478,7 @@ class CourseScheduler:
         """Add constraints to a 2H-class to Professor Chaturvedi for 790-150."""
 
         c_2H = "COMP 790"
-        s_2H = 150
+        s_2H = "150"
         # skip constraint if Chaturvedi's class is not being scheduled
         if (c_2H, s_2H) not in self.all_courses:
             return
