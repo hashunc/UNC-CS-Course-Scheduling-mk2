@@ -83,7 +83,7 @@ assignments_df = pd.DataFrame(assignments)
 assignments_df["Course Num"] = assignments_df["CourseID"].str.extract(r"COMP (\d+)").fillna(0).astype(int)
 assignments_sorted = assignments_df.sort_values(by="Course Num").drop(columns=["Course Num"]).reset_index(drop=True)
 assignments_sorted.to_csv("data/CSV/new_data.csv", index=False)
-print("Saved to data/CSV/new_data.csv")
+print("✅ Saved to data/CSV/new_data.csv")
 
 # Merge time slots
 faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv")
