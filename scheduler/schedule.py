@@ -631,9 +631,9 @@ class CourseScheduler:
 
 # Example usage
 if __name__ == "__main__":
-    data_file = Path(".") / "data" / "CSV" / "new_data.csv"
-    rooms_file = Path(".") / "data" / "CSV" / "room.csv"
-    output_file = Path(".") / "data" / "CSV" / "schedule_output.csv"
+    data_file = Path("..") / "data" / "CSV" / "new_data.csv"
+    rooms_file = Path("..") / "data" / "CSV" / "room.csv"
+    output_file = Path("..") / "data" / "CSV" / "schedule_output.csv"
 
     scheduler = CourseScheduler(data_file, rooms_file)
     schedule = scheduler.schedule_courses(output_file)
