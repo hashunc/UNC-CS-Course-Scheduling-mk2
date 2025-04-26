@@ -6,6 +6,7 @@ import os
 
 # -------- 1. Load the Excel file --------
 file_path = "data/Input/(For 523 team) Copy of Undergraduate Curriculum Coverage.xlsx"
+
 print("\u2705 Reading file from:", os.path.abspath(file_path))
 
 excel_data = pd.ExcelFile(file_path)
