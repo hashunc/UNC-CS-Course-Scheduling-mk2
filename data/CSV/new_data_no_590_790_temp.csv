@@ -3,10 +3,10 @@ COMP 110,3,150,Byrnes
 COMP 110,2,150,Byrnes
 COMP 110,1,150,Kaur
 COMP 126,1,120,Joseph-Nicholas
-COMP 210,2,160,Ghani
 COMP 210,1,160,Ghani
-COMP 211,1,200,McMahon
+COMP 210,2,160,Ghani
 COMP 211,2,200,McMahon
+COMP 211,1,200,McMahon
 COMP 227,1,30,Joseph-Nicholas
 COMP 283,1,153,Snoeyink
 COMP 301,1,200,Goodwin
@@ -30,7 +30,7 @@ COMP 537,1,60,Eskandarian
 COMP 541,1,45,Singh
 COMP 550,1,150,Sun
 COMP 550,2,120,Sun
-COMP 560,1,120,Chaturvedi
+COMP 560,1,120,Silva
 COMP 562,1,60,Bertasius
 COMP 572,1,60,Singh
 COMP 581,1,60,Alterovitz

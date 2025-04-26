@@ -473,7 +473,7 @@ class CourseScheduler:
             (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
             (["2H_F"], ["MWF_2", "MWF_3"])
         ]
-        c_2H = "COMP 790"
+        c_2H = "COMP 590&790"
         s_2H = 158
 
         p_2H = "Chaturvedi"
@@ -633,7 +633,8 @@ class CourseScheduler:
 if __name__ == "__main__":
     data_file = Path("data/CSV/new_data.csv")
     rooms_file = Path("data/CSV/room.csv")
-    output_file = Path("..") / "data" / "CSV" / "schedule_output.csv"
+   
+    output_file = Path("data/CSV/schedule_output.csv")
 
     scheduler = CourseScheduler(data_file, rooms_file)
     schedule = scheduler.schedule_courses(output_file)
