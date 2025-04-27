@@ -6,21 +6,23 @@ INPUT_AVAILABILITY = "data/Input/Responses.xlsx"
 INPUT_CLASSROOM = "data/Input/ClassRoom.xlsx"
 INPUT_CURRICULUM_COVERAGE = "data/Input/FacultyQualificationPreference.xlsx"
 
-
 # Output files
+
+## for user 
+OUTPUT_UNASSIGNED_COURSES = "data/Output/unassigned_courses.csv"
+OUTPUT_SKIPPED_FACULTY = "data/Output/skipped_faculty.csv"
+OUTPUT_COPIED_SCHEDULE = "data/Output/schedule_output.csv"
+OUTPUT_GOOGLE_CALENDAR_UNDERGRAD = "data/Output/google_calendar_undergraduate.csv"
+OUTPUT_GOOGLE_CALENDAR_GRADUATED = "data/Output/google_calendar_graduated.csv"
+
+## for .py
 OUTPUT_NEW_DATA_590_790 = "data/CSV/new_data_590_790.csv"
 OUTPUT_NEW_DATA_590_AND_790 = "data/CSV/new_data_590&790_only.csv"
-
 OUTPUT_MERGED_NO_590_790 = "data/CSV/merged_assignments_no_590_790.csv"
 OUTPUT_MERGED_590_790 = "data/CSV/merged_assignments_590_790.csv"
 OUTPUT_MERGED_590_AND_790 = "data/CSV/merged_assignments_590&790_only.csv"
 OUTPUT_NEW_DATA_CSV = "data/CSV/new_data.csv"
 OUTPUT_SCHEDULE_OUTPUT = "data/CSV/schedule_output.csv"
-OUTPUT_COPIED_SCHEDULE = "data/Output/schedule_output.csv"
-OUTPUT_GOOGLE_CALENDAR_UNDERGRAD = "data/Output/google_calendar_undergraduate.csv"
-OUTPUT_GOOGLE_CALENDAR_GRADUATED = "data/Output/google_calendar_graduated.csv"
-OUTPUT_UNASSIGNED_COURSES = "data/Output/unassigned_courses.csv"
-OUTPUT_SKIPPED_FACULTY = "data/Output/skipped_faculty.csv"
 OUTPUT_ROOM_CSV = "data/CSV/room.csv"
 OUTPUT_TOP_COURSES = "data/CSV/top_courses_per_instructor_clean.csv"
 OUTPUT_FACULTY_PREF = "data/CSV/faculty_time_preferences.csv"
