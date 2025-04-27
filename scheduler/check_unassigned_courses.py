@@ -1,10 +1,10 @@
 # scheduler/check_unassigned_courses.py
-
+from config import INPUT_COURSE_CAP, OUTPUT_UNASSIGNED_COURSES, OUTPUT_NEW_DATA_CSV
 import pandas as pd
 
 # Load both files
-new_data = pd.read_csv("data/CSV/new_data.csv")
-class_cap = pd.read_excel("data/Input/2025ClassEnrollCap.xlsx")
+new_data = pd.read_csv(OUTPUT_NEW_DATA_CSV)
+class_cap = pd.read_excel(INPUT_COURSE_CAP)
 
 # Prepare 'CourseID' and 'Sec' in class_cap
 class_cap.columns = class_cap.columns.str.strip()
@@ -33,5 +33,5 @@ else:
 # Save missing to CSV
 unassigned_df = pd.DataFrame(list(unassigned_courses), columns=["CourseID", "Sec"])
 unassigned_df = unassigned_df.sort_values(by=["CourseID", "Sec"]).reset_index(drop=True)
-unassigned_df.to_csv("data/Output/unassigned_courses.csv", index=False)
-print("\n✅ Saved missing courses list to: data/Output/unassigned_courses.csv")
+unassigned_df.to_csv(OUTPUT_UNASSIGNED_COURSES, index=False)
+print(f"\n✅ Saved missing courses list to: {OUTPUT_UNASSIGNED_COURSES}")
