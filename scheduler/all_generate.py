@@ -49,4 +49,8 @@ run_script("scheduler/check_unassigned_courses.py", 7, "Check unassigned courses
 print("\n🔵 Running scheduling optimizer...")
 run_script("scheduler/schedule.py", 8, "Generate schedule_output.csv")
 
+# Step 9: Run convert_to_google_calendar.py to create google_calendar_format.csv
+print("\n🔵 Converting schedule to Google Calendar format...")
+run_script("scheduler/convert_to_google_calendar.py", 9, "Generate google_calendar_format.csv")
+
 print("\n🎯 All steps completed successfully! The system is fully updated and schedule generated.")
