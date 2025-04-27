@@ -49,6 +49,10 @@ run_script("scheduler/check_unassigned_courses.py", 7, "Check unassigned courses
 print("\n🔵 Running scheduling optimizer...")
 run_script("scheduler/schedule.py", 8, "Generate schedule_output.csv")
 
+# 🚀 New Step 8.5: Split COMP 590&790 in schedule_output.csv
+print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
+run_script("scheduler/split_590_790.py", 8.5, "Split 590&790 in schedule_output.csv")
+
 # Step 9: Run convert_to_google_calendar.py to create google_calendar_format.csv
 print("\n🔵 Converting schedule to Google Calendar format...")
 run_script("scheduler/convert_to_google_calendar.py", 9, "Generate google_calendar_format.csv")
