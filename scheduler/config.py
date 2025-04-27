@@ -16,6 +16,7 @@ OUTPUT_GOOGLE_CALENDAR_UNDERGRAD = "data/Output/google_calendar_undergraduate.cs
 OUTPUT_GOOGLE_CALENDAR_GRADUATED = "data/Output/google_calendar_graduated.csv"
 OUTPUT_UNASSIGNED_COURSES = "data/Output/unassigned_courses.csv"
 OUTPUT_SKIPPED_FACULTY = "data/Output/skipped_faculty.csv"
+OUTPUT_ROOM_CSV = "data/CSV/room.csv"
 
 # Scripts
 CONVERT_CLASSROOM_SCRIPT = "scheduler/convert_classroom_to_room_csv.py"

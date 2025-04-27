@@ -2,9 +2,10 @@
 
 import pandas as pd
 from pathlib import Path
+from config import INPUT_CLASSROOM, OUTPUT_ROOM_CSV
 
-input_path = Path("data/Input/ClassRoom.xlsx")
-output_path = Path("data/CSV/room.csv")
+input_path = Path(INPUT_CLASSROOM)
+output_path = Path(OUTPUT_ROOM_CSV)
 
 print(f"📥 Reading: {input_path}")
 df = pd.read_excel(input_path)

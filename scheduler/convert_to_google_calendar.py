@@ -2,8 +2,9 @@
 
 import pandas as pd
 from datetime import datetime
+from config import OUTPUT_SCHEDULE_OUTPUT, OUTPUT_GOOGLE_CALENDAR_UNDERGRAD, OUTPUT_GOOGLE_CALENDAR_GRADUATED
 
-schedule_df = pd.read_csv("data/CSV/schedule_output.csv")
+schedule_df = pd.read_csv(OUTPUT_SCHEDULE_OUTPUT)
 
 day_mapping = {
     "MWF": ["Monday", "Wednesday", "Friday"],
@@ -101,7 +102,7 @@ calendar_df["Course Num"] = calendar_df["CourseID"].str.extract(r"COMP (\d+)").a
 undergrad_df = calendar_df[calendar_df["Course Num"] < 600].drop(columns=["Course Num"]).reset_index(drop=True)
 grad_df = calendar_df[calendar_df["Course Num"] >= 600].drop(columns=["Course Num"]).reset_index(drop=True)
 
-undergrad_df.to_csv("data/Output/google_calendar_undergraduate.csv", index=False)
-grad_df.to_csv("data/Output/google_calendar_graduated.csv", index=False)
+undergrad_df.to_csv(OUTPUT_GOOGLE_CALENDAR_UNDERGRAD, index=False)
+grad_df.to_csv(OUTPUT_GOOGLE_CALENDAR_GRADUATED, index=False)
 
-print("✅ Saved google_calendar_undergraduate.csv and google_calendar_graduated.csv in data/Output/")
+print(f"✅ Saved {OUTPUT_GOOGLE_CALENDAR_UNDERGRAD} and {OUTPUT_GOOGLE_CALENDAR_GRADUATED}")
