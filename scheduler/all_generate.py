@@ -45,4 +45,8 @@ print("✅ Final merged output saved to: data/CSV/new_data.csv")
 print("\n🔵 Running course assignment check...")
 run_script("scheduler/check_unassigned_courses.py", 7, "Check unassigned courses")
 
-print("\n🎯 All steps completed successfully! The system is fully updated.")
+# Step 8: Run schedule.py to generate schedule_output.csv
+print("\n🔵 Running scheduling optimizer...")
+run_script("scheduler/schedule.py", 8, "Generate schedule_output.csv")
+
+print("\n🎯 All steps completed successfully! The system is fully updated and schedule generated.")
