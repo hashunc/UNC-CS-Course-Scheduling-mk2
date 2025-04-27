@@ -1,5 +1,5 @@
 import pandas as pd
-from config import INPUT_AVAILABILITY, OUTPUT_SKIPPED_FACULTY
+from config import INPUT_AVAILABILITY, OUTPUT_FACULTY_PREF, OUTPUT_SKIPPED_FACULTY
 
 # Load Excel
 file_path = INPUT_AVAILABILITY
@@ -83,11 +83,11 @@ for _, row in filtered_df.iterrows():
 
 # Export both
 pd.DataFrame(results, columns=["First Name", "Last Name", "Available Time Slots"]) \
-  .to_csv("data/CSV/faculty_time_preferences.csv", index=False)
+  .to_csv(OUTPUT_FACULTY_PREF, index=False)
 
 pd.DataFrame(skipped, columns=["First Name", "Last Name", "Reason Skipped"]) \
   .to_csv(OUTPUT_SKIPPED_FACULTY, index=False)
 
 print("✅ Exported:")
-print("  • data/CSV/faculty_time_preferences.csv")
+print(f"  • {OUTPUT_FACULTY_PREF}")
 print(f"  • {OUTPUT_SKIPPED_FACULTY}")
