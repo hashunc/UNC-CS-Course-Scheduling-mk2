@@ -4,6 +4,8 @@
 INPUT_COURSE_CAP = "data/Input/2025ClassEnrollCap.xlsx"
 INPUT_AVAILABILITY = "data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx"
 INPUT_CLASSROOM = "data/Input/ClassRoom.xlsx"
+INPUT_CURRICULUM_COVERAGE = "data/Input/(For 523 team) Copy of Undergraduate Curriculum Coverage.xlsx"
+
 
 # Output files
 OUTPUT_MERGED_NO_590_790 = "data/CSV/merged_assignments_no_590_790.csv"
@@ -17,6 +19,7 @@ OUTPUT_GOOGLE_CALENDAR_GRADUATED = "data/Output/google_calendar_graduated.csv"
 OUTPUT_UNASSIGNED_COURSES = "data/Output/unassigned_courses.csv"
 OUTPUT_SKIPPED_FACULTY = "data/Output/skipped_faculty.csv"
 OUTPUT_ROOM_CSV = "data/CSV/room.csv"
+OUTPUT_TOP_COURSES = "data/CSV/top_courses_per_instructor_clean.csv"
 
 # Scripts
 CONVERT_CLASSROOM_SCRIPT = "scheduler/convert_classroom_to_room_csv.py"
