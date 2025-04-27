@@ -1,12 +1,11 @@
-# scheduler/generate_assignments_590&790.py
-
 import pandas as pd
 from config import (
     INPUT_COURSE_CAP,
     INPUT_AVAILABILITY,
     OUTPUT_TOP_COURSES,
     OUTPUT_NEW_DATA_590_AND_790,
-    OUTPUT_MERGED_590_AND_790
+    OUTPUT_MERGED_590_AND_790,
+    OUTPUT_FACULTY_PREF
 )
 
 # Load files
@@ -27,7 +26,7 @@ instructor_course_counts = dict(zip(
     pd.to_numeric(availability_df["How many classes you will teach in the next semester."], errors="coerce").fillna(0).astype(int)
 ))
 
-# Filter only COMP 590&790 related entries from top_courses_df
+# Filter only COMP 590&790 related entries
 top_courses_df = top_courses_df[top_courses_df["Course"].str.contains("590&790")]
 
 # Extract section numbers from course names
@@ -67,7 +66,7 @@ assignments_df.to_csv(OUTPUT_NEW_DATA_590_AND_790, index=False)
 print(f"✅ Saved to {OUTPUT_NEW_DATA_590_AND_790}")
 
 # Merge with faculty time preferences
-faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv") 
+faculty_pref_df = pd.read_csv(OUTPUT_FACULTY_PREF)
 merged_df = assignments_df.merge(
     faculty_pref_df[["Last Name", "Available Time Slots"]],
     left_on="ProfessorName",
