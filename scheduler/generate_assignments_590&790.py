@@ -65,16 +65,19 @@ assignments_df = pd.DataFrame(assignments)
 assignments_df.to_csv(OUTPUT_NEW_DATA_590_AND_790, index=False)
 print(f"✅ Saved to {OUTPUT_NEW_DATA_590_AND_790}")
 
-# Merge with faculty time preferences
-faculty_pref_df = pd.read_csv(OUTPUT_FACULTY_PREF)
-merged_df = assignments_df.merge(
-    faculty_pref_df[["Last Name", "Available Time Slots"]],
-    left_on="ProfessorName",
-    right_on="Last Name",
-    how="left"
-)
-merged_df = merged_df.drop(columns=["Last Name"])
-merged_df.rename(columns={"Available Time Slots": "Professor_PreferredTimeSlots"}, inplace=True)
-merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Professor_PreferredTimeSlots"]]
-merged_df.to_csv(OUTPUT_MERGED_590_AND_790, index=False)
-print(f"✅ Saved merged assignments to {OUTPUT_MERGED_590_AND_790}")
+if assignments_df.empty:
+    print("⚠️ No 590&790 assignments generated. Skipping merging step.")
+else:
+    # Merge with faculty time preferences
+    faculty_pref_df = pd.read_csv(OUTPUT_FACULTY_PREF)
+    merged_df = assignments_df.merge(
+        faculty_pref_df[["Last Name", "Available Time Slots"]],
+        left_on="ProfessorName",
+        right_on="Last Name",
+        how="left"
+    )
+    merged_df = merged_df.drop(columns=["Last Name"])
+    merged_df.rename(columns={"Available Time Slots": "Professor_PreferredTimeSlots"}, inplace=True)
+    merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Professor_PreferredTimeSlots"]]
+    merged_df.to_csv(OUTPUT_MERGED_590_AND_790, index=False)
+    print(f"✅ Saved merged assignments to {OUTPUT_MERGED_590_AND_790}")
