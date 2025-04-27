@@ -1,9 +1,8 @@
-# scheduler/split_590_790.py
-
 import pandas as pd
+from config import OUTPUT_SCHEDULE_OUTPUT  
 
 # Load original schedule
-df = pd.read_csv("data/CSV/schedule_output.csv")
+df = pd.read_csv(OUTPUT_SCHEDULE_OUTPUT)
 
 # Create a list to collect the processed rows
 processed_rows = []
@@ -30,5 +29,5 @@ new_df["Sec"] = new_df["Sec"].astype(int)
 new_df = new_df.sort_values(by=["Course Num", "Sec"]).drop(columns=["Course Num"]).reset_index(drop=True)
 
 # Save back
-new_df.to_csv("data/CSV/schedule_output.csv", index=False)
-print("✅ Finished splitting COMP 590&790, sorted, and saved to schedule_output.csv")
+new_df.to_csv(OUTPUT_SCHEDULE_OUTPUT, index=False)
+print(f"✅ Finished splitting COMP 590&790, sorted, and saved to {OUTPUT_SCHEDULE_OUTPUT}")
