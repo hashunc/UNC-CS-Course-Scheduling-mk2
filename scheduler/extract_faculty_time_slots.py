@@ -17,7 +17,7 @@ column_to_slot = {
     "M/W/F schedule [3:35 - 4:25 p.m.]": "MWF_8",
     "M/W/F schedule [4:40 - 5:30 p.m.]": "MWF_9",
     "M/W/F schedule [5:45 - 6:35 p.m.]": "MWF_10",
-    "M/W schedule [8:05 - 9:15 a.m.]": "MW_12",
+    "M/W schedule [8:00 - 9:15 a.m.]": "MW_12",
     "M/W schedule [10:10 - 11:25 a.m.]": "MW_34",
     "M/W schedule [12:20 - 1:35 p.m.]": "MW_56",
     "M/W schedule [2:30 - 3:45 p.m.]": "MW_78",

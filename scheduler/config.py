@@ -2,7 +2,7 @@
 
 # Input files
 INPUT_COURSE_CAP = "data/Input/ClassEnrollCap.xlsx"
-INPUT_AVAILABILITY = "data/Input/Responses.xlsx"
+INPUT_AVAILABILITY = "data/Input/ResponsesTest2.xlsx"
 INPUT_CLASSROOM = "data/Input/ClassRoom.xlsx"
 INPUT_CURRICULUM_COVERAGE = "data/Input/FacultyQualificationPreference.xlsx"
 
