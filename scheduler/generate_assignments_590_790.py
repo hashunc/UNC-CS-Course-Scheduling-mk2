@@ -9,7 +9,7 @@ from config import (
     OUTPUT_FACULTY_PREF
 )
 
-# Load files
+# Load files    
 course_cap_df = pd.read_excel(INPUT_COURSE_CAP)
 availability_df = pd.read_excel(INPUT_AVAILABILITY)
 top_courses_df = pd.read_csv(OUTPUT_TOP_COURSES)
@@ -93,7 +93,9 @@ assignments_df = pd.DataFrame(assignments)
 assignments_sorted = assignments_df.reset_index(drop=True)
 assignments_sorted.to_csv(OUTPUT_NEW_DATA_590_790, index=False)
 print(f"✅ Saved 590/790 assignments to {OUTPUT_NEW_DATA_590_790}")
-
+if assignments_sorted.empty:
+    print("⚠️ No 590/790 assignments generated. Skipping merging step.")
+    exit(0)
 # Merge time slots
 faculty_pref_df = pd.read_csv(OUTPUT_FACULTY_PREF)
 new_data_df = pd.read_csv(OUTPUT_NEW_DATA_590_790)
