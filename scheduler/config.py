@@ -23,6 +23,7 @@ OUTPUT_UNASSIGNED_COURSES = "data/Output/unassigned_courses.csv"
 OUTPUT_SKIPPED_FACULTY = "data/Output/skipped_faculty.csv"
 OUTPUT_ROOM_CSV = "data/CSV/room.csv"
 OUTPUT_TOP_COURSES = "data/CSV/top_courses_per_instructor_clean.csv"
+OUTPUT_FACULTY_PREF = "data/CSV/faculty_time_preferences.csv"
 
 # Scripts
 CONVERT_CLASSROOM_SCRIPT = "scheduler/convert_classroom_to_room_csv.py"
