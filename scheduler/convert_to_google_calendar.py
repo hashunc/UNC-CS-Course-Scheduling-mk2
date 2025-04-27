@@ -78,6 +78,7 @@ for idx, row in schedule_df.iterrows():
             if period_code.startswith(prefix):
                 for day in days:
                     calendar_events.append({
+                        "CourseID": course_id,
                         "Subject": f"{course_id} Sec {sec}",
                         "Start Date": start_week_date[day],
                         "Start Time": start_time_24h,
@@ -95,6 +96,16 @@ for idx, row in schedule_df.iterrows():
         continue
 
 calendar_df = pd.DataFrame(calendar_events)
-calendar_df.to_csv("data/CSV/google_calendar_format.csv", index=False)
 
-print("✅ Google Calendar CSV saved to data/CSV/google_calendar_format.csv")
+# 处理 Course Number
+calendar_df["Course Num"] = calendar_df["CourseID"].str.extract(r"COMP (\d+)").astype(float)
+
+# 分成 undergraduate 和 graduate
+undergrad_df = calendar_df[calendar_df["Course Num"] < 600].drop(columns=["Course Num"]).reset_index(drop=True)
+grad_df = calendar_df[calendar_df["Course Num"] >= 600].drop(columns=["Course Num"]).reset_index(drop=True)
+
+# 保存
+undergrad_df.to_csv("data/Output/undergraduate_calendar.csv", index=False)
+grad_df.to_csv("data/Output/graduate_calendar.csv", index=False)
+
+print("✅ Saved undergraduate_calendar.csv and graduate_calendar.csv in data/CSV/")

@@ -53,6 +53,10 @@ run_script("scheduler/schedule.py", 8, "Generate schedule_output.csv")
 print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
 run_script("scheduler/split_590_790.py", 8.5, "Split 590&790 in schedule_output.csv")
 
+# Step 8.6: Copy schedule_output.csv to Output folder
+print("\n🔵 Copying schedule_output.csv to data/Output/...")
+run_script("scheduler/copy_schedule_output.py", 8.6, "Copy schedule_output.csv to Output")
+
 # Step 9: Run convert_to_google_calendar.py to create google_calendar_format.csv
 print("\n🔵 Converting schedule to Google Calendar format...")
 run_script("scheduler/convert_to_google_calendar.py", 9, "Generate google_calendar_format.csv")

@@ -33,5 +33,5 @@ else:
 # Save missing to CSV
 unassigned_df = pd.DataFrame(list(unassigned_courses), columns=["CourseID", "Sec"])
 unassigned_df = unassigned_df.sort_values(by=["CourseID", "Sec"]).reset_index(drop=True)
-unassigned_df.to_csv("data/CSV/unassigned_courses.csv", index=False)
-print("\n✅ Saved missing courses list to: data/CSV/unassigned_courses.csv")
+unassigned_df.to_csv("data/Output/unassigned_courses.csv", index=False)
+print("\n✅ Saved missing courses list to: data/Output/unassigned_courses.csv")
