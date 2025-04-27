@@ -1,10 +1,10 @@
 # scheduler/config.py
 
 # Input files
-INPUT_COURSE_CAP = "data/Input/2025ClassEnrollCap.xlsx"
-INPUT_AVAILABILITY = "data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx"
+INPUT_COURSE_CAP = "data/Input/ClassEnrollCap.xlsx"
+INPUT_AVAILABILITY = "data/Input/Responses.xlsx"
 INPUT_CLASSROOM = "data/Input/ClassRoom.xlsx"
-INPUT_CURRICULUM_COVERAGE = "data/Input/(For 523 team) Copy of Undergraduate Curriculum Coverage.xlsx"
+INPUT_CURRICULUM_COVERAGE = "data/Input/FacultyQualificationPreference.xlsx"
 
 
 # Output files
