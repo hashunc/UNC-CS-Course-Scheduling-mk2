@@ -4,7 +4,9 @@ from config import (
     INPUT_COURSE_CAP,
     INPUT_AVAILABILITY,
     OUTPUT_TOP_COURSES,
+    OUTPUT_NEW_DATA_590_790,
     OUTPUT_MERGED_590_790,
+    OUTPUT_FACULTY_PREF
 )
 
 # Load files
@@ -89,12 +91,12 @@ for instructor_last_name, count in instructor_course_counts.items():
 # Final result
 assignments_df = pd.DataFrame(assignments)
 assignments_sorted = assignments_df.reset_index(drop=True)
-assignments_sorted.to_csv("data/CSV/new_data_590_790.csv", index=False)
-print("✅ Saved 590/790 assignments to data/CSV/new_data_590_790.csv")
+assignments_sorted.to_csv(OUTPUT_NEW_DATA_590_790, index=False)
+print(f"✅ Saved 590/790 assignments to {OUTPUT_NEW_DATA_590_790}")
 
 # Merge time slots
-faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv")
-new_data_df = pd.read_csv("data/CSV/new_data_590_790.csv")
+faculty_pref_df = pd.read_csv(OUTPUT_FACULTY_PREF)
+new_data_df = pd.read_csv(OUTPUT_NEW_DATA_590_790)
 
 merged_df = new_data_df.merge(
     faculty_pref_df[["Last Name", "Available Time Slots"]],
