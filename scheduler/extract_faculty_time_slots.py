@@ -1,7 +1,8 @@
 import pandas as pd
+from config import INPUT_AVAILABILITY, OUTPUT_SKIPPED_FACULTY
 
 # Load Excel
-file_path = "data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx"
+file_path = INPUT_AVAILABILITY
 availability_df = pd.read_excel(file_path)
 
 # Mapping: header → slot code
@@ -85,8 +86,8 @@ pd.DataFrame(results, columns=["First Name", "Last Name", "Available Time Slots"
   .to_csv("data/CSV/faculty_time_preferences.csv", index=False)
 
 pd.DataFrame(skipped, columns=["First Name", "Last Name", "Reason Skipped"]) \
-  .to_csv("data/Output/skipped_faculty.csv", index=False)
+  .to_csv(OUTPUT_SKIPPED_FACULTY, index=False)
 
 print("✅ Exported:")
 print("  • data/CSV/faculty_time_preferences.csv")
-print("  • data/Output/skipped_faculty.csv")
+print(f"  • {OUTPUT_SKIPPED_FACULTY}")
