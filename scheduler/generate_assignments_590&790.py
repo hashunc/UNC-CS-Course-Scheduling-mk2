@@ -1,11 +1,18 @@
-# 590&790.py
+# scheduler/generate_assignments_590&790.py
 
 import pandas as pd
+from config import (
+    INPUT_COURSE_CAP,
+    INPUT_AVAILABILITY,
+    OUTPUT_TOP_COURSES,
+    OUTPUT_NEW_DATA_590_AND_790,
+    OUTPUT_MERGED_590_AND_790
+)
 
 # Load files
-course_cap_df = pd.read_excel("data/Input/2025ClassEnrollCap.xlsx")
-top_courses_df = pd.read_csv("data/CSV/top_courses_per_instructor_clean.csv")
-availability_df = pd.read_excel("data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx")
+course_cap_df = pd.read_excel(INPUT_COURSE_CAP)
+top_courses_df = pd.read_csv(OUTPUT_TOP_COURSES)
+availability_df = pd.read_excel(INPUT_AVAILABILITY)
 
 # Clean columns
 course_cap_df.columns = course_cap_df.columns.str.strip()
@@ -56,11 +63,11 @@ for instructor, group in top_courses_df.groupby("Instructor"):
 
 # Save to CSV
 assignments_df = pd.DataFrame(assignments)
-assignments_df.to_csv("data/CSV/new_data_590&790_only.csv", index=False)
-print("✅ Saved new_data_590&790_only.csv")
+assignments_df.to_csv(OUTPUT_NEW_DATA_590_AND_790, index=False)
+print(f"✅ Saved to {OUTPUT_NEW_DATA_590_AND_790}")
 
 # Merge with faculty time preferences
-faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv")
+faculty_pref_df = pd.read_csv("data/CSV/faculty_time_preferences.csv") 
 merged_df = assignments_df.merge(
     faculty_pref_df[["Last Name", "Available Time Slots"]],
     left_on="ProfessorName",
@@ -70,5 +77,5 @@ merged_df = assignments_df.merge(
 merged_df = merged_df.drop(columns=["Last Name"])
 merged_df.rename(columns={"Available Time Slots": "Professor_PreferredTimeSlots"}, inplace=True)
 merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Professor_PreferredTimeSlots"]]
-merged_df.to_csv("data/CSV/merged_assignments_590&790_only.csv", index=False)
-print("✅ Saved merged_assignments_590&790_only.csv")
+merged_df.to_csv(OUTPUT_MERGED_590_AND_790, index=False)
+print(f"✅ Saved merged assignments to {OUTPUT_MERGED_590_AND_790}")

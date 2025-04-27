@@ -8,6 +8,9 @@ INPUT_CURRICULUM_COVERAGE = "data/Input/(For 523 team) Copy of Undergraduate Cur
 
 
 # Output files
+OUTPUT_NEW_DATA_590_790 = "data/CSV/new_data_590_790.csv"
+OUTPUT_NEW_DATA_590_AND_790 = "data/CSV/new_data_590&790_only.csv"
+
 OUTPUT_MERGED_NO_590_790 = "data/CSV/merged_assignments_no_590_790.csv"
 OUTPUT_MERGED_590_790 = "data/CSV/merged_assignments_590_790.csv"
 OUTPUT_MERGED_590_AND_790 = "data/CSV/merged_assignments_590&790_only.csv"
