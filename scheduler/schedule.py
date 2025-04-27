@@ -3,6 +3,8 @@ import pandas as pd
 import pulp
 from pulp import LpProblem, LpVariable, LpMinimize, lpSum
 from pathlib import Path
+from config import OUTPUT_NEW_DATA_CSV, OUTPUT_ROOM_CSV, OUTPUT_SCHEDULE_OUTPUT
+
 
 
 class CourseScheduler:
@@ -631,10 +633,9 @@ class CourseScheduler:
 
 # Example usage
 if __name__ == "__main__":
-    data_file = Path("data/CSV/new_data.csv")
-    rooms_file = Path("data/CSV/room.csv")
-   
-    output_file = Path("data/CSV/schedule_output.csv")
+    data_file = OUTPUT_NEW_DATA_CSV
+    rooms_file = OUTPUT_ROOM_CSV
+    output_file = OUTPUT_SCHEDULE_OUTPUT
 
     scheduler = CourseScheduler(data_file, rooms_file)
     schedule = scheduler.schedule_courses(output_file)
