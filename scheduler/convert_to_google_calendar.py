@@ -73,13 +73,13 @@ for idx, row in schedule_df.iterrows():
         start_time_24h = start_time_dt.strftime("%H:%M")
         end_time_24h = end_time_dt.strftime("%H:%M")
 
-        found = False
         for prefix, days in day_mapping.items():
             if period_code.startswith(prefix):
+                course_num_only = course_id.replace("COMP ", "")
                 for day in days:
                     calendar_events.append({
                         "CourseID": course_id,
-                        "Subject": f"{course_id} Sec {sec}",
+                        "Subject": f"{course_num_only} Sec {sec}",
                         "Start Date": start_week_date[day],
                         "Start Time": start_time_24h,
                         "End Date": start_week_date[day],
@@ -88,7 +88,6 @@ for idx, row in schedule_df.iterrows():
                         "Location": room,
                         "Weekly Repeats": "Yes"
                     })
-                found = True
                 break
 
     except Exception as e:
@@ -97,15 +96,12 @@ for idx, row in schedule_df.iterrows():
 
 calendar_df = pd.DataFrame(calendar_events)
 
-# deal with Course Number
 calendar_df["Course Num"] = calendar_df["CourseID"].str.extract(r"COMP (\d+)").astype(float)
 
-# split undergraduate 和 graduate
 undergrad_df = calendar_df[calendar_df["Course Num"] < 600].drop(columns=["Course Num"]).reset_index(drop=True)
 grad_df = calendar_df[calendar_df["Course Num"] >= 600].drop(columns=["Course Num"]).reset_index(drop=True)
 
-# save
 undergrad_df.to_csv("data/Output/google_calendar_undergraduate.csv", index=False)
 grad_df.to_csv("data/Output/google_calendar_graduated.csv", index=False)
 
-print("✅ Saved undergraduate_calendar.csv and graduate_calendar.csv in data/CSV/")
+print("✅ Saved google_calendar_undergraduate.csv and google_calendar_graduated.csv in data/Output/")
