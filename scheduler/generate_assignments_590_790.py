@@ -1,12 +1,16 @@
-# generate_assignments_590_790.py
-
 import pandas as pd
 from collections import defaultdict
+from config import (
+    INPUT_COURSE_CAP,
+    INPUT_AVAILABILITY,
+    OUTPUT_TOP_COURSES,
+    OUTPUT_MERGED_590_790,
+)
 
 # Load files
-course_cap_df = pd.read_excel("data/Input/2025ClassEnrollCap.xlsx")
-availability_df = pd.read_excel("data/Input/Temple of Automatic course scheduling data sheet (Responses) - Form Responses 1.xlsx")
-top_courses_df = pd.read_csv("data/CSV/top_courses_per_instructor_clean.csv")
+course_cap_df = pd.read_excel(INPUT_COURSE_CAP)
+availability_df = pd.read_excel(INPUT_AVAILABILITY)
+top_courses_df = pd.read_csv(OUTPUT_TOP_COURSES)
 
 # Clean columns
 availability_df.columns = availability_df.columns.str.strip()
@@ -101,5 +105,5 @@ merged_df = new_data_df.merge(
 merged_df = merged_df.drop(columns=["Last Name"])
 merged_df.rename(columns={"Available Time Slots": "Professor_PreferredTimeSlots"}, inplace=True)
 merged_df = merged_df[["CourseID", "Sec", "EnrollCapacity", "ProfessorName", "Professor_PreferredTimeSlots"]]
-merged_df.to_csv("data/CSV/merged_assignments_590_790.csv", index=False)
-print("✅ Saved merged 590/790 assignment with time slots: data/CSV/merged_assignments_590_790.csv")
+merged_df.to_csv(OUTPUT_MERGED_590_790, index=False)
+print(f"✅ Saved merged 590/790 assignment with time slots: {OUTPUT_MERGED_590_790}")
