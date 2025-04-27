@@ -1,9 +1,8 @@
-# scheduler/all_generate.py
-
 import subprocess
 import pandas as pd
 import sys
 import os
+import glob
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from config import *
@@ -12,6 +11,21 @@ def run_script(script_path, step_number, description):
     print(f"\n▶ Running Step {step_number}: {description} ({script_path}) ...")
     subprocess.run(["python", script_path], check=True)
     print(f"✅ Step {step_number} completed successfully!")
+
+def clear_folder(folder_path):
+    """Delete all files under a folder."""
+    files = glob.glob(os.path.join(folder_path, "*"))
+    for f in files:
+        try:
+            os.remove(f)
+        except IsADirectoryError:
+            pass  # Ignore subfolders (safe)
+
+# 🔵 Clear folders before running anything
+print("🧹 Clearing data/CSV and data/Output folders...")
+clear_folder("data/CSV")
+clear_folder("data/Output")
+print("✅ Folders cleared successfully!")
 
 print("🔵 Starting full all_generate pipeline...")
 
@@ -54,7 +68,7 @@ run_script(CHECK_UNASSIGNED_SCRIPT, 7, "Check unassigned courses")
 print("\n🔵 Running scheduling optimizer...")
 run_script(SCHEDULE_SCRIPT, 8, "Generate schedule_output.csv")
 
-# 🚀 New Step 8.5: Split COMP 590&790 in schedule_output.csv
+# Step 8.5: Split COMP 590&790
 print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
 run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
 
@@ -62,7 +76,7 @@ run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
 print("\n🔵 Copying schedule_output.csv to data/Output/...")
 run_script(COPY_SCHEDULE_OUTPUT_SCRIPT, 8.6, "Copy schedule_output.csv to Output")
 
-# Step 9: Run convert_to_google_calendar.py to create google_calendar_format.csv
+# Step 9: Create Google Calendar format
 print("\n🔵 Converting schedule to Google Calendar format...")
 run_script(CONVERT_TO_CALENDAR_SCRIPT, 9, "Generate google_calendar_format.csv")
 
