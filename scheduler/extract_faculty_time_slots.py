@@ -85,8 +85,8 @@ pd.DataFrame(results, columns=["First Name", "Last Name", "Available Time Slots"
   .to_csv("data/CSV/faculty_time_preferences.csv", index=False)
 
 pd.DataFrame(skipped, columns=["First Name", "Last Name", "Reason Skipped"]) \
-  .to_csv("data/CSV/skipped_faculty.csv", index=False)
+  .to_csv("data/Output/skipped_faculty.csv", index=False)
 
 print("✅ Exported:")
 print("  • data/CSV/faculty_time_preferences.csv")
-print("  • data/CSV/skipped_faculty.csv")
+print("  • data/Output/skipped_faculty.csv")

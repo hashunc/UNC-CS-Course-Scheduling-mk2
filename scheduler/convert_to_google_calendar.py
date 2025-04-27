@@ -97,15 +97,15 @@ for idx, row in schedule_df.iterrows():
 
 calendar_df = pd.DataFrame(calendar_events)
 
-# 处理 Course Number
+# deal with Course Number
 calendar_df["Course Num"] = calendar_df["CourseID"].str.extract(r"COMP (\d+)").astype(float)
 
-# 分成 undergraduate 和 graduate
+# split undergraduate 和 graduate
 undergrad_df = calendar_df[calendar_df["Course Num"] < 600].drop(columns=["Course Num"]).reset_index(drop=True)
 grad_df = calendar_df[calendar_df["Course Num"] >= 600].drop(columns=["Course Num"]).reset_index(drop=True)
 
-# 保存
-undergrad_df.to_csv("data/Output/undergraduate_calendar.csv", index=False)
-grad_df.to_csv("data/Output/graduate_calendar.csv", index=False)
+# save
+undergrad_df.to_csv("data/Output/google_calendar_undergraduate.csv", index=False)
+grad_df.to_csv("data/Output/google_calendar_graduated.csv", index=False)
 
 print("✅ Saved undergraduate_calendar.csv and graduate_calendar.csv in data/CSV/")
