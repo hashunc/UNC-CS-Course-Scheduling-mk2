@@ -13,15 +13,19 @@ def run_script(script_path, step_number, description):
     print(f"✅ Step {step_number} completed successfully!")
 
 def clear_folders():
-    """Clear data/CSV and data/Output folders before running."""
+    """Clear data/CSV and data/Output folders before running, but keep user's schedule_output.csv."""
     folders_to_clear = ["data/CSV", "data/Output"]
     for folder in folders_to_clear:
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             if os.path.isfile(file_path):
+                # ❗ Skip schedule_output.csv
+                if filename == "schedule_output.csv":
+                    continue
                 os.remove(file_path)
-    print("🧹 Clearing data/CSV and data/Output folders...")
+    print("🧹 Clearing data/CSV and data/Output folders (except schedule_output.csv)...")
     print("✅ Folders cleared successfully!")
+
 
 def safe_read_csv(filepath):
     """Safely read CSV, return empty DataFrame if file does not exist."""
@@ -85,15 +89,15 @@ print("\n🔵 Running scheduling optimizer...")
 run_script(SCHEDULE_SCRIPT, 8, "Generate schedule_output.csv")
 
 # Step 8.5: Split 590&790 combined courses
-print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
-run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
+#print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
+#run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
 
 # Step 8.6: Copy schedule_output.csv to Output folder
 print("\n🔵 Copying schedule_output.csv to data/Output/...")
 run_script(COPY_SCHEDULE_OUTPUT_SCRIPT, 8.6, "Copy schedule_output.csv to Output")
 
 # Step 9: Convert to Google Calendar format
-print("\n🔵 Converting schedule to Google Calendar format...")
-run_script(CONVERT_TO_CALENDAR_SCRIPT, 9, "Generate google_calendar_format.csv")
+#print("\n🔵 Converting schedule to Google Calendar format...")
+#run_script(CONVERT_TO_CALENDAR_SCRIPT, 9, "Generate google_calendar_format.csv")
 
 print("\n🎯 All steps completed successfully! The system is fully updated and schedule generated.")

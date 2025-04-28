@@ -642,16 +642,14 @@ class CourseScheduler:
             for t in self.time_slots:
                 for r in self.room_ids:
                     for p in self.professors:
-                        if (c, s, t, r, p) in self.X and self.X[
-                            c, s, t, r, p
-                        ].varValue == 1:
+                        if (c, s, t, r, p) in self.X and self.X[c, s, t, r, p].varValue == 1:
                             course = c
                             section = s
                             professor_name = p
                             formatted_time = f"{t}: {self.time_slot_mapping.get(t, t)}"
                             room = r
-                            enroll_capacity  = self.data.loc[
-                                (self.data["CourseID"] == c) & (self.data["Sec"] == s), 
+                            enroll_capacity = self.data.loc[
+                                (self.data["CourseID"] == c) & (self.data["Sec"] == s),
                                 "EnrollCapacity"
                             ].values[0]
                             schedule.append([course, section, professor_name, formatted_time, room, enroll_capacity])
@@ -660,6 +658,8 @@ class CourseScheduler:
             schedule, columns=["CourseID", "Sec", "ProfessorName", "Time", "Room", "Enroll Capacity"]
         )
         schedule_df.drop_duplicates(inplace=True)
+
+        schedule_df["Like"] = 0
 
         # Save the schedule to a CSV file
         schedule_df.to_csv(output_file, index=False)
