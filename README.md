@@ -200,7 +200,7 @@ Below is a detailed explanation of each required input file:
 
 ---
    
-3. **Run the program**
+## **Run the program**
 
 After setting up the environment and preparing all required input files, you can run the program to generate the course schedule.
 
@@ -213,7 +213,7 @@ Follow these steps:
 
 Wait for the terminal to finish running, and the final result will be displayed in data/Output/.
 
-4. **Outputs**
+## **Outputs**
 
 After running the program, the following output files will be generated and saved in the `data/Output/` folder:
 
@@ -253,7 +253,7 @@ After running the program, the following output files will be generated and save
 > 📌 **Note:**  
 > The Google Calendar CSV files can be directly imported into Google Calendar using the "Import" function for easy visualization and management of the final schedule.
 
-### Import .csv Files into Google Calendar
+## Import .csv Files into Google Calendar
 
 After generating the calendar-compatible `.csv` files (`google_calendar_undergraduate.csv` and `google_calendar_graduated.csv`), follow these steps to import them into Google Calendar:
 
