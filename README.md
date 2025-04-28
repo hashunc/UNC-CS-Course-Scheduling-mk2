@@ -1,21 +1,17 @@
 # UNC COMP Course Scheduler
 
-The UNC COMP Course Scheduler is an application that provides our client, Professor Montek Singh, an interface that generates a course schedule for the UNC Computer Science department based on the constraints that Professor Singh inputs. This application was possible by using JavaScript, HTML, CSS, the PuLP Linear Optimization library, and a SQLite3 based database.
+The **UNC COMP Course Scheduler** is an application developed to assist our client, Professor Montek Singh, with automating the course scheduling process for the UNC Computer Science Department.
 
-## Pages
+It collects faculty teaching preferences, course assignments, section capacities, and availability constraints from multiple input spreadsheets. Using this data, it generates an optimized course schedule that assigns instructors to sections while balancing departmental needs and individual faculty requests.
 
-This application consists of the following pages:
+The final output is a formatted `.csv` file that can be directly imported into Google Calendar, allowing faculty and staff to easily view and manage scheduled courses. 
 
-1. **Login Page**: A simple way for Professor Singh to input the password to access the website.
-2. **Home Page**: A page for Professor Singh to choose whether he wants to view the schedule that the algorithm has generated, edit the constraints such as professor's individual availabilities, course occupancy, room occupancies, etc. for the algorithm to run on, or manually edit the timigs and locations of certain classes.
-3. **View Page**: A page where Professor Singh can choose whether he wants to view the schedule in a list view or calendar view.
-4. **List View Page**: A page where Professor Singh can view the list of scheduled courses that the algorithm generated / Professor Singh manually adjusted in a tabular format.
-5. **Edit Fields Page**: A page where Professor Singh can select whether he wants to update the properties for certain professors, courses, or rooms.
-6. **Professors Edit Page**: A page where Professor Singh can edit the properties of each individual Computer Science department professor such as their qualified courses to teach, their availability, and the maximum number of classes they want to teach.
-7. **Professors Edit Page**: A page where Professor Singh can edit the properties of each individual Computer Science course such as their sections and each section's maximum capacity.
-8. **Rooms Edit Page**: A page where Professor Singh can edit the properties of each individual room in Sitterson/Fred Brooks or any university room such as their name and the room's occupancy.
-9. **Update Schedule Page**: A page where Professor Singh can choose whether he wants to edit the course schedule in a list format or a calendar format.
-10. **Update List View**: A page where Professor Singh can adjust the scheduling of courses manually in a list view.
+This tool significantly reduces the manual workload involved in course scheduling and ensures a more organized, transparent, and data-driven process.
+
+## Screenshots
+<img width="1278" alt="image" src="https://github.com/user-attachments/assets/6142936d-807b-4cc6-973b-66c9297ae0eb" />
+
+---
 
 ## Getting Set Up
 
@@ -29,21 +25,18 @@ If you want to run this application locally, here are the following steps to do 
 
 ```bash
 pip install pulp
-pip install fastapi
 ```
 
 2. **Git Clone**: Clone this repository into your local machine using this command
 
 ```bash
-git clone https://github.com/JustinIndla/COMP523.git
+git clone https://github.com/hashunc/UNC-CS-Course-Scheduling-mk2.git
 ```
 
-3. **Terminal Setup**: Start a new terminal in Visual Studio Code and run the command:
+3. **Input Setup**:
+   
 
-```bash
-uvicorn main:app --reload
-```
 
-4. **Browser**: In your browser of choice, navigate to <ins>http://127.0.0.1:5500/public/index.html</ins>
+5. **Browser**: In your browser of choice, navigate to <ins>http://127.0.0.1:5500/public/index.html</ins>
 
-5. You should be all set!
+6. You should be all set!
