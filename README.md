@@ -141,6 +141,8 @@ Below is a detailed explanation of each required input file:
   - Room names or IDs
   - Building locations
   - Seating capacity
+ 
+
 
 ### 3. `FacultyQualificationPreference.xlsx`
 
@@ -206,6 +208,54 @@ Below is a detailed explanation of each required input file:
 - **Demo Video**:
 [![Watch the Demo](https://img.youtube.com/vi/aI8CfDE8jHo/0.jpg)](https://youtu.be/aI8CfDE8jHo)
 
-
 ---
    
+3. **Run the program**
+
+After setting up the environment and preparing all required input files, you can run the program to generate the course schedule.
+
+Follow these steps:
+
+1. Navigate to the project root directory
+   cd UNC-CS-Course-Scheduling-mk2
+2. Run the program
+    python scheduler/all_generate.py
+
+Wait for the terminal to finish running, and the final result will be displayed in data/Output/.
+
+4. **Outputs**
+
+After running the program, the following output files will be generated and saved in the `data/Output/` folder:
+
+### Main Output Files
+
+- `schedule_output.csv`  
+  - The finalized course-to-instructor assignment schedule.  
+  - Contains detailed matching results between faculty and courses based on preferences and availability.
+
+- `google_calendar_undergraduate.csv`  
+  - A CSV file formatted specifically for importing **undergraduate course schedules** into Google Calendar.  
+  - Includes course titles, meeting times, and assigned instructors.
+
+- `google_calendar_graduated.csv`  
+  - A CSV file formatted specifically for importing **graduate-level course schedules** into Google Calendar.  
+  - Structured similarly to the undergraduate file but filtered for graduate courses.
+
+### Diagnostic and Validation Files
+
+- `missing_in_facultyqualification.csv`  
+  - Lists courses that were requested by faculty but missing from the `FacultyQualificationPreference.xlsx`.  
+  - Helps identify potential data inconsistencies.
+
+- `skipped_faculty.csv`  
+  - Lists faculty members who could not be assigned any courses.  
+  - Typically occurs if availability or qualification constraints were too strict.
+
+- `unassigned_courses.csv`  
+  - Lists courses that could not be assigned to any faculty member.  
+  - Useful for identifying gaps that may require manual adjustments or secondary assignment rounds.
+
+> 📌 **Note:**  
+> The Google Calendar CSV files can be directly imported into Google Calendar using the "Import" function for easy visualization and management of the final schedule.
+
+
