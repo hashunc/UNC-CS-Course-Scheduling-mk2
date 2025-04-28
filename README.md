@@ -278,3 +278,9 @@ After generating the calendar-compatible `.csv` files (`google_calendar_undergra
 If you would like to see a complete walkthrough of setting up, running the program, and importing the `.csv` files into Google Calendar, please watch the demonstration video below:
 
 [![Watch the Full Demo](https://img.youtube.com/vi/TNFIEQCRf88/0.jpg)](https://youtu.be/TNFIEQCRf88)
+
+
+You are all set!
+Thank you for using the UNC COMP Course Scheduler. 
+This project aims to streamline and simplify the course assignment process for the department. 
+Please refer to the full demonstration video above for a step-by-step guide on setting up and running the application.
