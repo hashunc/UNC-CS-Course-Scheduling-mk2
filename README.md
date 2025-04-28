@@ -13,7 +13,7 @@ This tool significantly reduces the manual workload involved in course schedulin
 
 ---
 
-## Getting Set Up
+## Step 1: Getting Set Up
 
 If you want to run this application locally, here are the following steps to do so:
 
@@ -33,7 +33,7 @@ pip install pulp
 git clone https://github.com/hashunc/UNC-CS-Course-Scheduling-mk2.git
 ```
 
-## Preparation Before Running the Program
+## Step 2: Preparation Before Running the Program
 
 1. **Folders you need to know about**
 
@@ -68,7 +68,7 @@ All four files must be present in the `data/Input/` folder **before running the 
 
 Make sure the filenames match exactly, including capitalization and spelling.
 
-## Input File Descriptions
+## Step 3: Input File Descriptions
 
 Below is a detailed explanation of each required input file:
 
@@ -200,7 +200,7 @@ Below is a detailed explanation of each required input file:
 
 ---
    
-## **Run the program**
+## Step 4: **Run the program**
 
 After setting up the environment and preparing all required input files, you can run the program to generate the course schedule.
 
@@ -213,7 +213,7 @@ Follow these steps:
 
 Wait for the terminal to finish running, and the final result will be displayed in data/Output/.
 
-## **Outputs**
+## Step 5: **Check the Outputs**
 
 After running the program, the following output files will be generated and saved in the `data/Output/` folder:
 
@@ -253,7 +253,7 @@ After running the program, the following output files will be generated and save
 > 📌 **Note:**  
 > The Google Calendar CSV files can be directly imported into Google Calendar using the "Import" function for easy visualization and management of the final schedule.
 
-## Import .csv Files into Google Calendar
+## Step 6: Import .csv Files into Google Calendar
 
 After generating the calendar-compatible `.csv` files (`google_calendar_undergraduate.csv` and `google_calendar_graduated.csv`), follow these steps to import them into Google Calendar:
 
