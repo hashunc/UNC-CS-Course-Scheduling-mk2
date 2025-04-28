@@ -1,5 +1,10 @@
 # scheduler/config.py
 
+# Special 2H Class (Hardcoded)
+TWO_HOUR_COURSE_ID = "COMP 590&790"
+TWO_HOUR_SECTION = 158
+TWO_HOUR_PROFESSOR = "Chaturvedi"
+
 # Input files
 INPUT_COURSE_CAP = "data/Input/ClassEnrollCap.xlsx"
 INPUT_AVAILABILITY = "data/Input/Responses.xlsx"

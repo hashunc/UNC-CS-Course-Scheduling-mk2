@@ -3,9 +3,7 @@ import pandas as pd
 import pulp
 from pulp import LpProblem, LpVariable, LpMinimize, lpSum
 from pathlib import Path
-from config import OUTPUT_NEW_DATA_CSV, OUTPUT_ROOM_CSV, OUTPUT_SCHEDULE_OUTPUT
-
-
+from config import OUTPUT_NEW_DATA_CSV, OUTPUT_ROOM_CSV, OUTPUT_SCHEDULE_OUTPUT,TWO_HOUR_COURSE_ID, TWO_HOUR_SECTION, TWO_HOUR_PROFESSOR
 
 class CourseScheduler:
     def __init__(self, data_file, rooms_file):
@@ -475,9 +473,9 @@ class CourseScheduler:
             (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
             (["2H_F"], ["MWF_2", "MWF_3"])
         ]
-        c_2H = "COMP 590&790"
-        s_2H = 158
-        p_2H = "Chaturvedi"
+        c_2H = TWO_HOUR_COURSE_ID
+        s_2H = str(TWO_HOUR_SECTION)  
+        p_2H = TWO_HOUR_PROFESSOR
         if (c_2H, s_2H, p_2H) not in self.valid_course_professor_pairs:
             print(f"⚠️ Skipping 2H class constraint: ({c_2H}, {s_2H}, {p_2H}) not found in assignments.")
             return
