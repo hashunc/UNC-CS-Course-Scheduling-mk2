@@ -154,6 +154,7 @@ Below is a detailed explanation of each required input file:
   - All added or modified sheets must still comply with the required format for the system to function correctly.
 
 - **Format Requirements**:
+- 1. How to add a new faculty member?
   - Each faculty member must have their own sheet (worksheet) within the Excel file.
   - The **name of each sheet must be the faculty member’s last name**.
     - This follows the naming style used in the original document to maintain consistency and reduce the information collection burden.
@@ -164,6 +165,24 @@ Below is a detailed explanation of each required input file:
       - Faculty 1: Tianlong Chen → Sheet name: `TianlongChen` (!!! NO SPACE !!!)
       - Faculty 2: Jackie Chen → Sheet name: `JackieChen`
     - In addition, when filling out the `Responses.xlsx` file, their `LastName` field must also be entered as `TianlongChen` and `JackieChen` respectively to ensure consistency.
+    - After that, copy the temple of sheet, and paste it in new place.
+- 2. Can I add a new course?
+     - Yes, you can. However, please be sure to name them according to this format.
+     ![CleanShot 2025-04-28 at 11 26 29@2x](https://github.com/user-attachments/assets/8e956cdc-01dc-4e63-a581-3c3784175260)
+
+- 3. Can I add a new 590 or 790 course?
+     - Yes, you can! However, please be sure to name them according to this format.
+  ![CleanShot 2025-04-28 at 11 30 18@2x](https://github.com/user-attachments/assets/a5433f46-545e-46d7-bd98-d3bf8581baa6)
+
+     As an example, Chen's sheet looks like this:
+<img width="1333" alt="image" src="https://github.com/user-attachments/assets/21fa76f2-6a9f-42f7-9a86-d89b7c2f11b4" />
+
+- 4. Can I add a new course with two sections combine with 590 and 790?
+     - Yes, you can! However, please be sure to name them according to this format.
+        - For example, In 2025 Fall, the professor Chaturvedi will teaching COMP 590&790-158 Special Topics: Special topics in Natural Language Processing.
+          
+    ![CleanShot 2025-04-28 at 11 38 20@2x](https://github.com/user-attachments/assets/21c78cca-7c4b-4c3c-abdf-f8610d921ee8)
+
 
 - **Additional Notes**:
   - Sheet names and faculty identifiers must be consistent with **responses sheet** across all input files to avoid parsing errors.
