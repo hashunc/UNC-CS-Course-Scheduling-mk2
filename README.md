@@ -75,15 +75,6 @@ Below is a detailed explanation of each required input file:
 ### 1. `ClassEnrollCap.xlsx`
 
 - **Purpose**:  
-  Defines enrollment capacities for each offered course section.
-- **Key Information**:  
-  - Course codes (e.g., COMP 110, COMP 210)
-  - Section numbers
-  - Maximum allowed number of students per section
-- **Format requirements**:
-### 1. `ClassEnrollCap.xlsx`
-
-- **Purpose**:  
   Defines enrollment capacities for each offered course section. This file specifies how many students can enroll in each course section, which is crucial for balancing course demand and instructor assignments.
 
 - **Key Information**:  
@@ -179,7 +170,6 @@ Below is a detailed explanation of each required input file:
 
 > 📌 **Important:**  
 > Failure to correctly name the sheets using either last names or full names (for duplicates) will cause the program to fail when loading preferences.
-
 
 
 ### 4. `Responses.xlsx`
