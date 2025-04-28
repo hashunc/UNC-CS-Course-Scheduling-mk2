@@ -230,8 +230,14 @@ After running the program, the following output files will be generated and save
 ### Main Output Files
 
 - `schedule_output.csv`  
-  - The finalized course-to-instructor assignment schedule.  
-  - Contains detailed matching results between faculty and courses based on preferences and availability.
+  - The finalized, comprehensive course-to-instructor assignment schedule.
+  - This file contains **the complete set of all course sections** offered in the semester, with each section assigned to an instructor based on their teaching preferences, qualifications, availability, and the department's scheduling needs.
+  - Every course that was successfully matched to a faculty member will be listed, along with key details such as:
+    - Course name and section number
+    - Assigned instructor
+    - Scheduled time block (if applicable)
+    - Additional metadata (e.g., undergraduate/graduate level classification, enrollment capacity)
+  - This file serves as the **authoritative source** for viewing the full scheduling results and can be used for administrative review, further processing, or archival purposes.
 
 - `google_calendar_undergraduate.csv`  
   - A CSV file formatted specifically for importing **undergraduate course schedules** into Google Calendar.  
@@ -244,12 +250,10 @@ After running the program, the following output files will be generated and save
 ### Diagnostic and Validation Files
 
 - `missing_in_facultyqualification.csv`  
-  - Lists courses that were requested by faculty but missing from the `FacultyQualificationPreference.xlsx`.  
-  - Helps identify potential data inconsistencies.
+  - Lists courses that were showing in `Responses.xlsx` but missing from the `FacultyQualificationPreference.xlsx`.  
 
 - `skipped_faculty.csv`  
-  - Lists faculty members who could not be assigned any courses.  
-  - Typically occurs if availability or qualification constraints were too strict.
+  - Lists faculty members who could not be assigned any courses because they said teaching 0 course in `Responses.xlsx`
 
 - `unassigned_courses.csv`  
   - Lists courses that could not be assigned to any faculty member.  
