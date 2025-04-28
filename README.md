@@ -35,7 +35,8 @@ git clone https://github.com/hashunc/UNC-CS-Course-Scheduling-mk2.git
 
 ## Preparation Before Running the Program
 
-1. Folders you need to know about
+1. **Folders you need to know about**
+
 After cloning the repository, navigate to the `UNC-CS-Course-Scheduling-mk2/` folder on your local machine.
 
 Inside this folder, open the `data/` directory.  
@@ -49,14 +50,146 @@ You should see three subfolders:
 Make sure the required input files are correctly placed inside the `Input/` folder before running the program.
 
 2. **Provide the Required .xlsx Files for Input**
-![CleanShot 2025-04-27 at 21 44 51@2x](https://github.com/user-attachments/assets/eb0e96d0-6b17-4a75-8e86-62d76242f64b)
-This program depends on **four** required `.xlsx` files as input.  
-All four files must be present in the `data/Input/` folder **before running the program**, and each file must be in the `.xlsx` format (Excel Workbook).
 
-> ⚠️ **Important:**  
-> Missing any of the required files or using a different file format will cause the program to fail.
+This program depends on **four mandatory `.xlsx` files** as input.  
+All four files must be present in the `data/Input/` folder **before running the program**, and each file must strictly follow the required file naming conventions.
 
-Make sure to double-check that all necessary `.xlsx` files are correctly prepared and placed in `data/Input/`.
+> ⚠️ **Important Requirements:**  
+> - **All four input files are required.** Missing any file will cause the program to fail.  
+> - **All files must be in `.xlsx` format.** Other formats such as `.csv` or `.xls` are not accepted.  
+> - **Each file must use the exact preset filename.** Renaming files may result in errors during execution.
+
+### Required Input Files
+
+- `FacultyPreferences.xlsx`
+- `CourseAssignments.xlsx`
+- `SectionCapacities.xlsx`
+- `FacultyAvailability.xlsx`
+
+Make sure the filenames match exactly, including capitalization and spelling.
+
+## Input File Descriptions
+
+Below is a detailed explanation of each required input file:
+
+### 1. `ClassEnrollCap.xlsx`
+
+- **Purpose**:  
+  Defines enrollment capacities for each offered course section.
+- **Key Information**:  
+  - Course codes (e.g., COMP 110, COMP 210)
+  - Section numbers
+  - Maximum allowed number of students per section
+- **Format requirements**:
+### 1. `ClassEnrollCap.xlsx`
+
+- **Purpose**:  
+  Defines enrollment capacities for each offered course section. This file specifies how many students can enroll in each course section, which is crucial for balancing course demand and instructor assignments.
+
+- **Key Information**:  
+  - Course code (e.g., COMP 110, COMP 210)
+  - Section number
+  - Maximum number of students per section
+
+- **Format Requirements**:
+
+  1. **Normal Courses**  
+     For standard undergraduate or graduate courses, enter the course number, section number, and the maximum number of students.
+
+     **Correct Example**:
+     ```
+     110, 1, 200
+     110, 2, 200
+     110, 3, 110
+     ```
+
+  2. **590/790 Special Topics Courses**  
+     For 590 or 790 level special topics courses:
+     - The section number must be entered as a **regular number without leading zeros**.
+     - For example, a course listed as "590-089" must be entered as `590, 89, 30`, **not** as `590, 089, 30`.
+
+     **Correct Example**:
+     ```
+     590, 80, 30
+     790, 6, 15
+     ```
+
+  3. **Combined 590&790 Courses**  
+     Some 590 and 790 courses are cross-listed and share the same time slot and classroom.
+     - Use `590&790` as the course code.
+     - The section number is the shared section number.
+     - The enrollment capacity is the **total combined** number of students for both 590 and 790 levels.
+
+     **Correct Example**:
+     ```
+     590&790, 158, 30
+     590&790, 175, 15
+     590&790, 187, 15
+     ```
+
+- **Additional Notes**:
+  - All entries must be in numeric format except for the special combined course code `590&790`.
+  - Ensure there are no leading zeros (except where specified).
+  - Be careful with formatting when editing the `.xlsx` file—Excel sometimes automatically adds formatting that could cause parsing issues.
+
+
+### 2. `ClassRoom.xlsx`
+
+- **Purpose**:  
+  Contains information about available classrooms for scheduling.
+- **Key Information**:  
+  - Room names or IDs
+  - Building locations
+  - Seating capacity
+
+### 3. `FacultyQualificationPreference.xlsx`
+
+- **Purpose**:  
+  Records each faculty member's readiness and preference scores for courses they are qualified to teach.  
+  This file helps determine which instructors are best suited for specific courses based on both qualification and teaching interest.
+
+- **Key Information**:  
+  - Faculty names
+  - Course names
+  - Readiness/qualification scores
+  - Frequency or preference indicators
+
+- **Description of Forms**:
+  - This file is based on the original **Faculty Staff Qualifications + Preferences** form provided by Professor Montek Singh.
+  - The structure and logic of the original table have been **fully retained**; no changes have been made.
+  - Users are free to **add** or **remove** faculty members as needed.
+  - All added or modified sheets must still comply with the required format for the system to function correctly.
+
+- **Format Requirements**:
+  - Each faculty member must have their own sheet (worksheet) within the Excel file.
+  - The **name of each sheet must be the faculty member’s last name**.
+    - This follows the naming style used in the original document to maintain consistency and reduce the information collection burden.
+    - Our program explicitly requires the sheet names to match faculty last names when parsing the file.
+  - **Special Case — Duplicate Last Names**:
+    - If two or more faculty members share the same last name, use their **full name** in the format `LastNameFirstName` to create the sheet name.
+    - Example:
+      - Faculty 1: Tianlong Chen → Sheet name: `TianlongChen`
+      - Faculty 2: Jackie Chen → Sheet name: `JackieChen`
+    - In addition, when filling out the `Responses.xlsx` file, their `LastName` field must also be entered as `TianlongChen` and `JackieChen` respectively to ensure consistency.
+
+- **Additional Notes**:
+  - Ensure that all sheets follow the same internal column structure (e.g., "Course Name", "Readiness", "Frequency").
+  - Sheet names and faculty identifiers must be consistent across all input files to avoid parsing errors.
+
+> 📌 **Important:**  
+> Failure to correctly name the sheets using either last names or full names (for duplicates) will cause the program to fail when loading preferences.
+
+
+
+### 4. `Responses.xlsx`
+
+- **Purpose**:  
+  Captures faculty responses regarding their teaching availability and constraints for the semester.
+- **Key Information**:  
+  - Faculty names
+  - Weekly time block availability (e.g., MWF_1, TTH_2)
+  - Preferred teaching load
+  - Additional comments or restrictions (optional)
 
 
 
