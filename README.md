@@ -201,7 +201,7 @@ Below is a detailed explanation of each required input file:
 
 - **Important Notes**:
   - Ensure that the faculty names listed in the `Responses.xlsx` match exactly with the sheet names or last names used in `FacultyQualificationPreference.xlsx`.
-  - In cases where faculty members share the same last name (e.g., Tianlong Chen and Jackie Chen), use the full name format `LastNameFirstName` (e.g., `TianlongChen`, `JackieChen`) consistently across both files.
+  - In cases where faculty members share the same last name (e.g., Tianlong Chen and Jackie Chen), use the full name format `LastNameFirstName` (e.g., `TianlongChen`, `JackieChen`) consistently across both files. Make sure the Lastname column is TianlongChen, and Lastname column is JackieChen.
 
 
 
