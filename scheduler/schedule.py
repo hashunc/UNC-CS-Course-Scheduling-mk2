@@ -477,9 +477,10 @@ class CourseScheduler:
         ]
         c_2H = "COMP 590&790"
         s_2H = 158
-
         p_2H = "Chaturvedi"
-        class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
+        if (c_2H, s_2H, p_2H) not in self.valid_course_professor_pairs:
+            print(f"⚠️ Skipping 2H class constraint: ({c_2H}, {s_2H}, {p_2H}) not found in assignments.")
+            return
 
         conflict_periods = [
             (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
