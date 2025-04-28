@@ -1,7 +1,94 @@
 CourseID,Subject,Start Date,Start Time,End Date,End Time,Description,Location,Weekly Repeats
-COMP 550,550 Sec 1,2025-08-19,08:00,2025-08-19,09:15,Instructor: Sun,ClassRoom2_300,Yes
-COMP 550,550 Sec 1,2025-08-21,08:00,2025-08-21,09:15,Instructor: Sun,ClassRoom2_300,Yes
-COMP 550,550 Sec 2,2025-08-19,09:30,2025-08-19,10:45,Instructor: Sun,SN-0014,Yes
-COMP 550,550 Sec 2,2025-08-21,09:30,2025-08-21,10:45,Instructor: Sun,SN-0014,Yes
-COMP 581,581 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: Alterovitz,FB-F009,Yes
-COMP 581,581 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: Alterovitz,FB-F009,Yes
+COMP 110,110 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: Bansal,ClassRoom2_200,Yes
+COMP 110,110 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: Bansal,ClassRoom2_200,Yes
+COMP 110,110 Sec 2,2025-08-19,12:30,2025-08-19,13:45,Instructor: Chakravarthula,Murray G202 (209 seats),Yes
+COMP 110,110 Sec 2,2025-08-21,12:30,2025-08-21,13:45,Instructor: Chakravarthula,Murray G202 (209 seats),Yes
+COMP 110,110 Sec 3,2025-08-18,09:00,2025-08-18,11:00,Instructor: Kaur,ClassRoom4_200,Yes
+COMP 126,126 Sec 1,2025-08-19,09:30,2025-08-19,10:45,Instructor: Joseph-Nicholas,Coker 201 (198 seats),Yes
+COMP 126,126 Sec 1,2025-08-21,09:30,2025-08-21,10:45,Instructor: Joseph-Nicholas,Coker 201 (198 seats),Yes
+COMP 210,210 Sec 1,2025-08-19,14:00,2025-08-19,15:15,Instructor: Ghani,Carroll 111 (210 seats),Yes
+COMP 210,210 Sec 1,2025-08-21,14:00,2025-08-21,15:15,Instructor: Ghani,Carroll 111 (210 seats),Yes
+COMP 210,210 Sec 2,2025-08-19,15:30,2025-08-19,16:45,Instructor: Ghani,ClassRoom2_250,Yes
+COMP 210,210 Sec 2,2025-08-21,15:30,2025-08-21,16:45,Instructor: Ghani,ClassRoom2_250,Yes
+COMP 211,211 Sec 1,2025-08-18,09:05,2025-08-18,09:55,Instructor: McMahon,ClassRoom4_300,Yes
+COMP 211,211 Sec 1,2025-08-20,09:05,2025-08-20,09:55,Instructor: McMahon,ClassRoom4_300,Yes
+COMP 211,211 Sec 1,2025-08-22,09:05,2025-08-22,09:55,Instructor: McMahon,ClassRoom4_300,Yes
+COMP 211,211 Sec 2,2025-08-18,10:10,2025-08-18,11:00,Instructor: McMahon,ClassRoom4_250,Yes
+COMP 211,211 Sec 2,2025-08-20,10:10,2025-08-20,11:00,Instructor: McMahon,ClassRoom4_250,Yes
+COMP 211,211 Sec 2,2025-08-22,10:10,2025-08-22,11:00,Instructor: McMahon,ClassRoom4_250,Yes
+COMP 227,227 Sec 1,2025-08-19,12:30,2025-08-19,13:45,Instructor: Joseph-Nicholas,FB-F141,Yes
+COMP 227,227 Sec 1,2025-08-21,12:30,2025-08-21,13:45,Instructor: Joseph-Nicholas,FB-F141,Yes
+COMP 283,283 Sec 1,2025-08-18,13:25,2025-08-18,14:15,Instructor: Byrnes,ClassRoom4_200,Yes
+COMP 283,283 Sec 1,2025-08-20,13:25,2025-08-20,14:15,Instructor: Byrnes,ClassRoom4_200,Yes
+COMP 283,283 Sec 1,2025-08-22,13:25,2025-08-22,14:15,Instructor: Byrnes,ClassRoom4_200,Yes
+COMP 301,301 Sec 1,2025-08-18,12:20,2025-08-18,13:10,Instructor: Byrnes,ClassRoom2_200,Yes
+COMP 301,301 Sec 1,2025-08-20,12:20,2025-08-20,13:10,Instructor: Byrnes,ClassRoom2_200,Yes
+COMP 301,301 Sec 1,2025-08-22,12:20,2025-08-22,13:10,Instructor: Byrnes,ClassRoom2_200,Yes
+COMP 301,301 Sec 2,2025-08-18,12:20,2025-08-18,13:35,Instructor: Goodwin,ClassRoom4_300,Yes
+COMP 301,301 Sec 2,2025-08-20,12:20,2025-08-20,13:35,Instructor: Goodwin,ClassRoom4_300,Yes
+COMP 311,311 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: McMillan,Genome Science G200 (237 seats),Yes
+COMP 311,311 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: McMillan,Genome Science G200 (237 seats),Yes
+COMP 311,311 Sec 2,2025-08-19,15:30,2025-08-19,16:45,Instructor: Munsell,Chapman 201 (186 seats),Yes
+COMP 311,311 Sec 2,2025-08-21,15:30,2025-08-21,16:45,Instructor: Munsell,Chapman 201 (186 seats),Yes
+COMP 380,380 Sec 1,2025-08-19,14:00,2025-08-19,15:15,Instructor: Joseph-Nicholas,FB-F009,Yes
+COMP 380,380 Sec 1,2025-08-21,14:00,2025-08-21,15:15,Instructor: Joseph-Nicholas,FB-F009,Yes
+COMP 421,421 Sec 1,2025-08-19,15:30,2025-08-19,16:45,Instructor: Berg,ClassRoom1_250,Yes
+COMP 421,421 Sec 1,2025-08-21,15:30,2025-08-21,16:45,Instructor: Berg,ClassRoom1_250,Yes
+COMP 426,426 Sec 1,2025-08-18,12:20,2025-08-18,13:10,Instructor: Gandecha,ClassRoom6_250,Yes
+COMP 426,426 Sec 1,2025-08-20,12:20,2025-08-20,13:10,Instructor: Gandecha,ClassRoom6_250,Yes
+COMP 426,426 Sec 1,2025-08-22,12:20,2025-08-22,13:10,Instructor: Gandecha,ClassRoom6_250,Yes
+COMP 431,431 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: Kaur,SN-0011,Yes
+COMP 431,431 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: Kaur,SN-0011,Yes
+COMP 433,433 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: Nirjon,SN-0014,Yes
+COMP 433,433 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: Nirjon,SN-0014,Yes
+COMP 435,435 Sec 1,2025-08-18,12:20,2025-08-18,13:10,Instructor: Sturton,SN-0011,Yes
+COMP 435,435 Sec 1,2025-08-20,12:20,2025-08-20,13:10,Instructor: Sturton,SN-0011,Yes
+COMP 435,435 Sec 1,2025-08-22,12:20,2025-08-22,13:10,Instructor: Sturton,SN-0011,Yes
+COMP 455,455 Sec 1,2025-08-19,09:30,2025-08-19,10:45,Instructor: Duggirala,Global Education Center 1015 (246 seats),Yes
+COMP 455,455 Sec 1,2025-08-21,09:30,2025-08-21,10:45,Instructor: Duggirala,Global Education Center 1015 (246 seats),Yes
+COMP 455,455 Sec 2,2025-08-18,14:30,2025-08-18,15:20,Instructor: Duggirala,ClassRoom2_200,Yes
+COMP 455,455 Sec 2,2025-08-20,14:30,2025-08-20,15:20,Instructor: Duggirala,ClassRoom2_200,Yes
+COMP 455,455 Sec 2,2025-08-22,14:30,2025-08-22,15:20,Instructor: Duggirala,ClassRoom2_200,Yes
+COMP 475,475 Sec 1,2025-08-19,09:30,2025-08-19,10:45,Instructor: Reed,SN-0011,Yes
+COMP 475,475 Sec 1,2025-08-21,09:30,2025-08-21,10:45,Instructor: Reed,SN-0011,Yes
+COMP 520,520 Sec 1,2025-08-18,14:30,2025-08-18,15:45,Instructor: Pothukuchi,SN-0014,Yes
+COMP 520,520 Sec 1,2025-08-20,14:30,2025-08-20,15:45,Instructor: Pothukuchi,SN-0014,Yes
+COMP 523,523 Sec 1,2025-08-19,08:00,2025-08-19,09:15,Instructor: Stotts,SN-0011,Yes
+COMP 523,523 Sec 1,2025-08-21,08:00,2025-08-21,09:15,Instructor: Stotts,SN-0011,Yes
+COMP 524,524 Sec 1,2025-08-19,11:00,2025-08-19,12:15,Instructor: Dewan,FB-F009,Yes
+COMP 524,524 Sec 1,2025-08-21,11:00,2025-08-21,12:15,Instructor: Dewan,FB-F009,Yes
+COMP 530,530 Sec 1,2025-08-19,08:00,2025-08-19,09:15,Instructor: Porter,SN-0014,Yes
+COMP 530,530 Sec 1,2025-08-21,08:00,2025-08-21,09:15,Instructor: Porter,SN-0014,Yes
+COMP 537,537 Sec 1,2025-08-19,17:00,2025-08-19,18:15,Instructor: Eskandarian,FB-F009,Yes
+COMP 537,537 Sec 1,2025-08-21,17:00,2025-08-21,18:15,Instructor: Eskandarian,FB-F009,Yes
+COMP 541,541 Sec 1,2025-08-19,12:30,2025-08-19,13:45,Instructor: Singh,FB-F009,Yes
+COMP 541,541 Sec 1,2025-08-21,12:30,2025-08-21,13:45,Instructor: Singh,FB-F009,Yes
+COMP 550,550 Sec 1,2025-08-19,12:30,2025-08-19,13:45,Instructor: Snoeyink,ClassRoom4_250,Yes
+COMP 550,550 Sec 1,2025-08-21,12:30,2025-08-21,13:45,Instructor: Snoeyink,ClassRoom4_250,Yes
+COMP 550,550 Sec 2,2025-08-19,11:00,2025-08-19,12:15,Instructor: Sun,Carroll 111 (210 seats),Yes
+COMP 550,550 Sec 2,2025-08-21,11:00,2025-08-21,12:15,Instructor: Sun,Carroll 111 (210 seats),Yes
+COMP 560,560 Sec 1,2025-08-19,14:00,2025-08-19,15:15,Instructor: Silva,SN-0014,Yes
+COMP 560,560 Sec 1,2025-08-21,14:00,2025-08-21,15:15,Instructor: Silva,SN-0014,Yes
+COMP 562,562 Sec 1,2025-08-18,10:10,2025-08-18,11:25,Instructor: Bertasius,FB-F009,Yes
+COMP 562,562 Sec 1,2025-08-20,10:10,2025-08-20,11:25,Instructor: Bertasius,FB-F009,Yes
+COMP 572,572 Sec 1,2025-08-19,15:30,2025-08-19,16:45,Instructor: Singh,SN-0011,Yes
+COMP 572,572 Sec 1,2025-08-21,15:30,2025-08-21,16:45,Instructor: Singh,SN-0011,Yes
+COMP 581,581 Sec 1,2025-08-18,13:25,2025-08-18,14:15,Instructor: Alterovitz,SN-0011,Yes
+COMP 581,581 Sec 1,2025-08-20,13:25,2025-08-20,14:15,Instructor: Alterovitz,SN-0011,Yes
+COMP 581,581 Sec 1,2025-08-22,13:25,2025-08-22,14:15,Instructor: Alterovitz,SN-0011,Yes
+COMP 590,590 Sec 59,2025-08-19,09:30,2025-08-19,10:45,Instructor: Stotts,SN-0014,Yes
+COMP 590,590 Sec 59,2025-08-21,09:30,2025-08-21,10:45,Instructor: Stotts,SN-0014,Yes
+COMP 590,590 Sec 80,2025-08-19,08:00,2025-08-19,09:15,Instructor: Mayer-Patel,FB-F141,Yes
+COMP 590,590 Sec 80,2025-08-21,08:00,2025-08-21,09:15,Instructor: Mayer-Patel,FB-F141,Yes
+COMP 590,590 Sec 158,2025-08-22,09:00,2025-08-22,11:00,Instructor: Chaturvedi,FB-F007,Yes
+COMP 590,590 Sec 159,2025-08-19,12:30,2025-08-19,13:45,Instructor: Munsell,SN-0014,Yes
+COMP 590,590 Sec 159,2025-08-21,12:30,2025-08-21,13:45,Instructor: Munsell,SN-0014,Yes
+COMP 590,590 Sec 173,2025-08-18,14:30,2025-08-18,15:45,Instructor: Kandel,FB-F007,Yes
+COMP 590,590 Sec 173,2025-08-20,14:30,2025-08-20,15:45,Instructor: Kandel,FB-F007,Yes
+COMP 590,590 Sec 175,2025-08-19,11:00,2025-08-19,12:15,Instructor: Chakravarthula,FB-F141,Yes
+COMP 590,590 Sec 175,2025-08-21,11:00,2025-08-21,12:15,Instructor: Chakravarthula,FB-F141,Yes
+COMP 590,590 Sec 177,2025-08-19,09:30,2025-08-19,10:45,Instructor: Sengupta,FB-F009,Yes
+COMP 590,590 Sec 177,2025-08-21,09:30,2025-08-21,10:45,Instructor: Sengupta,FB-F009,Yes
+COMP 590,590 Sec 187,2025-08-18,10:10,2025-08-18,11:00,Instructor: Pothukuchi,SN-0115,Yes
+COMP 590,590 Sec 187,2025-08-20,10:10,2025-08-20,11:00,Instructor: Pothukuchi,SN-0115,Yes
+COMP 590,590 Sec 187,2025-08-22,10:10,2025-08-22,11:00,Instructor: Pothukuchi,SN-0115,Yes

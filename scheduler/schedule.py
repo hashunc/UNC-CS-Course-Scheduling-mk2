@@ -202,6 +202,7 @@ class CourseScheduler:
     def add_room_time_constraints(self):
         """Add constraints to prevent multiple courses from being scheduled in the same room at the same time."""
 
+        # Make sure only one course is scheduled per room at the same time
         for r in self.room_ids:
             for t in self.time_slots:
                 self.prob += (
@@ -211,18 +212,32 @@ class CourseScheduler:
                     )
                     <= 1
                 )
-        
+
+        # Now handle available time slots
         room_available_time = {}
         for idx, row in self.rooms_data.iterrows():
-            room_available_time[row["RoomID"]] = row["AvailableTimeSlots"].split(";")
-        
+            available_raw = row["AvailableTimeSlots"]
+            room_id = row["RoomID"]
+
+            if isinstance(available_raw, str) and available_raw.strip().lower() != "all":
+                expanded = []
+                for part in available_raw.split(";"):
+                    part = part.strip()
+                    if "_" in part:
+                        prefix, suffix = part.split("_", 1)
+                        if "," in suffix:
+                            expanded += [prefix + "_" + s.strip() for s in suffix.split(",")]
+                        else:
+                            expanded.append(part)
+                room_available_time[room_id] = expanded
+            else:
+                room_available_time[room_id] = "All"
+
         for c, s, p in self.valid_course_professor_pairs:
             for t in self.time_slots:
                 for r in self.room_ids:
-                    # room in this time slot must be available
-                    if (
-                        room_available_time[r][0] != "All" and t not in room_available_time[r]
-                    ):
+                    available = room_available_time[r]
+                    if available != "All" and t not in available:
                         self.prob += self.X[c, s, t, r, p] == 0
 
 
@@ -277,32 +292,71 @@ class CourseScheduler:
     def add_room_capacity_constraints(self):
         """Add constraints to ensure room capacity is sufficient for course enrollment, but the room can't be too empty."""
 
-        other_rooms = ["ClassRoom1_200", "ClassRoom2_200", "ClassRoom3_200", "ClassRoom4_200", "ClassRoom5_200", "ClassRoom6_200", 
-                       "ClassRoom1_250", "ClassRoom2_250", "ClassRoom3_250", "ClassRoom4_250", "ClassRoom5_250", "ClassRoom6_250", 
-                       "ClassRoom1_300", "ClassRoom2_300", "ClassRoom3_300", "ClassRoom4_300", "ClassRoom5_300", "ClassRoom6_300"]
+        other_rooms = [
+            "ClassRoom1_200", "ClassRoom2_200", "ClassRoom3_200", "ClassRoom4_200", "ClassRoom5_200", "ClassRoom6_200", 
+            "ClassRoom1_250", "ClassRoom2_250", "ClassRoom3_250", "ClassRoom4_250", "ClassRoom5_250", "ClassRoom6_250", 
+            "ClassRoom1_300", "ClassRoom2_300", "ClassRoom3_300", "ClassRoom4_300", "ClassRoom5_300", "ClassRoom6_300"
+        ]
+
+        MAX_CAPACITY_MULTIPLIER = 2.0   # Room can't be more than 2x course capacity
+        MAX_ABSOLUTE_DIFFERENCE = 100   # Room can't be >100 seats bigger than course
 
         for c, s, p in self.valid_course_professor_pairs:
             course_capacity = self.data.loc[
                 (self.data["CourseID"] == c) & (self.data["Sec"] == s), "EnrollCapacity"
             ].values[0]
+
             for t in self.time_slots:
                 for r in self.room_ids:
-                    # check if the room capacity is smaller than enroll capacity of the course
-                    if (
-                        self.rooms_data.loc[
-                            self.rooms_data["RoomID"] == r, "Capacity"
-                        ].values[0]
-                        < course_capacity
-                    ):
+                    room_capacity = self.rooms_data.loc[
+                        self.rooms_data["RoomID"] == r, "Capacity"
+                    ].values[0]
+
+                    # 🚫 room too small
+                    if room_capacity < course_capacity:
                         self.prob += self.X[c, s, t, r, p] == 0
 
-            # try our best to avoid arranging courses to non-CS buildings
+                    # 🚫 room too large
+                    if (room_capacity > course_capacity * MAX_CAPACITY_MULTIPLIER) or (room_capacity - course_capacity > MAX_ABSOLUTE_DIFFERENCE):
+                        self.prob += self.X[c, s, t, r, p] == 0
+
+            # 🚫 for small courses, avoid non-CS buildings
             if course_capacity <= 128:
                 self.prob += lpSum(
                     self.X[c, s, t, r, p]
                     for t in self.time_slots
                     for r in other_rooms
                 ) == 0
+    
+    def add_prefer_non_other_rooms_constraint(self):
+        """Add soft constraints to prefer using non-other rooms (non-large non-CS rooms)."""
+
+        other_rooms = [
+            "ClassRoom1_200", "ClassRoom2_200", "ClassRoom3_200", "ClassRoom4_200", "ClassRoom5_200", "ClassRoom6_200", 
+            "ClassRoom1_250", "ClassRoom2_250", "ClassRoom3_250", "ClassRoom4_250", "ClassRoom5_250", "ClassRoom6_250", 
+            "ClassRoom1_300", "ClassRoom2_300", "ClassRoom3_300", "ClassRoom4_300", "ClassRoom5_300", "ClassRoom6_300"
+        ]
+
+        self.other_room_penalties = {}
+
+        for c, s, p in self.valid_course_professor_pairs:
+            var = LpVariable(f"OtherRoomPenalty_{c}_{s}_{p}", lowBound=0, cat="Binary")
+            self.other_room_penalties[(c, s, p)] = var
+
+            self.prob += var >= lpSum(
+                self.X[c, s, t, r, p]
+                for t in self.time_slots
+                for r in other_rooms
+            )
+
+            self.prob += var <= lpSum(
+                self.X[c, s, t, r, p]
+                for t in self.time_slots
+                for r in other_rooms
+            )
+
+        penalty_weight = 0.1 
+        self.prob += penalty_weight * lpSum(self.other_room_penalties.values())
 
     def add_same_pre_courses_constraints(self):
         """Add constraints to avoid courses with the same prerequisite being arranged at the same time."""
@@ -392,7 +446,6 @@ class CourseScheduler:
         """Add soft constraints for professor time slot preferences."""
 
         preferred_times = {}
-        preferred_days = {}
 
         for idx, row in self.data.iterrows():
             c = row["CourseID"]
@@ -407,31 +460,6 @@ class CourseScheduler:
                 else [row["Professor_PreferredTimeSlots"]]
             )
             preferred_times[key] = professor_preferred_times
-            for professor_preferred_time in professor_preferred_times:
-                if ("MWF" in professor_preferred_time):
-                    if c not in preferred_days:
-                        preferred_days[c] = "MWF"
-                    elif "MWF" not in preferred_days[c]:
-                        preferred_days[c].append("MWF")
-                elif ("MW" in professor_preferred_time):
-                    if c not in preferred_days:
-                        preferred_days[c] = "MW"
-                    elif "MW" not in preferred_days[c]:
-                        preferred_days[c].append("MW")
-                elif ("TTH" in professor_preferred_time):
-                    if c not in preferred_days:
-                        preferred_days[c] = "TTH"
-                    elif "TTH" not in preferred_days[c]:
-                        preferred_days[c].append("TTH")
-
-        # professor's course can't be arranged beyond their preferred days, like TTH_1 can't be MW_1 but can be TTH_2
-        for c, s, p in self.valid_course_professor_pairs:
-            for t in self.time_slots:
-                if (t.split("_")[0] not in preferred_days[c]):
-                    self.prob += lpSum(
-                        self.X[c, s, t, r, p]
-                        for r in self.room_ids
-                    ) == 0
 
         # set preference time penalties with 0 or 1
         for c, s, p in self.valid_course_professor_pairs:
@@ -508,11 +536,11 @@ class CourseScheduler:
 
         class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
         conflict_periods = [
-            (["2H_M"], ["MWF_2", "MWF_3", "MWF_4", "MW_12", "MW_34"]),
+            (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
             (["2H_T"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_W"], ["MWF_2", "MWF_3", "MWF_4", "MW_12", "MW_34"]),
+            (["2H_W"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
             (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_F"], ["MWF_2", "MWF_3", "MWF_4"])
+            (["2H_F"], ["MWF_2", "MWF_3"])
         ]
         c_2H = TWO_HOUR_COURSE_ID
         s_2H = str(TWO_HOUR_SECTION)  
@@ -654,10 +682,14 @@ class CourseScheduler:
         self.add_specific_course_constraints()
         self.add_mwf_course_constraints()
         self.add_room_capacity_constraints()
+
         self.add_same_pre_courses_constraints()
         self.add_mw_mwf_time_constraints()
         self.add_peak_time_constraints()
         self.add_2Hclass_constraints()
+        
+        #self.add_prefer_non_other_rooms_constraint()
+        
         # self.add_course_miss_constraint()
         # self.add_core_course_constraints()
 

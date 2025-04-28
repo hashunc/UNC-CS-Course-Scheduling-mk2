@@ -1,0 +1,4 @@
+CourseID,Sec,EnrollCapacity,ProfessorName,Professor_PreferredTimeSlots
+COMP 590&790,175,50,Chakravarthula,"TTH_3,TTH_4,TTH_5"
+COMP 590&790,158,30,Chaturvedi,2H_class
+COMP 590&790,187,25,Pothukuchi,MW_78
