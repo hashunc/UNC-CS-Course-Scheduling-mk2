@@ -43,7 +43,7 @@ You should see three subfolders:
 - `Input/` — for storing input spreadsheets (e.g., faculty preferences, availability)
 - `Output/` — where the generated output files will be saved
 - `CSV/` — for storing intermediate CSV files
-  <img width="647" alt="image" src="https://github.com/user-attachments/assets/b8bb127c-4bae-4113-8289-d9ddede45757" />
+- <img width="647" alt="image" src="https://github.com/user-attachments/assets/b8bb127c-4bae-4113-8289-d9ddede45757" />
 
 
 Make sure the required input files are correctly placed inside the `Input/` folder before running the program.
