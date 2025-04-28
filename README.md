@@ -168,13 +168,12 @@ Below is a detailed explanation of each required input file:
   - **Special Case — Duplicate Last Names**:
     - If two or more faculty members share the same last name, use their **full name** in the format `LastNameFirstName` to create the sheet name.
     - Example:
-      - Faculty 1: Tianlong Chen → Sheet name: `TianlongChen`
+      - Faculty 1: Tianlong Chen → Sheet name: `TianlongChen` (!!! NO SPACE !!!)
       - Faculty 2: Jackie Chen → Sheet name: `JackieChen`
     - In addition, when filling out the `Responses.xlsx` file, their `LastName` field must also be entered as `TianlongChen` and `JackieChen` respectively to ensure consistency.
 
 - **Additional Notes**:
-  - Ensure that all sheets follow the same internal column structure (e.g., "Course Name", "Readiness", "Frequency").
-  - Sheet names and faculty identifiers must be consistent across all input files to avoid parsing errors.
+  - Sheet names and faculty identifiers must be consistent with **responses sheet** across all input files to avoid parsing errors.
 
 > 📌 **Important:**  
 > Failure to correctly name the sheets using either last names or full names (for duplicates) will cause the program to fail when loading preferences.
@@ -184,12 +183,25 @@ Below is a detailed explanation of each required input file:
 ### 4. `Responses.xlsx`
 
 - **Purpose**:  
-  Captures faculty responses regarding their teaching availability and constraints for the semester.
+  Captures faculty responses regarding their teaching availability, number of courses will teaching, and scheduling constraints for the semester.
+
 - **Key Information**:  
   - Faculty names
+  - Number of classes each faculty member plans to teach
   - Weekly time block availability (e.g., MWF_1, TTH_2)
-  - Preferred teaching load
-  - Additional comments or restrictions (optional)
+
+- **How to Obtain**:
+  - This file is generated from **Google Forms**.
+  - Users should create and distribute a Google Form to all faculty members who are expected to teach in the upcoming semester.
+  - Faculty members fill out the form, providing their teaching availability, desired course load, and any additional information.
+  - After all responses have been collected:
+    1. Download the Google Form responses as an `.xlsx` file (Excel Workbook format).
+    2. Save the file as `Responses.xlsx`.
+    3. Place it into the `data/Input/` directory.
+
+- **Important Notes**:
+  - Ensure that the faculty names listed in the `Responses.xlsx` match exactly with the sheet names or last names used in `FacultyQualificationPreference.xlsx`.
+  - In cases where faculty members share the same last name (e.g., Tianlong Chen and Jackie Chen), use the full name format `LastNameFirstName` (e.g., `TianlongChen`, `JackieChen`) consistently across both files.
 
 
 
