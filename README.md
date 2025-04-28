@@ -247,6 +247,7 @@ After running the program, the following output files will be generated and save
   - A CSV file formatted specifically for importing **graduate-level course schedules** into Google Calendar.  
   - Structured similarly to the undergraduate file but filtered for graduate courses.
 
+
 ### Diagnostic and Validation Files
 
 - `missing_in_facultyqualification.csv`  
@@ -262,4 +263,28 @@ After running the program, the following output files will be generated and save
 > 📌 **Note:**  
 > The Google Calendar CSV files can be directly imported into Google Calendar using the "Import" function for easy visualization and management of the final schedule.
 
+### Import .csv Files into Google Calendar
 
+After generating the calendar-compatible `.csv` files (`google_calendar_undergraduate.csv` and `google_calendar_graduated.csv`), follow these steps to import them into Google Calendar:
+
+1. Open [Google Calendar](https://calendar.google.com/) in your web browser.
+
+2. On the left sidebar, find **"Other calendars"** and click the `+` button next to it.
+
+3. Select **"Import"** from the dropdown menu.
+
+4. In the Import window:
+   - Click **"Select file from your computer"** and choose either `google_calendar_undergraduate.csv` or `google_calendar_graduated.csv`.
+   - Choose which calendar you want to import the events into (you can create a new calendar for this if desired).
+
+5. Click **"Import"**.
+
+6. After the import finishes, all scheduled classes will appear in the selected calendar with their correct times, names, and instructors.
+
+> 📌 **Note:**  
+> - You may want to create separate calendars (e.g., "Undergraduate Courses", "Graduate Courses") to better organize the imported events.
+> - Double-check that your local timezone settings in Google Calendar are correct before importing to avoid time shifts.
+
+If you would like to see a complete walkthrough of setting up, running the program, and importing the `.csv` files into Google Calendar, please watch the demonstration video below:
+
+[![Watch the Full Demo](https://img.youtube.com/vi/TNFIEQCRf88/0.jpg)](https://youtu.be/TNFIEQCRf88)
