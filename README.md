@@ -204,8 +204,8 @@ Below is a detailed explanation of each required input file:
   - In cases where faculty members share the same last name (e.g., Tianlong Chen and Jackie Chen), use the full name format `LastNameFirstName` (e.g., `TianlongChen`, `JackieChen`) consistently across both files. Make sure the Lastname column is TianlongChen, and Lastname column is JackieChen.
 
 - **Demo Video**:
+[![Watch the Demo](https://img.youtube.com/vi/v3L3xcYia0w/0.jpg)](https://youtu.be/v3L3xcYia0w)
 
-[🎥 Watch the Demo Video on YouTube]([https://www.youtube.com/watch?v=xxxxx](https://youtu.be/v3L3xcYia0w))
 
 
 
