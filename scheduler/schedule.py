@@ -211,6 +211,20 @@ class CourseScheduler:
                     )
                     <= 1
                 )
+        
+        room_available_time = {}
+        for idx, row in self.rooms_data.iterrows():
+            room_available_time[row["RoomID"]] = row["AvailableTimeSlots"].split(";")
+        
+        for c, s, p in self.valid_course_professor_pairs:
+            for t in self.time_slots:
+                for r in self.room_ids:
+                    # room in this time slot must be available
+                    if (
+                        room_available_time[r][0] != "All" and t not in room_available_time[r]
+                    ):
+                        self.prob += self.X[c, s, t, r, p] == 0
+
 
     def add_specific_course_constraints(self):
         """Add constraints that Courses 301 and 211 cannot be scheduled at the same time."""
@@ -281,6 +295,7 @@ class CourseScheduler:
                         < course_capacity
                     ):
                         self.prob += self.X[c, s, t, r, p] == 0
+
             # try our best to avoid arranging courses to non-CS buildings
             if course_capacity <= 128:
                 self.prob += lpSum(
@@ -377,6 +392,7 @@ class CourseScheduler:
         """Add soft constraints for professor time slot preferences."""
 
         preferred_times = {}
+        preferred_days = {}
 
         for idx, row in self.data.iterrows():
             c = row["CourseID"]
@@ -391,6 +407,31 @@ class CourseScheduler:
                 else [row["Professor_PreferredTimeSlots"]]
             )
             preferred_times[key] = professor_preferred_times
+            for professor_preferred_time in professor_preferred_times:
+                if ("MWF" in professor_preferred_time):
+                    if c not in preferred_days:
+                        preferred_days[c] = "MWF"
+                    elif "MWF" not in preferred_days[c]:
+                        preferred_days[c].append("MWF")
+                elif ("MW" in professor_preferred_time):
+                    if c not in preferred_days:
+                        preferred_days[c] = "MW"
+                    elif "MW" not in preferred_days[c]:
+                        preferred_days[c].append("MW")
+                elif ("TTH" in professor_preferred_time):
+                    if c not in preferred_days:
+                        preferred_days[c] = "TTH"
+                    elif "TTH" not in preferred_days[c]:
+                        preferred_days[c].append("TTH")
+
+        # professor's course can't be arranged beyond their preferred days, like TTH_1 can't be MW_1 but can be TTH_2
+        for c, s, p in self.valid_course_professor_pairs:
+            for t in self.time_slots:
+                if (t.split("_")[0] not in preferred_days[c]):
+                    self.prob += lpSum(
+                        self.X[c, s, t, r, p]
+                        for r in self.room_ids
+                    ) == 0
 
         # set preference time penalties with 0 or 1
         for c, s, p in self.valid_course_professor_pairs:
@@ -467,11 +508,11 @@ class CourseScheduler:
 
         class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
         conflict_periods = [
-            (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_M"], ["MWF_2", "MWF_3", "MWF_4", "MW_12", "MW_34"]),
             (["2H_T"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_W"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
+            (["2H_W"], ["MWF_2", "MWF_3", "MWF_4", "MW_12", "MW_34"]),
             (["2H_TH"], ["TTH_1", "TTH_2", "TTH_3"]),
-            (["2H_F"], ["MWF_2", "MWF_3"])
+            (["2H_F"], ["MWF_2", "MWF_3", "MWF_4"])
         ]
         c_2H = TWO_HOUR_COURSE_ID
         s_2H = str(TWO_HOUR_SECTION)  
