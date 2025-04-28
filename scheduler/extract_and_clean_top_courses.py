@@ -43,6 +43,13 @@ for sheet in faculty_sheets:
 
 df = pd.DataFrame(all_course_data)
 
+# -------- 2.5 Filter low Readiness or Frequency courses --------
+before_filter = len(df)
+df = df[(df["Readiness"] > 1) & (df["Frequency"] > 1)].reset_index(drop=True)
+after_filter = len(df)
+print(f"✅ Filtered out {before_filter - after_filter} courses with Readiness <= 1 or Frequency <= 1.")
+
+# -------- Continue: Extract top 5 per instructor --------
 top_5_per_instructor = (
     df.sort_values(by=["Instructor", "Total"], ascending=[True, False])
     .groupby("Instructor")

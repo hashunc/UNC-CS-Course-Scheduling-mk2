@@ -1,64 +1,27 @@
 Instructor,Course,Readiness,Frequency,Total
 Alterovitz,COMP 581 Introduction to Robotics,4,4,8
 Alterovitz,COMP 560 Artificial Intelligence,3,2,5
-Alterovitz,COMP 110 Introduction to Programming and Data Science,1,1,2
-Alterovitz,COMP 116 Introduction to Scientific Programming,1,1,2
-Alterovitz,COMP 210 Data Structures and Analysis,1,1,2
 Anderson,COMP 737 Real-Time Systems,4,4,8
 Anderson,COMP 750 Algorithm Analysis,4,4,8
 Anderson,COMP 455 Models of Languages and Computation,4,2,6
-Anderson,COMP 550 Algorithms and Analysis,2,1,3
-Anderson,COMP 110 Introduction to Programming and Data Science,0,0,0
-Bansal,COMP 110 Introduction to Programming and Data Science,0,0,0
-Bansal,COMP 116 Introduction to Scientific Programming,0,0,0
-Bansal,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Bansal,COMP 210 Data Structures and Analysis,0,0,0
-Bansal,COMP 211 Systems Fundamentals,0,0,0
 Berg,COMP 421 Files and Databases,4,4,8
-Berg,COMP 110 Introduction to Programming and Data Science,0,0,0
-Berg,COMP 116 Introduction to Scientific Programming,0,0,0
-Berg,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Berg,COMP 210 Data Structures and Analysis,0,0,0
 Bertasius,COMP 577 Introduction to Computer Vision,2,3,5
-Bertasius,COMP 562 Introduction to Machine Learning,1,1,2
-Bertasius,COMP 110 Introduction to Programming and Data Science,0,0,0
-Bertasius,COMP 116 Introduction to Scientific Programming,0,0,0
-Bertasius,COMP 126 Practical Web Design and Development for Everyone,0,0,0
 Byrnes,COMP 110 Introduction to Programming and Data Science,4,4,8
 Byrnes,COMP 283 Discrete Structures,4,4,8
 Byrnes,COMP 210 Data Structures and Analysis,3,3,6
 Byrnes,COMP 301 Foundations of Programming,3,3,6
 Byrnes,COMP 550 Algorithms and Analysis,3,3,6
 Chakravarthula,COMP 590&790-175 Special Topics: Visual Computing Systems,4,4,8
-Chakravarthula,COMP 110 Introduction to Programming and Data Science,0,0,0
-Chakravarthula,COMP 116 Introduction to Scientific Programming,0,0,0
-Chakravarthula,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Chakravarthula,COMP 210 Data Structures and Analysis,0,0,0
 Chaturvedi,COMP 586 Natural Language Processing,4,4,8
 Chaturvedi,COMP 590&790-158 Special Topics: Special topics in Natural Language Processing,4,4,8
 Chaturvedi,COMP 486 Applications of Natural Language Processing,3,2,5
 Chaturvedi,COMP 487 Information Retrieval,3,2,5
 Chaturvedi,COMP 562 Introduction to Machine Learning,3,2,5
 Chen,COMP 790-150 Special Topics: Efficient Deep Learning,4,4,8
-Chen,COMP 110 Introduction to Programming and Data Science,0,0,0
-Chen,COMP 116 Introduction to Scientific Programming,0,0,0
-Chen,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Chen,COMP 210 Data Structures and Analysis,0,0,0
 Deng,COMP 790-189 Special Topics: Theoretical Foundations of Machine Learning,4,4,8
-Deng,COMP 110 Introduction to Programming and Data Science,0,0,0
-Deng,COMP 116 Introduction to Scientific Programming,0,0,0
-Deng,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Deng,COMP 210 Data Structures and Analysis,0,0,0
 Dewan,COMP 524 Programming Language Concepts,4,4,8
 Dewan,COMP 89H - 063,4,4,8
-Dewan,COMP 110 Introduction to Programming and Data Science,0,0,0
-Dewan,COMP 116 Introduction to Scientific Programming,0,0,0
-Dewan,COMP 126 Practical Web Design and Development for Everyone,0,0,0
 Ding,COMP 790-186 Special Topics: Robot Learning,4,4,8
-Ding,COMP 110 Introduction to Programming and Data Science,0,0,0
-Ding,COMP 116 Introduction to Scientific Programming,0,0,0
-Ding,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Ding,COMP 210 Data Structures and Analysis,0,0,0
 Duggirala,COMP 455 Models of Languages and Computation,4,4,8
 Duggirala,COMP 545 Programming Intelligent Physical Systems,4,3,7
 Duggirala,COMP 550 Algorithms and Analysis,4,3,7
@@ -70,15 +33,7 @@ Eskandarian,COMP 283 Discrete Structures,2,2,4
 Eskandarian,COMP 435 Computer Security Concepts,2,2,4
 Eskandarian,COMP 550 Algorithms and Analysis,2,2,4
 Gandecha,COMP 426 Modern Web Programming,4,4,8
-Gandecha,COMP 110 Introduction to Programming and Data Science,0,0,0
-Gandecha,COMP 116 Introduction to Scientific Programming,0,0,0
-Gandecha,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Gandecha,COMP 210 Data Structures and Analysis,0,0,0
 Ghani,COMP 210 Data Structures and Analysis,4,4,8
-Ghani,COMP 110 Introduction to Programming and Data Science,0,0,0
-Ghani,COMP 116 Introduction to Scientific Programming,0,0,0
-Ghani,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Ghani,COMP 211 Systems Fundamentals,0,0,0
 Goodwin,COMP 301 Foundations of Programming,4,4,8
 Goodwin,COMP 210 Data Structures and Analysis,4,3,7
 Goodwin,"COMP 380 Technology, Ethics, &amp; Culture",3,3,6
@@ -93,27 +48,10 @@ Joseph-Nicholas,COMP 126 Practical Web Design and Development for Everyone,4,4,8
 Joseph-Nicholas,"COMP 380 Technology, Ethics, &amp; Culture",4,4,8
 Joseph-Nicholas,COMP 388 Advanced Cyberculture Studies,4,4,8
 Joseph-Nicholas,COMP 227 Effective Peer Teaching in Computer Science,4,2,6
-Joseph-Nicholas,COMP 110 Introduction to Programming and Data Science,0,0,0
 Kandel,COMP 590-173 Special Topics: Information Visualization,4,4,8
-Kandel,COMP 110 Introduction to Programming and Data Science,0,0,0
-Kandel,COMP 116 Introduction to Scientific Programming,0,0,0
-Kandel,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Kandel,COMP 210 Data Structures and Analysis,0,0,0
 Kaur,COMP 431 Internet Services and Protocols,4,4,8
-Kaur,COMP 110 Introduction to Programming and Data Science,2,1,3
-Kaur,COMP 530 Operating Systems,1,1,2
-Kaur,COMP 116 Introduction to Scientific Programming,0,0,0
-Kaur,COMP 126 Practical Web Design and Development for Everyone,0,0,0
 Kwong,COMP 790-185 Special Topics: Research Topics in Computer Security,4,4,8
-Kwong,COMP 110 Introduction to Programming and Data Science,0,0,0
-Kwong,COMP 116 Introduction to Scientific Programming,0,0,0
-Kwong,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Kwong,COMP 210 Data Structures and Analysis,0,0,0
 Len,COMP 790-188 Special Topics: Topics in Applied Cryptography,4,4,8
-Len,COMP 110 Introduction to Programming and Data Science,0,0,0
-Len,COMP 116 Introduction to Scientific Programming,0,0,0
-Len,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Len,COMP 210 Data Structures and Analysis,0,0,0
 Mayer-Patel,COMP 590-80 Special Topics: Video Compression and Streaming,4,4,8
 Mayer-Patel,COMP 301 Foundations of Programming,4,3,7
 Mayer-Patel,COMP 426 Modern Web Programming,4,3,7
@@ -125,25 +63,13 @@ McMahon,COMP 541 Digital Logic and Computer Design,4,4,8
 McMahon,COMP 227 Effective Peer Teaching in Computer Science,4,3,7
 McMahon,"COMP 380 Technology, Ethics, &amp; Culture",4,3,7
 McMillan,COMP 311 Computer Organization,4,4,8
-McMillan,COMP 110 Introduction to Programming and Data Science,0,0,0
-McMillan,COMP 116 Introduction to Scientific Programming,0,0,0
-McMillan,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-McMillan,COMP 210 Data Structures and Analysis,0,0,0
 Munsell,COMP 211 Systems Fundamentals,4,4,8
 Munsell,COMP 311 Computer Organization,4,4,8
 Munsell,COMP 590-159 Special Topics: Interactive Computer Graphics using WebGL and HTML5,4,4,8
 Munsell,COMP 475 2D Computer Graphics,4,3,7
 Munsell,COMP 530 Operating Systems,4,3,7
 Nirjon,COMP 433 Mobile Computing Systems,4,4,8
-Nirjon,COMP 110 Introduction to Programming and Data Science,0,0,0
-Nirjon,COMP 116 Introduction to Scientific Programming,0,0,0
-Nirjon,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Nirjon,COMP 210 Data Structures and Analysis,0,0,0
 Oliva,COMP 755 Machine Learning,4,4,8
-Oliva,COMP 110 Introduction to Programming and Data Science,0,0,0
-Oliva,COMP 116 Introduction to Scientific Programming,0,0,0
-Oliva,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Oliva,COMP 210 Data Structures and Analysis,0,0,0
 Porter,COMP 530 Operating Systems,4,4,8
 Porter,COMP 311 Computer Organization,3,3,6
 Porter,COMP 211 Systems Fundamentals,2,3,5
@@ -153,47 +79,26 @@ Pothukuchi,COMP 590&790-187 Special Topics: Building the Infinite Brain,4,4,8
 Pothukuchi,COMP 311 Computer Organization,2,4,6
 Pothukuchi,COMP 541 Digital Logic and Computer Design,2,4,6
 Pothukuchi,COMP 211 Systems Fundamentals,2,2,4
-Pothukuchi,COMP 520 Compilers,1,2,3
 Reed,COMP 475 2D Computer Graphics,4,4,8
-Reed,COMP 110 Introduction to Programming and Data Science,0,0,0
-Reed,COMP 116 Introduction to Scientific Programming,0,0,0
-Reed,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Reed,COMP 210 Data Structures and Analysis,0,0,0
 Ryan,COMP 311 Computer Organization,4,4,8
 Ryan,COMP 435 Computer Security Concepts,4,4,8
-Ryan,COMP 110 Introduction to Programming and Data Science,0,0,0
-Ryan,COMP 116 Introduction to Scientific Programming,0,0,0
-Ryan,COMP 126 Practical Web Design and Development for Everyone,0,0,0
 Sengupta,COMP 577 Introduction to Computer Vision,4,4,8
 Sengupta,COMP 590-177 Special Topics: Introduction to Computer Vision,4,4,8
 Sengupta,COMP 562 Introduction to Machine Learning,3,3,6
 Sengupta,COMP 572 Computational Photography,3,3,6
 Sengupta,COMP 575 Introduction to Computer Graphics,2,2,4
 Silva,COMP 560 Artificial Intelligence,4,4,8
-Silva,COMP 110 Introduction to Programming and Data Science,0,0,0
-Silva,COMP 116 Introduction to Scientific Programming,0,0,0
-Silva,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Silva,COMP 210 Data Structures and Analysis,0,0,0
 Singh,COMP 541 Digital Logic and Computer Design,4,4,8
 Singh,COMP 572 Computational Photography,4,4,8
 Singh,COMP 311 Computer Organization,3,2,5
-Singh,COMP 110 Introduction to Programming and Data Science,0,0,0
-Singh,COMP 116 Introduction to Scientific Programming,0,0,0
 Snoeyink,COMP 283 Discrete Structures,4,4,8
 Snoeyink,COMP 651 Computational Geometry,4,3,7
 Snoeyink,COMP 488 Data Science in the Business World,3,3,6
 Snoeyink,COMP 550 Algorithms and Analysis,3,3,6
 Snoeyink,COMP 116 Introduction to Scientific Programming,3,2,5
 Srivastava,COMP 664 Deep Learning,4,4,8
-Srivastava,COMP 110 Introduction to Programming and Data Science,0,0,0
-Srivastava,COMP 116 Introduction to Scientific Programming,0,0,0
-Srivastava,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Srivastava,COMP 210 Data Structures and Analysis,0,0,0
 Stotts,COMP 523 Software Engineering Laboratory,4,4,8
 Stotts,"COMP 590-59 Special Topics: Special topics: Programming Methods, Models, Languages, and Analysis",4,4,8
-Stotts,COMP 210 Data Structures and Analysis,4,0,4
-Stotts,COMP 301 Foundations of Programming,4,0,4
-Stotts,COMP 110 Introduction to Programming and Data Science,3,0,3
 Sturton,COMP 435 Computer Security Concepts,4,4,8
 Sturton,COMP 637 Formal Methods for Systems Security,4,4,8
 Sturton,COMP 311 Computer Organization,3,3,6
@@ -205,12 +110,4 @@ Sun,COMP 455 Models of Languages and Computation,4,3,7
 Sun,COMP 110 Introduction to Programming and Data Science,3,2,5
 Sun,COMP 116 Introduction to Scientific Programming,3,2,5
 Szafir,COMP 790-173 Special Topics: Special Topics in HCI,4,4,8
-Szafir,COMP 110 Introduction to Programming and Data Science,0,0,0
-Szafir,COMP 116 Introduction to Scientific Programming,0,0,0
-Szafir,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Szafir,COMP 210 Data Structures and Analysis,0,0,0
 Yao,COMP 790-183 Special Topics: Transfer Learning,4,4,8
-Yao,COMP 110 Introduction to Programming and Data Science,0,0,0
-Yao,COMP 116 Introduction to Scientific Programming,0,0,0
-Yao,COMP 126 Practical Web Design and Development for Everyone,0,0,0
-Yao,COMP 210 Data Structures and Analysis,0,0,0
