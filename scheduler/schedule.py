@@ -276,46 +276,6 @@ class CourseScheduler:
                 >= 1
             )
 
-    def add_soft_room_priority_penalties(self):
-        """
-        Add soft penalty terms based on room priority.
-        Lower-priority rooms (e.g., backup) are still allowed, but discouraged.
-        """
-
-        # Priority: lower = better → higher penalty weight
-        ROOM_PRIORITY = {"CS": 0, "campus": 1, "backup": 2}
-
-        room_priority_map = {
-            row["RoomID"]: ROOM_PRIORITY.get(row["Building"], 2)
-            for _, row in self.rooms_data.iterrows()
-        }
-
-        self.room_priority_penalties = {}
-
-        for c, s, p in self.valid_course_professor_pairs:
-            for t in self.time_slots:
-                for r in self.room_ids:
-                    if r not in room_priority_map:
-                        continue
-
-                    priority = room_priority_map[r]
-                    # Optional: skip CS (priority 0)
-                    if priority == 0:
-                        continue
-
-                    var = LpVariable(f"RoomPriorityPenalty_{c}_{s}_{t}_{r}_{p}", lowBound=0, cat="Binary")
-                    self.room_priority_penalties[(c, s, t, r, p)] = var
-
-                    self.prob += var >= self.X[c, s, t, r, p]
-                    self.prob += var <= self.X[c, s, t, r, p]
-
-        # Set increasing penalty weight for lower priority rooms
-        PENALTY_WEIGHTS = {1: 0.2, 2: 0.5}  # campus, backup
-
-        self.prob += lpSum(
-            PENALTY_WEIGHTS[room_priority_map[r]] * self.room_priority_penalties[(c, s, t, r, p)]
-            for (c, s, t, r, p) in self.room_priority_penalties
-        )
 
     def add_room_capacity_constraints(self):
         """Add constraints to ensure room capacity is sufficient for course enrollment, but the room can't be too empty."""
@@ -562,7 +522,7 @@ class CourseScheduler:
     def add_2Hclass_constraints(self):
         """Add constraints to a 2H-class to Professor Chaturvedi for 790-150."""
 
-        class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH", "2H_F"]
+        class_2H_list = ["2H_M", "2H_T", "2H_W", "2H_TH"]
         conflict_periods = [
             (["2H_M"], ["MWF_2", "MWF_3", "MW_12", "MW_34"]),
             (["2H_T"], ["TTH_1", "TTH_2", "TTH_3"]),
@@ -617,6 +577,102 @@ class CourseScheduler:
                 )
                 == 0
             )
+                # 🚫 No one is allowed to be scheduled in 2H_F — not even Chaturvedi
+        for c, s, p in self.valid_course_professor_pairs:
+            self.prob += lpSum(self.X[c, s, "2H_F", r, p] for r in self.room_ids) == 0
+
+
+##  
+    def add_soft_room_priority_penalties(self):
+        """
+        Add soft penalty terms based on room priority.
+        Lower-priority rooms (e.g., backup) are still allowed, but discouraged.
+        """
+
+        # Priority: lower = better → higher penalty weight
+        ROOM_PRIORITY = {"CS": 0, "campus": 1, "backup": 2}
+
+        room_priority_map = {
+            row["RoomID"]: ROOM_PRIORITY.get(row["Building"], 2)
+            for _, row in self.rooms_data.iterrows()
+        }
+
+        self.room_priority_penalties = {}
+
+        for c, s, p in self.valid_course_professor_pairs:
+            for t in self.time_slots:
+                for r in self.room_ids:
+                    if r not in room_priority_map:
+                        continue
+
+                    priority = room_priority_map[r]
+                    # Optional: skip CS (priority 0)
+                    if priority == 0:
+                        continue
+
+                    var = LpVariable(f"RoomPriorityPenalty_{c}_{s}_{t}_{r}_{p}", lowBound=0, cat="Binary")
+                    self.room_priority_penalties[(c, s, t, r, p)] = var
+
+                    self.prob += var >= self.X[c, s, t, r, p]
+                    self.prob += var <= self.X[c, s, t, r, p]
+
+        # Set increasing penalty weight for lower priority rooms
+        PENALTY_WEIGHTS = {1: 0.2, 2: 0.5}  # campus, backup
+
+        self.prob += lpSum(
+            PENALTY_WEIGHTS[room_priority_map[r]] * self.room_priority_penalties[(c, s, t, r, p)]
+            for (c, s, t, r, p) in self.room_priority_penalties
+        )
+
+    def add_combined_room_and_professor_penalties(self):
+        """
+        Combine soft penalties for low-priority rooms and rewards for preferred professor-room-time combinations.
+        Ensures variable consistency and avoids conflicts.
+        """
+
+        ROOM_PRIORITY = {"CS": 0, "campus": 1, "backup": 2}
+        ROOM_PENALTY = {0: 0.0, 1: 0.2, 2: 0.5}  # penalty: CS = 0, campus = 0.2, backup = 0.5
+        PROFESSOR_REWARD = {
+            # professor: (preferred room, list of preferred time slots)
+            "McMahon": ("Carroll 111 (210 seats)", ["MWF_8", "MWF_9"]),
+            "Joseph-Nicholas": ("Greenlaw Hall-Rm 0101 (100 seats)", ["TTH_2"]),
+            "Snoeyink": ("Carroll 111 (210 seats)", ["TTH_7"]),
+        }
+        REWARD_WEIGHT = -3.0
+
+        # Map rooms to their priority
+        room_priority_map = {
+            row["RoomID"]: ROOM_PRIORITY.get(row["Building"], 2)
+            for _, row in self.rooms_data.iterrows()
+        }
+
+        penalty_terms = []
+
+        for c, s, p in self.valid_course_professor_pairs:
+            for t in self.time_slots:
+                for r in self.room_ids:
+                    if r not in room_priority_map:
+                        continue
+
+                    priority = room_priority_map[r]
+                    weight = ROOM_PENALTY[priority]
+
+                    # Base penalty for using a lower-priority room
+                    base_var = LpVariable(f"Penalty_{c}_{s}_{t}_{r}_{p}", cat="Binary")
+                    self.prob += base_var == self.X[c, s, t, r, p]
+                    penalty_terms.append(weight * base_var)
+
+                    # Additional soft reward if professor matches special room+time preference
+                    if p in PROFESSOR_REWARD:
+                        preferred_room, preferred_times = PROFESSOR_REWARD[p]
+                        if r == preferred_room and t in preferred_times:
+                            reward_var = LpVariable(f"Reward_{c}_{s}_{t}_{r}_{p}", cat="Binary")
+                            self.prob += reward_var == self.X[c, s, t, r, p]
+                            penalty_terms.append(REWARD_WEIGHT * reward_var)
+
+        # Add all penalty + reward terms to objective
+        self.prob += lpSum(penalty_terms)
+
 
     def solve_problem(self):
         """Attempt to solve the LP problem."""
@@ -704,13 +760,28 @@ class CourseScheduler:
         # Add constraints
         self.add_course_assignment_constraints()
         self.add_professor_preference_constraints()
+
         self.add_section_time_constraints()
         self.add_professor_time_constraints()
         self.add_room_time_constraints()
         self.add_specific_course_constraints()
         self.add_mwf_course_constraints()
 
-        self.add_soft_room_priority_penalties()
+        ### Comments: add_soft_room_priority_penalties do not support some professor must be in specific time slot and room , please comment add_combined_room_and_professor_penalties().
+        # |
+        # V
+        #self.add_soft_room_priority_penalties()
+
+        ### Comments: If you want to some professor must be in specific time slot and room 
+        #   for example:
+        #     "McMahon": ("Carroll 111 (210 seats)", ["MWF_8", "MWF_9"]),
+        #     "Joseph-Nicholas": ("Greenlaw Hall-Rm 0101 (100 seats)", ["TTH_2"]),
+        #     "Snoeyink": ("Carroll 111 (210 seats)", ["TTH_7"]),
+        # Please use add_combined_room_and_professor_penalties(). then comment add_soft_room_priority_penalties().
+        # |
+        # V
+        self.add_combined_room_and_professor_penalties()
+
         self.add_room_capacity_constraints()
 
         self.add_same_pre_courses_constraints()
