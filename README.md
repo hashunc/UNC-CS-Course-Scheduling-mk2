@@ -132,7 +132,21 @@ Below is a detailed explanation of each required input file:
   - Room names or IDs
   - Building locations
   - Seating capacity
- 
+    
+- #### 1. How to add a new Classroom?
+    - You can add any class room with any string.
+- #### 2. Format Requirements?
+    - 1) Do not change any title of original file.
+    -  ![image](https://github.com/user-attachments/assets/a9a25ec1-fc01-4e6a-ab89-87efb91e2b1e)
+    - 2) There are only 3 types of rooms: CS, campus, and backup (uppercase and lowercase letters matter!). For example, if you name a room 'cs' instead of 'CS', the program will crash.
+    - 3) AvailableTimeSlots, You can type any period of time by strict formmat as following:
+         - All (any period for that room)
+         - MWF_1,2,3,4,5,6,7,8,9,10
+         - MW_1,2,3,4,5,6,7
+         - TTH_1,2,3,4,5,6,7
+         - If a single room has multiple days with different available times, use ';' to separate the times. For example:
+         For example,
+        - ![image](https://github.com/user-attachments/assets/51123cba-3115-43c7-bb03-de9f25785ca0)
 
 
 ### 3. `FacultyQualificationPreference.xlsx`
