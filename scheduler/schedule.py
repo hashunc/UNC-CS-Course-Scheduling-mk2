@@ -154,19 +154,6 @@ class CourseScheduler:
                 == 1
             )
 
-        # hard: every [course] would be arranged at least once.
-        # unique_course_ids = set(c for c, s in self.all_courses)
-        # for course_id in unique_course_ids:
-        #     sections = [s for c, s, p in self.valid_course_professor_pairs if c == course_id]
-        #     professors = [p for c, s, p in self.valid_course_professor_pairs if c == course_id]
-        #     self.prob += lpSum(
-        #         self.X[course_id, section, t, r, p]
-        #         for section in sections
-        #         for t in self.time_slots
-        #         for r in self.room_ids
-        #         for p in professors
-        #     ) >= 1
-
     def add_section_time_constraints(self):
         """Add constraints to prevent different sections of the same course
         from being scheduled at the same time."""
@@ -289,6 +276,47 @@ class CourseScheduler:
                 >= 1
             )
 
+    def add_soft_room_priority_penalties(self):
+        """
+        Add soft penalty terms based on room priority.
+        Lower-priority rooms (e.g., backup) are still allowed, but discouraged.
+        """
+
+        # Priority: lower = better → higher penalty weight
+        ROOM_PRIORITY = {"CS": 0, "campus": 1, "backup": 2}
+
+        room_priority_map = {
+            row["RoomID"]: ROOM_PRIORITY.get(row["Building"], 2)
+            for _, row in self.rooms_data.iterrows()
+        }
+
+        self.room_priority_penalties = {}
+
+        for c, s, p in self.valid_course_professor_pairs:
+            for t in self.time_slots:
+                for r in self.room_ids:
+                    if r not in room_priority_map:
+                        continue
+
+                    priority = room_priority_map[r]
+                    # Optional: skip CS (priority 0)
+                    if priority == 0:
+                        continue
+
+                    var = LpVariable(f"RoomPriorityPenalty_{c}_{s}_{t}_{r}_{p}", lowBound=0, cat="Binary")
+                    self.room_priority_penalties[(c, s, t, r, p)] = var
+
+                    self.prob += var >= self.X[c, s, t, r, p]
+                    self.prob += var <= self.X[c, s, t, r, p]
+
+        # Set increasing penalty weight for lower priority rooms
+        PENALTY_WEIGHTS = {1: 0.2, 2: 0.5}  # campus, backup
+
+        self.prob += lpSum(
+            PENALTY_WEIGHTS[room_priority_map[r]] * self.room_priority_penalties[(c, s, t, r, p)]
+            for (c, s, t, r, p) in self.room_priority_penalties
+        )
+
     def add_room_capacity_constraints(self):
         """Add constraints to ensure room capacity is sufficient for course enrollment, but the room can't be too empty."""
 
@@ -320,13 +348,13 @@ class CourseScheduler:
                     if (room_capacity > course_capacity * MAX_CAPACITY_MULTIPLIER) or (room_capacity - course_capacity > MAX_ABSOLUTE_DIFFERENCE):
                         self.prob += self.X[c, s, t, r, p] == 0
 
-            # 🚫 for small courses, avoid non-CS buildings
-            if course_capacity <= 128:
-                self.prob += lpSum(
-                    self.X[c, s, t, r, p]
-                    for t in self.time_slots
-                    for r in other_rooms
-                ) == 0
+            # # 🚫 for small courses, avoid non-CS buildings
+            # if course_capacity <= 128:
+            #     self.prob += lpSum(
+            #         self.X[c, s, t, r, p]
+            #         for t in self.time_slots
+            #         for r in other_rooms
+            #     ) == 0
     
     def add_prefer_non_other_rooms_constraint(self):
         """Add soft constraints to prefer using non-other rooms (non-large non-CS rooms)."""
@@ -681,6 +709,8 @@ class CourseScheduler:
         self.add_room_time_constraints()
         self.add_specific_course_constraints()
         self.add_mwf_course_constraints()
+
+        self.add_soft_room_priority_penalties()
         self.add_room_capacity_constraints()
 
         self.add_same_pre_courses_constraints()
