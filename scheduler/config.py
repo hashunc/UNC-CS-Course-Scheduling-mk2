@@ -2,7 +2,8 @@
 
 # Special 2H Class (Hardcoded)
 TWO_HOUR_COURSE_ID = "COMP 590&790"
-TWO_HOUR_SECTION = "158"
+#TWO_HOUR_SECTION must be interger
+TWO_HOUR_SECTION = 158
 TWO_HOUR_PROFESSOR = "Chaturvedi"
 
 # Input files

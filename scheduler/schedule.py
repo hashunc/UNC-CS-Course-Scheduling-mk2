@@ -543,7 +543,7 @@ class CourseScheduler:
             (["2H_F"], ["MWF_2", "MWF_3"])
         ]
         c_2H = TWO_HOUR_COURSE_ID
-        s_2H = str(TWO_HOUR_SECTION)  
+        s_2H = TWO_HOUR_SECTION 
         p_2H = TWO_HOUR_PROFESSOR
         if (c_2H, s_2H, p_2H) not in self.valid_course_professor_pairs:
             print(f"⚠️ Skipping 2H class constraint: ({c_2H}, {s_2H}, {p_2H}) not found in assignments.")

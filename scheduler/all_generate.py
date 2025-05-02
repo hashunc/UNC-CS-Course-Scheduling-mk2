@@ -89,15 +89,15 @@ print("\n🔵 Running scheduling optimizer...")
 run_script(SCHEDULE_SCRIPT, 8, "Generate schedule_output.csv")
 
 # Step 8.5: Split 590&790 combined courses
-#print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
-#run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
+print("\n🔵 Splitting COMP 590&790 into COMP 590 and COMP 790...")
+run_script(SPLIT_590_790_SCRIPT, 8.5, "Split 590&790 in schedule_output.csv")
 
 # Step 8.6: Copy schedule_output.csv to Output folder
 print("\n🔵 Copying schedule_output.csv to data/Output/...")
 run_script(COPY_SCHEDULE_OUTPUT_SCRIPT, 8.6, "Copy schedule_output.csv to Output")
 
 # Step 9: Convert to Google Calendar format
-#print("\n🔵 Converting schedule to Google Calendar format...")
-#run_script(CONVERT_TO_CALENDAR_SCRIPT, 9, "Generate google_calendar_format.csv")
+print("\n🔵 Converting schedule to Google Calendar format...")
+run_script(CONVERT_TO_CALENDAR_SCRIPT, 9, "Generate google_calendar_format.csv")
 
 print("\n🎯 All steps completed successfully! The system is fully updated and schedule generated.")
