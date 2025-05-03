@@ -67,10 +67,10 @@ All four files must be present in the `data/Input/` folder **before running the 
 
 ### Required Input Files
 
-- `FacultyPreferences.xlsx`
-- `CourseAssignments.xlsx`
-- `SectionCapacities.xlsx`
-- `FacultyAvailability.xlsx`
+- `ClassEnrollCap.xlsx`
+- `ClassRoom.xlsx`
+- `FacultyQualificationPreference.xlsx`
+- `Responses.xlsx`
 
 Make sure the filenames match exactly, including capitalization and spelling.
 
@@ -317,6 +317,10 @@ After generating the calendar-compatible `.csv` files (`google_calendar_undergra
 If you would like to see a complete walkthrough of setting up, running the program, and importing the `.csv` files into Google Calendar, please watch the demonstration video below:
 
 [![Watch the Full Demo](https://img.youtube.com/vi/TNFIEQCRf88/0.jpg)](https://youtu.be/TNFIEQCRf88)
+
+### Additional Step: About config.py
+
+- [![Watch the video](https://img.youtube.com/vi/X-YaTYNBN_w/0.jpg)](https://youtu.be/X-YaTYNBN_w)  
 
 
 You are all set!
