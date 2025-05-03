@@ -11,6 +11,9 @@ This tool significantly reduces the manual workload involved in course schedulin
 ## Screenshots
 <img width="1278" alt="image" src="https://github.com/user-attachments/assets/6142936d-807b-4cc6-973b-66c9297ae0eb" />
 
+## Step by Step video: How to run the code?
+[![Watch the video](https://img.youtube.com/vi/MjxVMGTAMIo/0.jpg)](https://youtu.be/MjxVMGTAMIo)
+
 ---
 
 ## Step 1: Getting Set Up
