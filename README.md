@@ -318,9 +318,45 @@ If you would like to see a complete walkthrough of setting up, running the progr
 
 [![Watch the Full Demo](https://img.youtube.com/vi/TNFIEQCRf88/0.jpg)](https://youtu.be/TNFIEQCRf88)
 
-### Additional Step: About config.py
+### Additional Step: About `config.py`
 
+The `config.py` file is used to centralize and manage all important data file paths. While you can modify this file as needed, we **recommend only changing two specific things**:
 - [![Watch the video](https://img.youtube.com/vi/X-YaTYNBN_w/0.jpg)](https://youtu.be/X-YaTYNBN_w)  
+
+#### 1. Custom Input File Names
+
+All input filenames in the `data/Input` folder can be renamed to suit your needs. This means you're **not restricted** to using the default file names.
+
+For example, if you want to use a new file called `Responses_UNC.xlsx` for testing, you can update the line in `config.py` from:
+
+```python
+INPUT_AVAILABILITY = "data/Input/Responses.xlsx"
+```
+
+to:
+
+```python
+INPUT_AVAILABILITY = "data/Input/Responses_UNC.xlsx"
+```
+
+The same approach applies to the other input files (e.g., preferences, capacity, room files).
+
+#### 2. Modifying the 2H Course Configuration
+
+You can also update the configuration for a special 2-hour course by editing the course section ID and professor name in `config.py`.
+
+If you choose to do this, **make sure you also update the following files accordingly** to ensure consistency:
+
+- **`ClassEnrollCap.xlsx`**  
+  → Make sure the section number matches your changes.
+
+- **`FacultyQualificationPreference.xlsx`**  
+  → The professor's last name must match exactly, and the course should comply with the predefined rules. Be sure the section number is consistent as well.
+
+- **`Responses.xlsx`**  
+  → Again, ensure that the professor’s last name exactly matches your updates.
+
+Incorrect or inconsistent modifications in these files may result in errors or unexpected behavior during scheduling.
 
 
 You are all set!
