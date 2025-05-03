@@ -25,6 +25,9 @@ If you want to run this application locally, here are the following steps to do 
 
 ```bash
 pip install pulp
+
+pip install pandas
+
 ```
 
 2. **Git Clone**: Clone this repository into your local machine using this command
